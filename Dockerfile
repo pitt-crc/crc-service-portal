@@ -8,15 +8,15 @@ ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    # Required for LDAP
+    # Required for LDAP support
     build-essential \
     libsasl2-dev \
     libldap2-dev \
-    # Required for Celery
+    # Required for running Celery
     redis \
-    # Required for Docker health checks
+    # Required for Docker HEALTHCHECK
     curl \
-    # Required for static files
+    # Required for static file serving
     nginx \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
