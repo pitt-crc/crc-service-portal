@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+trap "kill 0" SIGINT SIGTERM
 
-nginx
-keystone-api "$@"
+nginx &
+exec keystone-api "$@"
