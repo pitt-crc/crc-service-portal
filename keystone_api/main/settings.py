@@ -27,6 +27,17 @@ FIXTURE_DIRS = [BASE_DIR / 'tests' / 'fixtures']
 
 # Core security settings
 
+_trusted_local = [
+    "http://localhost:80",
+    "https://localhost:443",
+    "http://localhost:4200",
+    "http://localhost:8000",
+    "http://127.0.0.1:80",
+    "https://127.0.0.1:443",
+    "http://127.0.0.1:4200",
+    "http://127.0.0.1:8000",
+]
+
 SECRET_KEY = os.environ.get('SECURE_SECRET_KEY', get_random_secret_key())
 ALLOWED_HOSTS = env.list("SECURE_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
@@ -34,14 +45,9 @@ _SECURE_SSL_TOKENS = env.bool("SECURE_SSL_TOKENS", False)
 SESSION_COOKIE_SECURE = _SECURE_SSL_TOKENS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_AGE = env.int("SECURE_SESSION_AGE", 1209600)  # 2 weeks
+SESSION_COOKIE_AGE = env.int("SECURE_SESSION_AGE", timedelta(days=14).total_seconds())
 
-CSRF_TRUSTED_ORIGINS = env.list("SECURE_CSRF_ORIGINS", default=[
-    'http://localhost:4200',
-    'https://localhost:4200',
-    "http://127.0.0.1:4200",
-    "https://127.0.0.1:4200",
-])
+CSRF_TRUSTED_ORIGINS = env.list("SECURE_CSRF_ORIGINS", default=_trusted_local)
 CSRF_COOKIE_SECURE = _SECURE_SSL_TOKENS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
@@ -52,12 +58,7 @@ SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", 0)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("SECURE_HSTS_SUBDOMAINS", False)
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = env.list("SECURE_ALLOWED_ORIGINS", default=[
-    'http://localhost:4200',
-    'https://localhost:4200',
-    "http://127.0.0.1:4200",
-    "https://127.0.0.1:4200",
-])
+CORS_ALLOWED_ORIGINS = env.list("SECURE_ALLOWED_ORIGINS", default=_trusted_local)
 
 # App Configuration
 
