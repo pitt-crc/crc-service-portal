@@ -72,14 +72,14 @@ class AllocationRequest(RGModelInterface, models.Model):
 
     title = models.CharField(max_length=250)
     description = models.TextField(max_length=20_000)
-    submitter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='submitted_allocationrequests')
+    submitter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='submitted_allocationrequest_set')
     submitted = models.DateField(auto_now=True)
     status = models.CharField(max_length=2, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     active = models.DateField(null=True, blank=True)
     expire = models.DateField(null=True, blank=True)
 
     group: ResearchGroup = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
-    assignees: User = models.ManyToManyField(User, blank=True, related_name='assigned_allocationrequests')
+    assignees: User = models.ManyToManyField(User, blank=True, related_name='assigned_allocationrequest_set')
 
     def clean(self) -> None:
         """Validate the model instance.
