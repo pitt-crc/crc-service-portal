@@ -48,6 +48,7 @@ drf_spectacular = { version = "0.27.2", extras = ["sidecar"] }
 flower = "^2.0.1"
 gunicorn = "23.0.0"
 jinja2 = "^3.1.4"
+pillow = "^10.4.0"
 psycopg2-binary = "2.9.9"
 pyyaml = "6.0.2"
 redis = "5.1.1"

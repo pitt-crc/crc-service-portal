@@ -5032,6 +5032,11 @@ components:
           type: string
           nullable: true
           maxLength: 1000
+        profile_image:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -5212,6 +5217,11 @@ components:
           type: string
           nullable: true
           maxLength: 1000
+        profile_image:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -5251,6 +5261,7 @@ components:
       - is_staff
       - last_login
       - password
+      - profile_image
       - username
     TaskResult:
       type: object
