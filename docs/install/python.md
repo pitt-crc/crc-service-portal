@@ -1,12 +1,18 @@
 # Deploying with Python
 
-These instructions install Keystone-API directly onto a machine and manage resulting services using the systemd service manager.
-It is assumed you have administrative privileges and are managing system services via systemd.
-It is also assumed you are installing applications under a dedicated, unprivileged user account called `keystone`. 
+Keystone-API can be installed using system packages and managed using the systemd service manager.
+Doing so requires administrative privileges and assumes you are managing system services via systemd.
+These instructions also assume you are installing applications under a dedicated, unprivileged user account called `keystone`. 
 
 ## Installing the API
 
 The `keystone_api` package can be installed using the `pip` or `pipx` package managers.
+
+=== "pipx (recommended)"
+
+    ```bash
+    pipx install --include-deps keystone-api
+    ```
 
 === "pip"
 
@@ -14,25 +20,20 @@ The `keystone_api` package can be installed using the `pip` or `pipx` package ma
     pip install keystone-api
     ```
 
-=== "pipx"
-
-    ```bash
-    pipx install --include-deps keystone-api
-    ```
-
 If you intend to authenticate users via LDAP credentials, you will need to manually specify LDAP support in the `install` command.
 This will require the LDAP development binaries to be available on the host machine.
+
+
+=== "pipx (recommended)"
+
+    ```bash
+    pipx install --include-deps keystone-api[ldap]
+    ```
 
 === "pip"
 
     ```bash
     pip install keystone-api[ldap]
-    ```
-
-=== "pipx"
-
-    ```bash
-    pipx install --include-deps keystone-api[ldap]
     ```
 
 If the installation was successful, the packaged CLI tool will be available in your working environment.
@@ -235,14 +236,14 @@ server {
 
 When upgrading the application, ensure the database and static files are up-to-date before relaunching the application server.
 
-=== "pip"
+=== "pipx (recommended)"
 
     ```bash
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
     
-    pip install --upgrade keystone-api
+    pipx upgrade keystone-api
     keystone-api migrate
     keystone-api collectstatic
     
@@ -251,14 +252,14 @@ When upgrading the application, ensure the database and static files are up-to-d
     systemctl start keystone-server
     ```
 
-=== "pipx"
+=== "pip"
 
     ```bash
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
     
-    pipx upgrade keystone-api
+    pip install --upgrade keystone-api
     keystone-api migrate
     keystone-api collectstatic
     
