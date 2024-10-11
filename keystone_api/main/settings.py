@@ -285,8 +285,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = Path(env.path('CONFIG_STATIC_DIR', BASE_DIR / 'static_files'))
 STATIC_ROOT.mkdir(parents=True, exist_ok=True)
 
-MEDIA_URL = 'uploads/'
-MEDIA_ROOT = Path(env.path('CONFIG_UPLOAD_DIR', BASE_DIR / 'upload_files'))
+MEDIA_URL = 'media/'
+MEDIA_ROOT = Path(env.path('CONFIG_UPLOAD_DIR', BASE_DIR / 'media'))
 MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 
 # Timezones

@@ -19,4 +19,7 @@ urlpatterns = [
     path('research/', include('apps.research_products.urls', namespace='research')),
     path('users/', include('apps.users.urls', namespace='users')),
     path('version/', lambda *args: HttpResponse(settings.VERSION), name='version'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
