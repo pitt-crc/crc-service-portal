@@ -36,7 +36,7 @@ class AllocationRequestReviewInline(admin.StackedInline):
     model = AllocationRequestReview
     verbose_name = 'Review'
     show_change_link = True
-    readonly_fields = ('date_modified',)
+    readonly_fields = ('last_modified',)
     extra = 1
 
 
@@ -115,6 +115,7 @@ class AllocationRequestAdmin(admin.ModelAdmin):
     group.admin_order_field = 'group__name'
 
     list_display = [group, 'title', 'submitted', 'active', 'expire', 'reviews', 'status']
+    readonly_fields = ('last_modified',)
     list_display_links = list_display
     search_fields = ['title', 'description', 'group__name']
     ordering = ['submitted']

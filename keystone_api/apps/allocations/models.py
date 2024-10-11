@@ -72,13 +72,15 @@ class AllocationRequest(RGModelInterface, models.Model):
 
     title = models.CharField(max_length=250)
     description = models.TextField(max_length=20_000)
+    submitter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='submitted_allocationrequests')
     submitted = models.DateField(auto_now=True)
     status = models.CharField(max_length=2, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     active = models.DateField(null=True, blank=True)
     expire = models.DateField(null=True, blank=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     group: ResearchGroup = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
-    assignees: User = models.ManyToManyField(User, blank=True)
+    assignees: User = models.ManyToManyField(User, blank=True, related_name='assigned_allocationrequests')
 
     def clean(self) -> None:
         """Validate the model instance.
@@ -119,7 +121,7 @@ class AllocationRequestReview(RGModelInterface, models.Model):
     status = models.CharField(max_length=2, choices=StatusChoices.choices)
     public_comments = models.TextField(max_length=1600, null=True, blank=True)
     private_comments = models.TextField(max_length=1600, null=True, blank=True)
-    date_modified = models.DateTimeField(auto_now=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     request: AllocationRequest = models.ForeignKey(AllocationRequest, on_delete=models.CASCADE)
     reviewer: User = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
