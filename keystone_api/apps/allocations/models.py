@@ -77,7 +77,6 @@ class AllocationRequest(RGModelInterface, models.Model):
     status = models.CharField(max_length=2, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     active = models.DateField(null=True, blank=True)
     expire = models.DateField(null=True, blank=True)
-    last_modified = models.DateTimeField(auto_now=True)
 
     group: ResearchGroup = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
     assignees: User = models.ManyToManyField(User, blank=True, related_name='assigned_allocationrequests')

@@ -67,7 +67,6 @@
     title: request1
     group: 1
     submitted: "2023-01-01"
-    last_modified: "2023-01-05"
 
 - model: allocations.AllocationRequest
   pk: 2
@@ -75,7 +74,6 @@
     title: request2
     group: 2
     submitted: "2023-01-01"
-    last_modified: "2023-01-05"
 
 # Reviews
 - model: allocations.AllocationRequestReview

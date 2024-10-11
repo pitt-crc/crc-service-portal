@@ -118,14 +118,12 @@
     status: AP
     group: 1
     submitted: "2023-01-01"
-    last_modified: "2023-01-05"
 - model: allocations.allocationrequest
   pk: 2
   fields:
     status: AP
     group: 2
     submitted: "2023-01-01"
-    last_modified: "2023-01-05"
 
 # Allocation Request Reviews
 - model: allocations.allocationrequestreview
