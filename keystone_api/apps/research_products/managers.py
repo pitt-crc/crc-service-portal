@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Manager
 
-from apps.users.models import ResearchGroup
+from apps.users.models import Team
 
 __all__ = ['GrantManager', 'PublicationManager']
 
@@ -28,8 +28,8 @@ class BaseManager(Manager):
             A filtered queryset.
         """
 
-        research_groups = ResearchGroup.objects.groups_for_user(user)
-        return self.get_queryset().filter(group__in=research_groups)
+        teams = Team.objects.teams_for_user(user)
+        return self.get_queryset().filter(team__in=teams)
 
 
 class GrantManager(BaseManager):

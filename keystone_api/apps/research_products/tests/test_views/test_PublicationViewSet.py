@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from apps.research_products.models import Publication
 from apps.research_products.views import PublicationViewSet
-from apps.users.models import ResearchGroup
+from apps.users.models import Team
 
 User = get_user_model()
 
@@ -19,24 +19,24 @@ class GetQueryset(TestCase):
         self.staff_user = User.objects.create_user(username='staff', password='foobar123!', is_staff=True)
         self.general_user = User.objects.create_user(username='general', password='foobar123!')
 
-        self.group1_user = User.objects.create_user(username='user1', password='foobar123!')
-        self.group1 = ResearchGroup.objects.create(name='Group1', pi=self.group1_user)
-        self.group1_publication = Publication.objects.create(
+        self.team1_user = User.objects.create_user(username='user1', password='foobar123!')
+        self.team1 = Team.objects.create(name='Team1')
+        self.team1_publication = Publication.objects.create(
             title="Publication 1",
             abstract="Abstract 1",
             date="2020-01-01",
             journal="Journal 1",
-            group=self.group1
+            team=self.team1
         )
 
-        self.group2_user = User.objects.create_user(username='user2', password='foobar123!')
-        self.group2 = ResearchGroup.objects.create(name='Group2', pi=self.group2_user)
-        self.group2_publication = Publication.objects.create(
+        self.team2_user = User.objects.create_user(username='user2', password='foobar123!')
+        self.team2 = Team.objects.create(name='Team2')
+        self.team2_publication = Publication.objects.create(
             title="Publication 2",
             abstract="Abstract 2",
             date="2020-01-02",
             journal="Journal 2",
-            group=self.group2
+            team=self.team2
         )
 
     def create_viewset(self, user: User) -> PublicationViewSet:
@@ -61,16 +61,16 @@ class GetQueryset(TestCase):
         queryset = viewset.get_queryset()
         self.assertEqual(len(queryset), 2)
 
-    def test_queryset_for_group_member(self) -> None:
-        """Test user's can only access their group's publications."""
+    def test_queryset_for_team_member(self) -> None:
+        """Test user's can only access their team's publications."""
 
-        viewset = self.create_viewset(self.group1_user)
+        viewset = self.create_viewset(self.team1_user)
         queryset = viewset.get_queryset()
         self.assertEqual(len(queryset), 1)
-        self.assertEqual(queryset[0].group, self.group1)
+        self.assertEqual(queryset[0].team, self.team1)
 
-    def test_queryset_for_non_group_member(self) -> None:
-        """Test user's without groups cannot access any records."""
+    def test_queryset_for_non_team_member(self) -> None:
+        """Test user's without team membership cannot access any records."""
 
         viewset = self.create_viewset(self.general_user)
         queryset = viewset.get_queryset()

@@ -20,7 +20,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/users/users/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -83,7 +83,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 class CredentialHandling(APITestCase):
     """Test the handling of user credentials."""
 
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_new_user_credentials(self) -> None:
         """Test the user is created with the correct password.

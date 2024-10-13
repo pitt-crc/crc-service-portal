@@ -10,7 +10,7 @@ from tests.utils import CustomAsserts
 class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
-    Permissions depend on whether the user is a member of the record's associated research group.
+    Permissions depend on whether the user is a member of the record's associated user team.
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
@@ -23,7 +23,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint_pattern = '/users/users/{pk}/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -125,7 +125,7 @@ class CredentialHandling(APITestCase):
     """Test the getting/setting of user credentials."""
 
     endpoint_pattern = '/users/users/{pk}/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_user_get_own_password(self) -> None:
         """Test a user cannot get their own password."""

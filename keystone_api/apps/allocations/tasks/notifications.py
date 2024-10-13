@@ -79,7 +79,7 @@ def notify_upcoming_expirations() -> None:
 
     failed = False
     for request in active_requests:
-        for user in request.group.get_all_members().filter(is_active=True):
+        for user in request.team.get_all_members().filter(is_active=True):
             try:
                 if should_notify_upcoming_expiration(user, request):
                     send_notification_upcoming_expiration(user, request)
@@ -133,7 +133,7 @@ def notify_past_expirations() -> None:
 
     failed = False
     for request in active_requests:
-        for user in request.group.get_all_members().filter(is_active=True):
+        for user in request.team.get_all_members().filter(is_active=True):
 
             try:
                 if should_notify_past_expiration(request, user):

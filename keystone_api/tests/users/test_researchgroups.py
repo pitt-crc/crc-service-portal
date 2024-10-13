@@ -1,4 +1,4 @@
-"""Function tests for the `/users/researchgroups/` endpoint."""
+"""Function tests for the `/users/teams/` endpoint."""
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -19,8 +19,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Staff user                  | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
-    endpoint = '/users/researchgroups/'
-    fixtures = ['multi_research_group.yaml']
+    endpoint = '/users/teams/'
+    fixtures = ['multi_team.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -38,7 +38,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         )
 
     def test_authenticated_user_permissions(self) -> None:
-        """Test general authenticated users can create new research groups."""
+        """Test general authenticated users can create new teams."""
 
         user = User.objects.get(username='generic_user')
         self.client.force_authenticate(user=user)
@@ -53,7 +53,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'name': 'Group FooBar', 'pi': 1}
+            post_body={'name': 'Team FooBar', 'pi': 1}
         )
 
     def test_staff_user_permissions(self) -> None:
@@ -72,5 +72,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            post_body={'name': 'Research Group 3', 'pi': 1},
+            post_body={'name': 'Team 3', 'pi': 1},
         )

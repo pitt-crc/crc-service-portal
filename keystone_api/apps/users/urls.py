@@ -7,7 +7,7 @@ from .views import *
 app_name = 'users'
 
 router = DefaultRouter()
-router.register(r'researchgroups', ResearchGroupViewSet)
+router.register(r'teams', TeamViewSet)
 router.register(r'users', UserViewSet)
 
 urlpatterns = router.urls

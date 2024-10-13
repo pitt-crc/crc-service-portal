@@ -20,7 +20,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationSerializer
     permission_classes = [
         permissions.IsAuthenticated,
-        permissions.IsAdminUser | GroupMemberAll
+        permissions.IsAdminUser | TeamMemberAll
     ]
 
     def get_queryset(self) -> list[Publication]:
@@ -39,7 +39,7 @@ class GrantViewSet(viewsets.ModelViewSet):
     serializer_class = GrantSerializer
     permission_classes = [
         permissions.IsAuthenticated,
-        permissions.IsAdminUser | GroupMemberReadGroupAdminWrite
+        permissions.IsAdminUser | TeamMemberReadTeamAdminWrite
     ]
 
     def get_queryset(self) -> list[Grant]:

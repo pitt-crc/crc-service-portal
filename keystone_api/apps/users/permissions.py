@@ -12,10 +12,10 @@ from rest_framework.views import View
 
 from .models import *
 
-__all__ = ['IsGroupAdminOrReadOnly', 'IsSelfOrReadOnly']
+__all__ = ['IsTeamAdminOrReadOnly', 'IsSelfOrReadOnly']
 
 
-class IsGroupAdminOrReadOnly(permissions.BasePermission):
+class IsTeamAdminOrReadOnly(permissions.BasePermission):
     """Grant read-only access to all authenticated users.
 
     Staff users retain all read/write permissions.
@@ -29,14 +29,14 @@ class IsGroupAdminOrReadOnly(permissions.BasePermission):
 
         return True
 
-    def has_object_permission(self, request: Request, view: View, obj: ResearchGroup):
+    def has_object_permission(self, request: Request, view: View, obj: Team):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
         # Read permissions are allowed to any request
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # Update permissions are only allowed for staff and research group admins
+        # Update permissions are only allowed for staff and team admins
         return request.user.is_staff or request.user in obj.get_privileged_members()
 
 

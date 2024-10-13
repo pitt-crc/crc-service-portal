@@ -14,18 +14,18 @@ from .models import *
 
 __all__ = [
     'PrivilegeUserSerializer',
-    'ResearchGroupSerializer',
+    'TeamSerializer',
     'RestrictedUserSerializer',
 ]
 
 
-class ResearchGroupSerializer(serializers.ModelSerializer):
-    """Object serializer for the `ResearchGroup` model."""
+class TeamSerializer(serializers.ModelSerializer):
+    """Object serializer for the `Team` model."""
 
     class Meta:
         """Serializer settings."""
 
-        model = ResearchGroup
+        model = Team
         fields = '__all__'
 
 

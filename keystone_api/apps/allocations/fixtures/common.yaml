@@ -1,18 +1,18 @@
-# This fixture defines two research groups, each with a single allocation request and request review.
+# This fixture defines two teams, each with a single allocation request and request review.
 
 # Users:
 #    staff: A staff user with full permissions.
 #    reviewer: A non-staff user who reviews allocation requests.
-#    user1: A non-staff user who is the principal investigator (PI) of group1.
-#    user2: A non-staff user who is the principal investigator (PI) of group2.
+#    user1: A non-staff user who is the principal investigator (PI) of team1.
+#    user2: A non-staff user who is the principal investigator (PI) of team2.
 
 # Research Groups:
-#    group1: A research group led by user1.
-#    group2: A research group led by user2.
+#    team1: A research team led by user1.
+#    team2: A research team led by user2.
 
 # Allocation Requests:
-#    request1: An allocation request submitted by group1.
-#    request2: An allocation request submitted by group2.
+#    request1: An allocation request submitted by team1.
+#    request2: An allocation request submitted by team2.
 
 # Reviews:
 #    review1: A review of request1 by the reviewer.
@@ -47,17 +47,17 @@
     password: "foobar123!"
     is_staff: false
 
-# Research Groups
-- model: users.ResearchGroup
+# Teams
+- model: users.Team
   pk: 1
   fields:
-    name: group1
+    name: team1
     pi: 3  # username: user1
 
-- model: users.ResearchGroup
+- model: users.Team
   pk: 2
   fields:
-    name: group2
+    name: team2
     pi: 4  # username: user2
 
 # Allocation Requests
@@ -65,14 +65,14 @@
   pk: 1
   fields:
     title: request1
-    group: 1
+    team: 1
     submitted: "2023-01-01"
 
 - model: allocations.AllocationRequest
   pk: 2
   fields:
     title: request2
-    group: 2
+    team: 2
     submitted: "2023-01-01"
 
 # Reviews

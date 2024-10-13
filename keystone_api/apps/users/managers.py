@@ -15,7 +15,7 @@ from django.db import models
 if TYPE_CHECKING:  # pragma: nocover
     from apps.users.models import User
 
-__all__ = ['ResearchGroupManager', 'UserManager']
+__all__ = ['TeamManager', 'UserManager']
 
 
 class UserManager(BaseUserManager):
@@ -78,14 +78,14 @@ class UserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 
-class ResearchGroupManager(models.Manager):
-    """Object manager for the `ResearchGroup` database model."""
+class TeamManager(models.Manager):
+    """Object manager for the `Team` database model."""
 
-    def groups_for_user(self, user: 'User') -> models.QuerySet:
-        """Get all research groups the user is affiliated with.
+    def teams_for_user(self, user: 'User') -> models.QuerySet:
+        """Get all teams the user is affiliated with.
 
         Args:
-            user: The user to return affiliate groups for.
+            user: The user to return affiliate teams for.
 
         Returns:
             A filtered queryset.

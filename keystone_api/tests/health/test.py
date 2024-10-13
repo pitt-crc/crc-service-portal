@@ -19,7 +19,7 @@ class EndpointPermissions(APITransactionTestCase):
     """
 
     endpoint = '/health/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
     valid_responses = (status.HTTP_200_OK, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def assert_read_only_responses(self) -> None:

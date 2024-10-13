@@ -5,7 +5,7 @@ from rest_framework import status
 
 from apps.allocations.models import AllocationRequest, AllocationRequestReview
 from apps.allocations.views import AllocationRequestReviewViewSet
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 
 class GetQueryset(TestCase):
@@ -26,7 +26,7 @@ class GetQueryset(TestCase):
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
     def test_get_queryset_for_non_staff_user(self) -> None:
-        """Test non-staff users can only query reviews for their own research groups."""
+        """Test non-staff users can only query reviews for their own teams."""
 
         request = RequestFactory()
         request.user = User.objects.get(username='user1')
@@ -34,8 +34,8 @@ class GetQueryset(TestCase):
         viewset = AllocationRequestReviewViewSet()
         viewset.request = request
 
-        group1 = ResearchGroup.objects.get(name='group1')
-        expected_queryset = AllocationRequestReview.objects.filter(request__group__in=[group1.id])
+        team1 = Team.objects.get(name='team1')
+        expected_queryset = AllocationRequestReview.objects.filter(request__team__in=[team1.id])
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
 

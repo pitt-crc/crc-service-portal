@@ -12,29 +12,29 @@ from tests.utils import CustomAsserts
 class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
-    Permissions depend on whether the user is a member of the record's associated research group.
+    Permissions depend on whether the user is a member of the record's associated team.
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
     | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous User              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | User accessing other group  | 404 | 404  | 200     | 405  | 404 | 404   | 404    | 403   |
-    | User accessing own group    | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 403   |
+    | User accessing other team   | 404 | 404  | 200     | 405  | 404 | 404   | 404    | 403   |
+    | User accessing own team     | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 403   |
     | Staff User                  | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
     endpoint_pattern = '/research/grants/{pk}/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['multi_team.yaml']
     valid_record_data = {
-        'title': "Grant (Group 2)",
+        'title': "Grant (Team 2)",
         'agency': "Agency Name",
         'amount': 1000,
         'fiscal_year': 2001,
         'start_date': date(2000, 1, 1),
         'end_date': date(2000, 1, 31),
         'grant_number': 'abc-123',
-        'group': 1
+        'team': 1
     }
 
     def test_anonymous_user_permissions(self) -> None:
@@ -53,10 +53,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_authenticated_user_different_group(self) -> None:
-        """Test permissions for authenticated users accessing records owned by someone else's research group."""
+    def test_authenticated_user_different_team(self) -> None:
+        """Test permissions for authenticated users accessing records owned by someone else's team."""
 
-        # Define a user / record endpoint from DIFFERENT research groups
+        # Define a user / record endpoint from DIFFERENT teams
         endpoint = self.endpoint_pattern.format(pk=1)
         user = User.objects.get(username='member_2')
         self.client.force_authenticate(user=user)
@@ -73,10 +73,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_authenticated_user_same_group(self) -> None:
-        """Test permissions for authenticated users accessing records owned by their research group."""
+    def test_authenticated_user_same_team(self) -> None:
+        """Test permissions for authenticated users accessing records owned by their own team."""
 
-        # Define a user / record endpoint from the SAME research groups
+        # Define a user / record endpoint from the SAME teams
         endpoint = self.endpoint_pattern.format(pk=1)
         user = User.objects.get(username='member_1')
         self.client.force_authenticate(user=user)

@@ -12,11 +12,11 @@ from .models import *
 
 settings.JAZZMIN_SETTINGS['icons'].update({
     'users.User': 'fa fa-user',
-    'users.ResearchGroup': 'fa fa-users',
+    'users.Team': 'fa fa-users',
 })
 
 settings.JAZZMIN_SETTINGS['order_with_respect_to'].extend([
-    'users.User', 'users.ResearchGroup'
+    'users.User', 'users.Team'
 ])
 
 
@@ -50,20 +50,20 @@ class UserAdmin(auth.admin.UserAdmin):
     )
 
 
-@admin.register(ResearchGroup)
-class ResearchGroupAdmin(admin.ModelAdmin):
-    """Admin interface for managing research group delegates."""
-
-    @staticmethod
-    @admin.display
-    def pi(obj: ResearchGroup) -> str:
-        """Return the username of the research group PI."""
-
-        return obj.pi.username
-
-    pi.admin_order_field = 'pi__username'
-
-    list_display = ['name', pi]
-    filter_horizontal = ('admins', 'members')
-    ordering = ['name', ]
-    search_fields = ['name', 'pi__username']
+# @admin.register(Team)
+# class TeamAdmin(admin.ModelAdmin):
+#     """Admin interface for managing team admin delegation."""
+#
+#     @staticmethod
+#     @admin.display
+#     def pi(obj: Team) -> str:
+#         """Return the username of the team owner."""
+#
+#         return obj.pi.username
+#
+#     pi.admin_order_field = 'pi__username'
+#
+#     list_display = ['name', pi]
+#     filter_horizontal = ('admins', 'members')
+#     ordering = ['name', ]
+#     search_fields = ['name', 'pi__username']

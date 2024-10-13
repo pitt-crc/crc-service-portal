@@ -19,7 +19,7 @@ from PIL import Image
 
 from .managers import *
 
-__all__ = ['ResearchGroup', 'User']
+__all__ = ['Team', 'TeamMembership', 'User']
 
 
 class User(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
@@ -92,35 +92,44 @@ class User(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
         super().save(*args, **kwargs)
 
 
-class ResearchGroup(models.Model):
-    """A user research group tied to a slurm account."""
+class Team(models.Model):
+    """A collection of users who share resources and permissions."""
 
     name = models.CharField(max_length=255, unique=True)
-    pi = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='research_group_pi')
-    admins = models.ManyToManyField(User, related_name='research_group_admins', blank=True)
-    members = models.ManyToManyField(User, related_name='research_group_unprivileged', blank=True)
+    users = models.ManyToManyField(User, through='TeamMembership')
     is_active = models.BooleanField(default=True)
 
-    objects = ResearchGroupManager()
+    objects = TeamManager()
 
     def get_all_members(self) -> models.QuerySet:
-        """Return a queryset of all research group members."""
+        """Return a queryset of all team members."""
 
-        return User.objects.filter(
-            models.Q(pk=self.pi.pk) |
-            models.Q(pk__in=self.admins.values_list('pk', flat=True)) |
-            models.Q(pk__in=self.members.values_list('pk', flat=True))
-        )
+        return self.users
 
     def get_privileged_members(self) -> models.QuerySet:
-        """Return a queryset of all research group members with admin privileges."""
+        """Return a queryset of all team with admin privileges."""
 
-        return User.objects.filter(
-            models.Q(pk=self.pi.pk) |
-            models.Q(pk__in=self.admins.values_list('pk', flat=True))
-        )
+        return self.users.filter(teammembership__role__in=[
+            TeamMembership.Role.ADMIN,
+            TeamMembership.Role.OWNER
+        ])
 
-    def __str__(self) -> str:  # pragma: nocover  # pragma: nocover
-        """Return the research group's account name."""
+    def __str__(self) -> str:  # pragma: nocover
+        """Return the team's account name."""
 
         return str(self.name)
+
+
+class TeamMembership(models.Model):
+
+    class Role(models.TextChoices):
+        OWNER = 'OW', 'Owner'
+        ADMIN = 'AD', 'Admin'
+        MEMBER = 'MB', 'Member'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    role = models.CharField(max_length=2, choices=Role.choices)
+
+    class Meta:
+        unique_together = ('user', 'team')

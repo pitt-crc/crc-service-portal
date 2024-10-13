@@ -1,17 +1,17 @@
-# This test fixture creates two research groups on the same cluster.
-# Each group has a single allocation request with a single allocation, grant, and publication.
+# This test fixture creates two teams on the same cluster.
+# Each team has a single allocation request with a single allocation, grant, and publication.
 #
-# Research Group 1:
-#    pi_1          (Research group PI)
-#    group_admin_1 (Research group admin)
-#    member_1      (Generic group member)
+# Team 1:
+#    pi_1          (Research team owner)
+#    team_admin_1 (Research team admin)
+#    member_1      (Generic team member)
 #
-# Research Group 2:
-#    pi_2          (Research group PI)
-#    group_admin_2 (Research group admin)
-#    member_2      (Generic group member)
+# Team 2:
+#    pi_2         (Research team owner)
+#    team_admin_2 (Research team admin)
+#    member_2     (Generic team member)
 #
-# Accounts not affiliated with a group:
+# Accounts not affiliated with a team:
 #    super_user  (Superuser account)
 #    staff_user  (Staff user account)
 #    generic_user (Generic user account)
@@ -35,10 +35,10 @@
 - model: users.user
   pk: 2
   fields:
-    username: group_admin_1
+    username: team_admin_1
     first_name: foo
     last_name: bar
-    email: group_admin_1@domain.com
+    email: team_admin_1@domain.com
     password: foobar123
 - model: users.user
   pk: 3
@@ -59,10 +59,10 @@
 - model: users.user
   pk: 5
   fields:
-    username: group_admin_2
+    username: team_admin_2
     first_name: foo
     last_name: bar
-    email: group_admin_2@domain.com
+    email: team_admin_2@domain.com
     password: foobar123
 - model: users.user
   pk: 6
@@ -96,18 +96,18 @@
     password: foobar123
     is_staff: true
 
-# Research Groups
-- model: users.researchgroup
+# Teams
+- model: users.team
   pk: 1
   fields:
-    name: Research Group 1
+    name: Team 1
     pi: 1
     admins: [ 2 ]
     members: [ 3 ]
-- model: users.researchgroup
+- model: users.team
   pk: 2
   fields:
-    name: Research Group 2
+    name: Team 2
     pi: 4
     members: [ 6 ]
 
@@ -116,13 +116,13 @@
   pk: 1
   fields:
     status: AP
-    group: 1
+    team: 1
     submitted: "2023-01-01"
 - model: allocations.allocationrequest
   pk: 2
   fields:
     status: AP
-    group: 2
+    team: 2
     submitted: "2023-01-01"
 
 # Allocation Request Reviews
@@ -154,40 +154,40 @@
 - model: research_products.publication
   pk: 1
   fields:
-    title: "Publication (Group 1)"
+    title: "Publication (Team 1)"
     abstract: "Abstract Text"
     date: "2000-01-01"
     journal: "Journal Name"
-    group: 1
+    team: 1
 - model: research_products.publication
   pk: 2
   fields:
-    title: "Publication (Group 2)"
+    title: "Publication (Team 2)"
     abstract: "Abstract text."
     date: "2000-01-01"
     journal: "Journal Name"
-    group: 2
+    team: 2
 
 # Grants
 - model: research_products.grant
   pk: 1
   fields:
-    title: "Grant (Group 1)"
+    title: "Grant (Team 1)"
     agency: "Agency Name"
     amount: 1000
     fiscal_year: 2001
     start_date: "2000-01-01"
     end_date: "2000-01-31"
     grant_number: "abc-123"
-    group: 1
+    team: 1
 - model: research_products.grant
   pk: 2
   fields:
-    title: "Grant (Group 2)"
+    title: "Grant (Team 2)"
     agency: "Agency Name"
     amount: 1000
     fiscal_year: 2001
     start_date: "2000-01-01"
     end_date: "2000-01-31"
     grant_number: "abc-123"
-    group: 2
+    team: 2
