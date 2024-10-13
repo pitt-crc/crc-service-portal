@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('awarded', models.PositiveIntegerField(blank=True, null=True, verbose_name='Awarded Service Units')),
                 ('final', models.PositiveIntegerField(blank=True, null=True, verbose_name='Final Usage')),
             ],
-            bases=(apps.allocations.models.RGModelInterface, models.Model),
+            bases=(apps.allocations.models.TeamModelInterface, models.Model),
         ),
         migrations.CreateModel(
             name='AllocationRequest',
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('active', models.DateField(blank=True, null=True, verbose_name='Active Date')),
                 ('expire', models.DateField(blank=True, null=True, verbose_name='Expiration Date')),
             ],
-            bases=(apps.allocations.models.RGModelInterface, models.Model),
+            bases=(apps.allocations.models.TeamModelInterface, models.Model),
         ),
         migrations.CreateModel(
             name='Cluster',
@@ -64,6 +64,6 @@ class Migration(migrations.Migration):
                 ('date_modified', models.DateTimeField(auto_now=True)),
                 ('request', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='allocations.allocationrequest')),
             ],
-            bases=(apps.allocations.models.RGModelInterface, models.Model),
+            bases=(apps.allocations.models.TeamModelInterface, models.Model),
         ),
     ]
