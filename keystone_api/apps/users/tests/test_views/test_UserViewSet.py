@@ -3,7 +3,7 @@
 from django.test import RequestFactory, TestCase
 
 from apps.users.models import User
-from apps.users.serializers import PrivilegeUserSerializer, RestrictedUserSerializer
+from apps.users.serializers import PrivilegedUserSerializer, RestrictedUserSerializer
 from apps.users.views import UserViewSet
 
 
@@ -23,7 +23,7 @@ class GetSerializerClass(TestCase):
         view = UserViewSet(request=request)
 
         serializer_class = view.get_serializer_class()
-        self.assertEqual(serializer_class, PrivilegeUserSerializer)
+        self.assertEqual(serializer_class, PrivilegedUserSerializer)
 
     def test_get_serializer_class_for_regular_user(self) -> None:
         """Test the `RestrictedUserSerializer` serializer is returned for a generic user."""

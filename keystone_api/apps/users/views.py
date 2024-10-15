@@ -32,6 +32,6 @@ class UserViewSet(viewsets.ModelViewSet):
         """Return the appropriate data serializer based on user roles/permissions."""
 
         if self.request.user.is_staff:
-            return PrivilegeUserSerializer
+            return PrivilegedUserSerializer
 
         return RestrictedUserSerializer
