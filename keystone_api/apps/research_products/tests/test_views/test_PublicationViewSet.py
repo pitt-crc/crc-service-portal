@@ -16,11 +16,13 @@ class GetQueryset(TestCase):
     def setUp(self) -> None:
         """Create user accounts and research publications."""
 
-        self.staff_user = User.objects.create_user(username='staff', password='foobar123!', is_staff=True)
-        self.general_user = User.objects.create_user(username='general', password='foobar123!')
+        self.staff_user = User.objects.create(username='staff', is_staff=True)
+        self.general_user = User.objects.create(username='general')
 
-        self.team1_user = User.objects.create_user(username='user1', password='foobar123!')
+        self.team1_user = User.objects.create(username='user1')
         self.team1 = Team.objects.create(name='Team1')
+        self.team1.add_or_update_member(self.team1_user)
+
         self.team1_publication = Publication.objects.create(
             title="Publication 1",
             abstract="Abstract 1",
@@ -29,8 +31,10 @@ class GetQueryset(TestCase):
             team=self.team1
         )
 
-        self.team2_user = User.objects.create_user(username='user2', password='foobar123!')
+        self.team2_user = User.objects.create(username='user2')
         self.team2 = Team.objects.create(name='Team2')
+        self.team2.add_or_update_member(self.team2_user)
+
         self.team2_publication = Publication.objects.create(
             title="Publication 2",
             abstract="Abstract 2",

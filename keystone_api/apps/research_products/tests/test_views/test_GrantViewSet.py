@@ -16,11 +16,13 @@ class GetQueryset(TestCase):
     def setUp(self) -> None:
         """Create user accounts and research grants."""
 
-        self.staff_user = User.objects.create_user(username='staff', password='foobar123!', is_staff=True)
-        self.general_user = User.objects.create_user(username='general', password='foobar123!')
+        self.staff_user = User.objects.create(username='staff', is_staff=True)
+        self.general_user = User.objects.create(username='general')
 
-        self.team1_user = User.objects.create_user(username='user1', password='foobar123!')
         self.team1 = Team.objects.create(name='Team1')
+        self.team1_user = User.objects.create(username='user1')
+        self.team1.add_or_update_member(self.team1_user)
+
         self.team1_grant = Grant.objects.create(
             title="Grant 1",
             agency="Agency 1",
@@ -32,8 +34,10 @@ class GetQueryset(TestCase):
             team=self.team1
         )
 
-        self.team2_user = User.objects.create_user(username='user2', password='foobar123!')
+        self.team2_user = User.objects.create(username='user2')
         self.team2 = Team.objects.create(name='Team2')
+        self.team2.add_or_update_member(self.team2_user)
+
         self.team2_grant = Grant.objects.create(
             title="Grant 2",
             agency="Agency 2",
