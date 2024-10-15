@@ -3,10 +3,10 @@
 # Users:
 #    staff: A staff user with full permissions.
 #    reviewer: A non-staff user who reviews allocation requests.
-#    user1: A non-staff user who is the principal investigator (PI) of team1.
-#    user2: A non-staff user who is the principal investigator (PI) of team2.
+#    user1: A non-staff user who is the owner of team1.
+#    user2: A non-staff user who is the owner of team2.
 
-# Research Groups:
+# Teams:
 #    team1: A research team led by user1.
 #    team2: A research team led by user2.
 
@@ -52,13 +52,11 @@
   pk: 1
   fields:
     name: team1
-    pi: 3  # username: user1
 
 - model: users.Team
   pk: 2
   fields:
     name: team2
-    pi: 4  # username: user2
 
 # Allocation Requests
 - model: allocations.AllocationRequest

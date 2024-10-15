@@ -27,10 +27,10 @@
 - model: users.user
   pk: 1
   fields:
-    username: pi_1
+    username: owner_1
     first_name: foo
     last_name: bar
-    email: pi_1@domain.com
+    email: owner_1@domain.com
     password: foobar123
 - model: users.user
   pk: 2
@@ -51,10 +51,10 @@
 - model: users.user
   pk: 4
   fields:
-    username: pi_2
+    username: owner_2
     first_name: foo
     last_name: bar
-    email: pi_2@domain.com
+    email: owner_2@domain.com
     password: foobar123
 - model: users.user
   pk: 5
@@ -101,7 +101,7 @@
   pk: 1
   fields:
     name: Team 1
-    pi: 1
+    pi: 1Busy
     admins: [ 2 ]
     members: [ 3 ]
 - model: users.team

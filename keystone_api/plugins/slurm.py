@@ -78,7 +78,7 @@ def get_slurm_account_users(account_name: str, cluster_name: str | None = None) 
         cluster_name: Optionally provide the name of the cluster to get usernames on
 
     Returns:
-        The account PI username
+        The account owner username
     """
 
     cmd = split(f"sacctmgr show -nP association where account={account_name} format=user")

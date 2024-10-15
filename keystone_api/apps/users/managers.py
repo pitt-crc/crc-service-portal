@@ -21,12 +21,7 @@ __all__ = ['TeamManager', 'UserManager']
 class UserManager(BaseUserManager):
     """Object manager for the `User` database model."""
 
-    def create_user(
-        self,
-        username: str,
-        password: str,
-        **extra_fields
-    ) -> 'User':
+    def create_user(self, username: str, password: str, **extra_fields) -> 'User':
         """Create a new user account.
 
         Args:
@@ -48,12 +43,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(
-        self,
-        username: str,
-        password: str,
-        **extra_fields
-    ) -> 'User':
+    def create_superuser(self, username: str, password: str, **extra_fields) -> 'User':
         """Create a new user account with superuser privileges.
 
         Args:
@@ -91,4 +81,4 @@ class TeamManager(models.Manager):
             A filtered queryset.
         """
 
-        return self.get_queryset().filter(models.Q(pi=user.id) | models.Q(admins=user.id) | models.Q(members=user.id))
+        return self.filter(teammembership__user=user)
