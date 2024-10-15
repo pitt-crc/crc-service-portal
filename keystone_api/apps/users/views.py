@@ -8,7 +8,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.serializers import Serializer
 
 from .models import *
-from .permissions import IsTeamAdminOrReadOnly, IsSelfOrReadOnly
+from .permissions import IsSelfOrReadOnly, IsTeamAdminOrReadOnly
 from .serializers import *
 
 __all__ = ['TeamViewSet', 'UserViewSet']

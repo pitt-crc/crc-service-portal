@@ -2,18 +2,18 @@
 # Each team has a single allocation request with a single allocation, grant, and publication.
 #
 # Team 1:
-#    pi_1          (Research team owner)
-#    team_admin_1 (Research team admin)
+#    pi_1          (Team owner)
+#    admin_1       (Team admin)
 #    member_1      (Generic team member)
 #
 # Team 2:
-#    pi_2         (Research team owner)
-#    team_admin_2 (Research team admin)
+#    pi_2         (Team owner)
+#    admin_2      (Team admin)
 #    member_2     (Generic team member)
 #
 # Accounts not affiliated with a team:
-#    super_user  (Superuser account)
-#    staff_user  (Staff user account)
+#    super_user   (Superuser account)
+#    staff_user   (Staff user account)
 #    generic_user (Generic user account)
 
 # Clusters
@@ -35,10 +35,10 @@
 - model: users.user
   pk: 2
   fields:
-    username: team_admin_1
+    username: admin_1
     first_name: foo
     last_name: bar
-    email: team_admin_1@domain.com
+    email: admin_1@domain.com
     password: foobar123
 - model: users.user
   pk: 3
@@ -59,10 +59,10 @@
 - model: users.user
   pk: 5
   fields:
-    username: team_admin_2
+    username: admin_2
     first_name: foo
     last_name: bar
-    email: team_admin_2@domain.com
+    email: admin_2@domain.com
     password: foobar123
 - model: users.user
   pk: 6
@@ -96,20 +96,52 @@
     password: foobar123
     is_staff: true
 
-# Teams
+# Teams and Team Membership
 - model: users.team
   pk: 1
   fields:
     name: Team 1
-    pi: 1Busy
-    admins: [ 2 ]
-    members: [ 3 ]
+- model: users.teammembership
+  pk: 1
+  fields:
+    team: 1
+    user: 1
+    role: 'OW'
+- model: users.teammembership
+  pk: 2
+  fields:
+    team: 1
+    user: 2
+    role: 'AD'
+- model: users.teammembership
+  pk: 3
+  fields:
+    team: 1
+    user: 3
+    role: 'MB'
+
 - model: users.team
   pk: 2
   fields:
     name: Team 2
-    pi: 4
-    members: [ 6 ]
+- model: users.teammembership
+  pk: 4
+  fields:
+    team: 2
+    user: 4
+    role: 'OW'
+- model: users.teammembership
+  pk: 5
+  fields:
+    team: 2
+    user: 5
+    role: 'AD'
+- model: users.teammembership
+  pk: 6
+  fields:
+    team: 2
+    user: 6
+    role: 'MB'
 
 # Allocation Requests
 - model: allocations.allocationrequest

@@ -3,7 +3,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -27,12 +27,23 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     endpoint_pattern = '/users/teams/{pk}/'
     fixtures = ['multi_team.yaml']
 
+    def setUp(self) -> None:
+        """Load user teams and accounts from testing fixtures."""
+
+        self.team = Team.objects.get(name='Team 1')
+        self.endpoint = self.endpoint_pattern.format(pk=self.team.pk)
+
+        self.staff_user = User.objects.get(username='staff_user')
+        self.team_owner = User.objects.get(username='owner_1')
+        self.team_admin = User.objects.get(username='admin_1')
+        self.team_member = User.objects.get(username='member_1')
+        self.non_team_member = User.objects.get(username='member_2')
+
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_403_FORBIDDEN,
             head=status.HTTP_403_FORBIDDEN,
             options=status.HTTP_403_FORBIDDEN,
@@ -46,13 +57,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_different_team(self) -> None:
         """Test authenticated users have read-only permissions for user teams."""
 
-        # Define a user / record endpoint from DIFFERENT teams
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='member_2')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.non_team_member)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -66,12 +73,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_team_member(self) -> None:
         """Test team members have read-only permissions for their own team."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='member_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_member)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -85,12 +89,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_team_admin(self) -> None:
         """Test team admins have read and write permissions for their own team."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='team_admin_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_admin)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -99,19 +100,16 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_403_FORBIDDEN,
-            put_body={'name': 'Team 3', 'pi': 1, 'admins': [2], 'members': [3]},
-            patch_body={'admins': []},
+            put_body={'name': 'Team 3'},
+            patch_body={'name': 'New Name'},
         )
 
     def test_authenticated_team_owner(self) -> None:
         """Test team owners have read and write permissions for the team."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='pi_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_owner)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -120,19 +118,16 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_403_FORBIDDEN,
-            put_body={'name': 'Team 3', 'pi': 1, 'admins': [2], 'members': [3]},
-            patch_body={'admins': []},
+            put_body={'name': 'Team 3'},
+            patch_body={'name': 'New Name'},
         )
 
     def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -141,6 +136,6 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            put_body={'name': 'Team 3', 'pi': 1, 'admins': [2], 'members': [3]},
-            patch_body={'admins': []},
+            put_body={'name': 'Team 3'},
+            patch_body={'name': 'New Name'},
         )
