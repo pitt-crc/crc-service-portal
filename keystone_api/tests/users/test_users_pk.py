@@ -25,11 +25,17 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     endpoint_pattern = '/users/users/{pk}/'
     fixtures = ['multi_team.yaml']
 
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.user1 = User.objects.get(username='member_1')
+        self.user2 = User.objects.get(username='member_2')
+        self.staff_user = User.objects.get(username='staff_user')
+
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
-        generic_user = User.objects.get(username='generic_user')
-        endpoint = self.endpoint_pattern.format(pk=generic_user.id)
+        endpoint = self.endpoint_pattern.format(pk=self.user1.id)
 
         self.assert_http_responses(
             endpoint,
@@ -47,9 +53,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         """Test permissions for authenticated users accessing their own user record."""
 
         # Define a user / record endpoint from the SAME user
-        user = User.objects.get(username='member_1')
-        endpoint = self.endpoint_pattern.format(pk=user.id)
-        self.client.force_authenticate(user=user)
+        endpoint = self.endpoint_pattern.format(pk=self.user1.id)
+        self.client.force_authenticate(user=self.user1)
 
         self.assert_http_responses(
             endpoint,
@@ -74,11 +79,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         """Test permissions for authenticated users accessing records of another user."""
 
         # Define a user / record endpoint from a DIFFERENT user
-        user_1 = User.objects.get(username='member_1')
-        endpoint = self.endpoint_pattern.format(pk=user_1.id)
-
-        user_2 = User.objects.get(username='member_2')
-        self.client.force_authenticate(user=user_2)
+        endpoint = self.endpoint_pattern.format(pk=self.user1.id)
+        self.client.force_authenticate(user=self.user2)
 
         self.assert_http_responses(
             endpoint,
@@ -95,11 +97,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
-        generic_user = User.objects.get(username='generic_user')
-        endpoint = self.endpoint_pattern.format(pk=generic_user.id)
-
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
+        endpoint = self.endpoint_pattern.format(pk=self.user1.id)
+        self.client.force_authenticate(user=self.staff_user)
 
         self.assert_http_responses(
             endpoint,
@@ -127,14 +126,19 @@ class CredentialHandling(APITestCase):
     endpoint_pattern = '/users/users/{pk}/'
     fixtures = ['multi_team.yaml']
 
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.user1 = User.objects.get(username='member_1')
+        self.user2 = User.objects.get(username='member_2')
+        self.staff_user = User.objects.get(username='staff_user')
+
     def test_user_get_own_password(self) -> None:
         """Test a user cannot get their own password."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.user1)
         response = self.client.get(
-            self.endpoint_pattern.format(pk=user.id)
+            self.endpoint_pattern.format(pk=self.user1.id)
         )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -143,25 +147,24 @@ class CredentialHandling(APITestCase):
     def test_user_set_own_password(self) -> None:
         """Test a user can set their own password."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
+        self.client.force_authenticate(user=self.user1)
 
         response = self.client.patch(
-            path=self.endpoint_pattern.format(pk=user.id),
+            path=self.endpoint_pattern.format(pk=self.user1.id),
             data={'password': 'new_password123'}
         )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        user.refresh_from_db()
-        self.assertTrue(user.check_password('new_password123'))
+        self.user1.refresh_from_db()
+        self.assertTrue(self.user1.check_password('new_password123'))
 
     def test_user_get_others_password(self) -> None:
         """Test a user cannot get another user's password."""
 
-        authenticated_user = User.objects.get(username='member_1')
+        authenticated_user = self.user1
+        other_user = self.user2
         self.client.force_authenticate(user=authenticated_user)
 
-        other_user = User.objects.get(username='member_2')
         response = self.client.get(
             self.endpoint_pattern.format(pk=other_user.id),
         )
@@ -172,10 +175,10 @@ class CredentialHandling(APITestCase):
     def test_user_set_others_password(self) -> None:
         """Test a user cannot set another user's password."""
 
-        authenticated_user = User.objects.get(username='member_1')
+        authenticated_user = self.user1
+        other_user = self.user2
         self.client.force_authenticate(user=authenticated_user)
 
-        other_user = User.objects.get(username='member_2')
         response = self.client.patch(
             path=self.endpoint_pattern.format(pk=other_user.id),
             data={'password': 'new_password123'}
@@ -186,12 +189,9 @@ class CredentialHandling(APITestCase):
     def test_staff_get_password(self) -> None:
         """Test a staff user cannot get another user's password."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
-
-        generic_user = User.objects.get(username='generic_user')
+        self.client.force_authenticate(user=self.staff_user)
         response = self.client.get(
-            self.endpoint_pattern.format(pk=generic_user.id)
+            self.endpoint_pattern.format(pk=self.user1.id)
         )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -200,15 +200,12 @@ class CredentialHandling(APITestCase):
     def test_staff_set_password(self) -> None:
         """Test the password field is settable by staff users."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
-
-        generic_user = User.objects.get(username='generic_user')
+        self.client.force_authenticate(user=self.staff_user)
         response = self.client.patch(
-            path=self.endpoint_pattern.format(pk=generic_user.id),
+            path=self.endpoint_pattern.format(pk=self.user1.id),
             data={'password': 'new_password123'}
         )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        generic_user.refresh_from_db()
-        self.assertTrue(generic_user.check_password('new_password123'))
+        self.user1.refresh_from_db()
+        self.assertTrue(self.user1.check_password('new_password123'))
