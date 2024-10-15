@@ -51,7 +51,7 @@ class TeamSerializer(serializers.ModelSerializer):
             The new record instance.
         """
 
-        memberships_data = validated_data.pop('memberships', [])
+        memberships_data = validated_data.pop('teammembership_set', [])
         team = Team.objects.create(**validated_data)
 
         for membership in memberships_data:
@@ -74,7 +74,7 @@ class TeamSerializer(serializers.ModelSerializer):
         """
 
         # Update the team record
-        memberships_data = validated_data.pop('memberships', [])
+        memberships_data = validated_data.pop('teammembership_set', [])
         instance.name = validated_data.get('name', instance.name)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.save()

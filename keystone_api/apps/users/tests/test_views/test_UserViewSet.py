@@ -11,6 +11,8 @@ class GetSerializerClass(TestCase):
     """Test the `get_serializer_class` method."""
 
     def setUp(self) -> None:
+        """Create user accounts for testing"""
+
         self.factory = RequestFactory()
         self.staff_user = User.objects.create(username='staffuser', is_staff=True)
         self.regular_user = User.objects.create(username='regularuser', is_staff=False)

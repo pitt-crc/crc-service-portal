@@ -11,10 +11,10 @@ class GetMembers(TestCase):
     def setUp(self) -> None:
         """Create temporary user accounts for use in tests."""
 
-        self.owner = User.objects.create_user(username='owner', password="foobar123!")
-        self.admin = User.objects.create_user(username='admin', password="foobar123!")
-        self.member1 = User.objects.create_user(username='unprivileged1', password="foobar123!")
-        self.member2 = User.objects.create_user(username='unprivileged2', password="foobar123!")
+        self.owner = User.objects.create(username='owner')
+        self.admin = User.objects.create(username='admin')
+        self.member1 = User.objects.create(username='unprivileged1')
+        self.member2 = User.objects.create(username='unprivileged2')
 
         self.team = Team.objects.create(name="Test Team")
         self.team.add_or_update_member(self.owner, role=TeamMembership.Role.OWNER)
@@ -41,11 +41,11 @@ class GetMembers(TestCase):
 class AddOrUpdateMember(TestCase):
     """Test cases for the `add_or_update_member` method in the Team class."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test users and teams."""
 
-        self.test_user1 = User.objects.create_user(username='user1', password="foobar123!")
-        self.test_user2 = User.objects.create_user(username='user2', password="foobar123!")
+        self.test_user1 = User.objects.create(username='user1')
+        self.test_user2 = User.objects.create(username='user2')
         self.team = Team.objects.create(name='Test Team')
 
     def test_default_permissions(self) -> None:

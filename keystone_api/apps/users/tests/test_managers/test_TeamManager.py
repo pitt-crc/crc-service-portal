@@ -11,7 +11,7 @@ class TeamsForUser(TestCase):
     def setUp(self):
         """Create temporary users and teams."""
 
-        self.test_user = User.objects.create_user(username='test_user', password='foobar123!')
+        self.test_user = User.objects.create(username='test_user')
 
         # Team where the test user is an owner
         self.team1 = Team.objects.create(name='Team1')
