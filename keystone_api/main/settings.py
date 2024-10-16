@@ -241,7 +241,7 @@ else:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / f'{_db_name}.db',
-        'timeout': 20,
+        'timeout': 30,
         'PRAGMA': {
             'journal_mode': 'wal',
         }
