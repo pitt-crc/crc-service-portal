@@ -7,6 +7,7 @@ the associated table/fields/records are presented by parent interfaces.
 """
 
 import hashlib
+import itertools
 import random
 from io import BytesIO
 
@@ -70,12 +71,10 @@ class User(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
         image = Image.new('RGB', (grid_size[0] * square_size, grid_size[1] * square_size), rgb_white)
 
         random_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        for i in range(grid_size[0]):
-            for j in range(grid_size[1]):
-                if random.choice([True, False]):
-                    for x in range(square_size):
-                        for y in range(square_size):
-                            image.putpixel((i * square_size + x, j * square_size + y), random_color)
+        for i, j in itertools.product(range(grid_size[0]), range(grid_size[1])):
+            if random.choice([True, False]):
+                for x, y in itertools.product(range(square_size), range(square_size)):
+                    image.putpixel((i * square_size + x, j * square_size + y), random_color)
 
         return image
 
