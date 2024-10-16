@@ -10,13 +10,13 @@ from apps.users.models import Team, User
 class GetQueryset(TestCase):
     """Test the filtering of database records based on user permissions."""
 
-    fixtures = ['common.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_get_queryset_for_staff_user(self) -> None:
         """Test staff users can query all reviews."""
 
         request = RequestFactory()
-        request.user = User.objects.get(username='staff')
+        request.user = User.objects.get(username='staff_user')
 
         viewset = AllocationRequestViewSet()
         viewset.request = request
@@ -27,8 +27,8 @@ class GetQueryset(TestCase):
     def test_get_queryset_for_non_staff_user(self) -> None:
         """Test non-staff users can only query requests from their own teams."""
 
-        user = User.objects.get(username='user1')
-        team = Team.objects.get(name='team1')
+        user = User.objects.get(username='member_1')
+        team = Team.objects.get(name='Team 1')
 
         request = RequestFactory()
         request.user = user

@@ -31,7 +31,7 @@ class TeamAdminCreateMemberRead(permissions.BasePermission):
         if request.user.is_staff or request.method in permissions.SAFE_METHODS:
             return True
 
-        # To check write permissions we need to know what tean the record belongs to.
+        # To check write permissions we need to know what team the record belongs to.
         # Deny permissions if the team is not provided or does not exist.
         try:
             team_id = request.data.get('team', None)

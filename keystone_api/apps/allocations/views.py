@@ -21,7 +21,7 @@ __all__ = [
 
 
 class AllocationViewSet(viewsets.ModelViewSet):
-    """Manage allocations for user teams."""
+    """Manage HPC resource allocations."""
 
     queryset = Allocation.objects.all()
     serializer_class = AllocationSerializer
@@ -55,7 +55,7 @@ class AllocationRequestViewSet(viewsets.ModelViewSet):
 
 
 class AllocationRequestReviewViewSet(viewsets.ModelViewSet):
-    """Manage reviews of allocation request submitted by administrators."""
+    """Manage administrator reviews of allocation requests."""
 
     queryset = AllocationRequestReview.objects.all()
     serializer_class = AllocationRequestReviewSerializer

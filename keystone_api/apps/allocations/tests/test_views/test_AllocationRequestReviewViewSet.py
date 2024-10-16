@@ -11,13 +11,13 @@ from apps.users.models import Team, User
 class GetQueryset(TestCase):
     """Test the filtering of database records based on user permissions."""
 
-    fixtures = ['common.yaml']
+    fixtures = ['multi_team.yaml']
 
     def test_get_queryset_for_staff_user(self) -> None:
         """Test staff users can query all reviews."""
 
         request = RequestFactory()
-        request.user = User.objects.get(username='staff')
+        request.user = User.objects.get(username='staff_user')
 
         viewset = AllocationRequestReviewViewSet()
         viewset.request = request
@@ -29,12 +29,12 @@ class GetQueryset(TestCase):
         """Test non-staff users can only query reviews for their own teams."""
 
         request = RequestFactory()
-        request.user = User.objects.get(username='user1')
+        request.user = User.objects.get(username='member_1')
 
         viewset = AllocationRequestReviewViewSet()
         viewset.request = request
 
-        team1 = Team.objects.get(name='team1')
+        team1 = Team.objects.get(name='Team 1')
         expected_queryset = AllocationRequestReview.objects.filter(request__team__in=[team1.id])
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
@@ -42,12 +42,12 @@ class GetQueryset(TestCase):
 class Create(TestCase):
     """Test the creation of new records."""
 
-    fixtures = ['common.yaml']
+    fixtures = ['multi_team.yaml']
 
     def setUp(self) -> None:
         """Load test data from fixtures."""
 
-        self.staff_user = User.objects.get(username='staff')
+        self.staff_user = User.objects.get(username='staff_user')
         self.request = AllocationRequest.objects.get(pk=1)
 
     def test_create_with_automatic_reviewer(self) -> None:
