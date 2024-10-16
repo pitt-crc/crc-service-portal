@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('allocations', '0007_alter_allocationrequestreview_reviewer'),
+        ('allocations', '0008_rename_date_modified_allocationrequestreview_last_modified_and_more'),
     ]
 
     operations = [

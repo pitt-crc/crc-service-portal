@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('allocations', '0008_remove_allocationrequest_group'),
+        ('allocations', '0009_remove_allocationrequest_group'),
         ('research_products', '0003_remove_grant_group_remove_publication_group'),
         ('users', '0008_user_profile_image'),
     ]

@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('allocations', '0008_remove_allocationrequest_group'),
+        ('allocations', '0009_remove_allocationrequest_group'),
         ('users', '0009_team_teammembership_team_users_delete_researchgroup'),
     ]
 
