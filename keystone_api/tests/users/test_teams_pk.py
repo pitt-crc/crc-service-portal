@@ -30,9 +30,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def setUp(self) -> None:
         """Load user teams and accounts from testing fixtures."""
 
+        # Define the API endpoint for Team 1
         self.team = Team.objects.get(name='Team 1')
         self.endpoint = self.endpoint_pattern.format(pk=self.team.pk)
 
+        # Load user accounts for (non)team members
         self.staff_user = User.objects.get(username='staff_user')
         self.non_team_member = User.objects.get(username='generic_user')
         self.team_owner = User.objects.get(username='owner_1')

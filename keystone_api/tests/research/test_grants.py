@@ -5,7 +5,7 @@ from datetime import date
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -26,25 +26,30 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     endpoint = '/research/grants/'
     fixtures = ['testing_common.yaml']
-    valid_record_data = {
-        'title': "Grant (Team 2)",
-        'agency': "Agency Name",
-        'amount': 1000,
-        'fiscal_year': 2001,
-        'start_date': date(2000, 1, 1),
-        'end_date': date(2000, 1, 31),
-        'grant_number': 'abc-123',
-        'team': 1
-    }
 
     def setUp(self) -> None:
         """Load user accounts from test fixtures."""
 
         self.generic_user = User.objects.get(username='generic_user')
         self.staff_user = User.objects.get(username='staff_user')
+
+        # Load team members
+        self.team = Team.objects.get(name='Team 1')
         self.team_member = User.objects.get(username='member_1')
         self.team_admin = User.objects.get(username='admin_1')
         self.team_owner = User.objects.get(username='owner_1')
+
+        # Define data owned by the team
+        self.grant_record_data = {
+            'title': f"Grant ({self.team.name})",
+            'agency': "Agency Name",
+            'amount': 1000,
+            'fiscal_year': 2001,
+            'start_date': date(2000, 1, 1),
+            'end_date': date(2000, 1, 31),
+            'grant_number': 'abc-123',
+            'team': self.team.pk
+        }
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -75,7 +80,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.valid_record_data
+            post_body=self.grant_record_data
         )
 
     def test_team_member_permissions(self) -> None:
@@ -92,7 +97,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.valid_record_data
+            post_body=self.grant_record_data
         )
 
     def test_team_admin_permissions(self) -> None:
@@ -109,7 +114,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.valid_record_data
+            post_body=self.grant_record_data
         )
 
     def test_team_owner_permissions(self) -> None:
@@ -126,7 +131,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.valid_record_data
+            post_body=self.grant_record_data
         )
 
     def test_staff_user(self) -> None:
@@ -143,5 +148,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            post_body=self.valid_record_data
+            post_body=self.grant_record_data
         )
