@@ -7,7 +7,7 @@ paths:
   /allocations/allocations/:
     get:
       operationId: allocations_allocations_list
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       parameters:
       - in: query
         name: awarded
@@ -191,7 +191,7 @@ paths:
           description: ''
     post:
       operationId: allocations_allocations_create
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       tags:
       - allocations
       requestBody:
@@ -219,7 +219,7 @@ paths:
   /allocations/allocations/{id}/:
     get:
       operationId: allocations_allocations_retrieve
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       parameters:
       - in: path
         name: id
@@ -241,7 +241,7 @@ paths:
           description: ''
     put:
       operationId: allocations_allocations_update
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       parameters:
       - in: path
         name: id
@@ -275,7 +275,7 @@ paths:
           description: ''
     patch:
       operationId: allocations_allocations_partial_update
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       parameters:
       - in: path
         name: id
@@ -308,7 +308,7 @@ paths:
           description: ''
     delete:
       operationId: allocations_allocations_destroy
-      description: Manage allocations for user research groups.
+      description: Manage HPC resource allocations.
       parameters:
       - in: path
         name: id
@@ -589,7 +589,7 @@ paths:
   /allocations/requests/:
     get:
       operationId: allocations_requests_list
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       parameters:
       - in: query
         name: active
@@ -739,23 +739,6 @@ paths:
         schema:
           type: number
       - in: query
-        name: group
-        schema:
-          type: integer
-      - in: query
-        name: group__in
-        schema:
-          type: array
-          items:
-            type: integer
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: group__isnull
-        schema:
-          type: boolean
-      - in: query
         name: id
         schema:
           type: integer
@@ -887,6 +870,23 @@ paths:
         schema:
           type: number
       - in: query
+        name: team
+        schema:
+          type: integer
+      - in: query
+        name: team__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: team__isnull
+        schema:
+          type: boolean
+      - in: query
         name: title
         schema:
           type: string
@@ -931,7 +931,7 @@ paths:
           description: ''
     post:
       operationId: allocations_requests_create
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       tags:
       - allocations
       requestBody:
@@ -959,7 +959,7 @@ paths:
   /allocations/requests/{id}/:
     get:
       operationId: allocations_requests_retrieve
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       parameters:
       - in: path
         name: id
@@ -981,7 +981,7 @@ paths:
           description: ''
     put:
       operationId: allocations_requests_update
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       parameters:
       - in: path
         name: id
@@ -1015,7 +1015,7 @@ paths:
           description: ''
     patch:
       operationId: allocations_requests_partial_update
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       parameters:
       - in: path
         name: id
@@ -1048,7 +1048,7 @@ paths:
           description: ''
     delete:
       operationId: allocations_requests_destroy
-      description: Manage allocation requests submitted by user research groups.
+      description: Manage allocation requests.
       parameters:
       - in: path
         name: id
@@ -1067,7 +1067,7 @@ paths:
   /allocations/reviews/:
     get:
       operationId: allocations_reviews_list
-      description: Manage reviews of allocation request submitted by administrators.
+      description: Manage administrator reviews of allocation requests.
       parameters:
       - in: query
         name: date_modified
@@ -1346,7 +1346,7 @@ paths:
   /allocations/reviews/{id}/:
     get:
       operationId: allocations_reviews_retrieve
-      description: Manage reviews of allocation request submitted by administrators.
+      description: Manage administrator reviews of allocation requests.
       parameters:
       - in: path
         name: id
@@ -1368,7 +1368,7 @@ paths:
           description: ''
     put:
       operationId: allocations_reviews_update
-      description: Manage reviews of allocation request submitted by administrators.
+      description: Manage administrator reviews of allocation requests.
       parameters:
       - in: path
         name: id
@@ -1402,7 +1402,7 @@ paths:
           description: ''
     patch:
       operationId: allocations_reviews_partial_update
-      description: Manage reviews of allocation request submitted by administrators.
+      description: Manage administrator reviews of allocation requests.
       parameters:
       - in: path
         name: id
@@ -1435,7 +1435,7 @@ paths:
           description: ''
     delete:
       operationId: allocations_reviews_destroy
-      description: Manage reviews of allocation request submitted by administrators.
+      description: Manage administrator reviews of allocation requests.
       parameters:
       - in: path
         name: id
@@ -3037,23 +3037,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: group
-        schema:
-          type: integer
-      - in: query
-        name: group__in
-        schema:
-          type: array
-          items:
-            type: integer
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: group__isnull
-        schema:
-          type: boolean
-      - in: query
         name: id
         schema:
           type: integer
@@ -3145,6 +3128,23 @@ paths:
         name: start_date__year
         schema:
           type: number
+      - in: query
+        name: team
+        schema:
+          type: integer
+      - in: query
+        name: team__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: team__isnull
+        schema:
+          type: boolean
       - in: query
         name: title
         schema:
@@ -3446,23 +3446,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: group
-        schema:
-          type: integer
-      - in: query
-        name: group__in
-        schema:
-          type: array
-          items:
-            type: integer
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: group__isnull
-        schema:
-          type: boolean
-      - in: query
         name: id
         schema:
           type: integer
@@ -3524,6 +3507,23 @@ paths:
         name: journal__startswith
         schema:
           type: string
+      - in: query
+        name: team
+        schema:
+          type: integer
+      - in: query
+        name: team__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: team__isnull
+        schema:
+          type: boolean
       - in: query
         name: title
         schema:
@@ -3702,10 +3702,10 @@ paths:
       responses:
         '204':
           description: No response body
-  /users/researchgroups/:
+  /users/teams/:
     get:
-      operationId: users_researchgroups_list
-      description: Manage user membership in research groups.
+      operationId: users_teams_list
+      description: Manage user team membership.
       parameters:
       - in: query
         name: id
@@ -3786,23 +3786,6 @@ paths:
         name: name__startswith
         schema:
           type: string
-      - in: query
-        name: pi
-        schema:
-          type: integer
-      - in: query
-        name: pi__in
-        schema:
-          type: array
-          items:
-            type: integer
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: pi__isnull
-        schema:
-          type: boolean
       tags:
       - users
       security:
@@ -3815,24 +3798,24 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ResearchGroup'
+                  $ref: '#/components/schemas/Team'
           description: ''
     post:
-      operationId: users_researchgroups_create
-      description: Manage user membership in research groups.
+      operationId: users_teams_create
+      description: Manage user team membership.
       tags:
       - users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
         required: true
       security:
       - cookieAuth: []
@@ -3842,18 +3825,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResearchGroup'
+                $ref: '#/components/schemas/Team'
           description: ''
-  /users/researchgroups/{id}/:
+  /users/teams/{id}/:
     get:
-      operationId: users_researchgroups_retrieve
-      description: Manage user membership in research groups.
+      operationId: users_teams_retrieve
+      description: Manage user team membership.
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this research group.
+        description: A unique integer value identifying this team.
         required: true
       tags:
       - users
@@ -3865,17 +3848,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResearchGroup'
+                $ref: '#/components/schemas/Team'
           description: ''
     put:
-      operationId: users_researchgroups_update
-      description: Manage user membership in research groups.
+      operationId: users_teams_update
+      description: Manage user team membership.
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this research group.
+        description: A unique integer value identifying this team.
         required: true
       tags:
       - users
@@ -3883,13 +3866,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ResearchGroup'
+              $ref: '#/components/schemas/Team'
         required: true
       security:
       - cookieAuth: []
@@ -3899,17 +3882,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResearchGroup'
+                $ref: '#/components/schemas/Team'
           description: ''
     patch:
-      operationId: users_researchgroups_partial_update
-      description: Manage user membership in research groups.
+      operationId: users_teams_partial_update
+      description: Manage user team membership.
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this research group.
+        description: A unique integer value identifying this team.
         required: true
       tags:
       - users
@@ -3917,13 +3900,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedResearchGroup'
+              $ref: '#/components/schemas/PatchedTeam'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedResearchGroup'
+              $ref: '#/components/schemas/PatchedTeam'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedResearchGroup'
+              $ref: '#/components/schemas/PatchedTeam'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -3932,17 +3915,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResearchGroup'
+                $ref: '#/components/schemas/Team'
           description: ''
     delete:
-      operationId: users_researchgroups_destroy
-      description: Manage user membership in research groups.
+      operationId: users_teams_destroy
+      description: Manage user team membership.
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this research group.
+        description: A unique integer value identifying this team.
         required: true
       tags:
       - users
@@ -4614,7 +4597,7 @@ components:
           type: string
           format: date
           nullable: true
-        group:
+        team:
           type: integer
         assignees:
           type: array
@@ -4622,9 +4605,9 @@ components:
             type: integer
       required:
       - description
-      - group
       - id
       - submitted
+      - team
       - title
     AllocationRequestReview:
       type: object
@@ -4771,7 +4754,7 @@ components:
         end_date:
           type: string
           format: date
-        group:
+        team:
           type: integer
       required:
       - agency
@@ -4779,9 +4762,9 @@ components:
       - end_date
       - fiscal_year
       - grant_number
-      - group
       - id
       - start_date
+      - team
       - title
     Login:
       type: object
@@ -4862,7 +4845,7 @@ components:
           type: string
           format: date
           nullable: true
-        group:
+        team:
           type: integer
         assignees:
           type: array
@@ -4941,7 +4924,7 @@ components:
         end_date:
           type: string
           format: date
-        group:
+        team:
           type: integer
     PatchedPublication:
       type: object
@@ -4966,30 +4949,8 @@ components:
           type: string
           nullable: true
           maxLength: 50
-        group:
+        team:
           type: integer
-    PatchedResearchGroup:
-      type: object
-      description: Object serializer for the `ResearchGroup` model.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        is_active:
-          type: boolean
-        pi:
-          type: integer
-        admins:
-          type: array
-          items:
-            type: integer
-        members:
-          type: array
-          items:
-            type: integer
     PatchedRestrictedUser:
       type: object
       description: Object serializer for the `User` class with administrative fields
@@ -5068,6 +5029,22 @@ components:
           items:
             type: integer
           description: Specific permissions for this user.
+    PatchedTeam:
+      type: object
+      description: Object serializer for the `Team` model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        is_active:
+          type: boolean
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMembership'
     Publication:
       type: object
       description: Object serializer for the `Publication` class.
@@ -5091,14 +5068,14 @@ components:
           type: string
           nullable: true
           maxLength: 50
-        group:
+        team:
           type: integer
       required:
       - abstract
       - date
-      - group
       - id
       - journal
+      - team
       - title
     RequestLog:
       type: object
@@ -5141,32 +5118,6 @@ components:
       - method
       - response_code
       - time
-    ResearchGroup:
-      type: object
-      description: Object serializer for the `ResearchGroup` model.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        is_active:
-          type: boolean
-        pi:
-          type: integer
-        admins:
-          type: array
-          items:
-            type: integer
-        members:
-          type: array
-          items:
-            type: integer
-      required:
-      - id
-      - name
-      - pi
     RestAuthDetail:
       type: object
       properties:
@@ -5263,6 +5214,16 @@ components:
       - password
       - profile_image
       - username
+    RoleEnum:
+      enum:
+      - OW
+      - AD
+      - MB
+      type: string
+      description: |-
+        * `OW` - Owner
+        * `AD` - Admin
+        * `MB` - Member
     TaskResult:
       type: object
       description: Object serializer for the `TaskResult` class.
@@ -5381,6 +5342,36 @@ components:
         * `REVOKED` - REVOKED
         * `STARTED` - STARTED
         * `SUCCESS` - SUCCESS
+    Team:
+      type: object
+      description: Object serializer for the `Team` model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        is_active:
+          type: boolean
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMembership'
+      required:
+      - id
+      - name
+    TeamMembership:
+      type: object
+      description: Object serializer for the `TeamMembership` model.
+      properties:
+        user:
+          type: integer
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - role
+      - user
     Token:
       type: object
       description: Serializer for Token model.
