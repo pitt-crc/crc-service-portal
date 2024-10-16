@@ -19,7 +19,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/authentication/whoami/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_user_not_authenticated(self) -> None:
         """Test unauthenticated users cannot access the endpoint."""
@@ -58,7 +58,7 @@ class UserData(APITestCase):
     """Test the fetching of user metadata."""
 
     endpoint = '/authentication/whoami/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_metadata_is_returned(self) -> None:
         """Test GET responses include metadata for the currently authenticated user."""

@@ -23,7 +23,7 @@ SUMMARY = dist.metadata['summary']
 
 env = environ.Env()
 DEBUG = env.bool('DEBUG', False)
-FIXTURE_DIRS = [BASE_DIR / 'tests' / 'fixtures']
+FIXTURE_DIRS = [BASE_DIR / 'fixtures']
 
 # Core security settings
 

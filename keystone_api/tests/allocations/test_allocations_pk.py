@@ -23,7 +23,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint_pattern = '/allocations/allocations/{pk}/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""

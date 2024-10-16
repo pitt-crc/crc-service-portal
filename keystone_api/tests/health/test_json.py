@@ -20,7 +20,7 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
     """
 
     endpoint = '/health/json/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
         """Load user accounts from testing fixtures."""

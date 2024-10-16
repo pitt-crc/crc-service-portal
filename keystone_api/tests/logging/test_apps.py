@@ -20,7 +20,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/logs/apps/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
         """Load user accounts from testing fixtures."""

@@ -20,7 +20,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/allocations/reviews/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -79,7 +79,7 @@ class ReviewerAssignment(APITestCase):
     """Test the automatic assignment and verification of the `reviewer` field."""
 
     endpoint = '/allocations/reviews/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_default_reviewer(self) -> None:
         """Test the reviewer field defaults to the current user."""

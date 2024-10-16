@@ -23,7 +23,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/allocations/requests/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -83,7 +83,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_team_admin_permissions(self) -> None:
         """Test team admins have read and write access."""
 
-        user = User.objects.get(username='team_admin_1')
+        user = User.objects.get(username='admin_1')
         self.client.force_authenticate(user=user)
 
         # Post data reflects a team ID for which the user is an admin

@@ -25,7 +25,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint_pattern = '/research/publications/{pk}/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
     valid_record_data = {
         'title': 'foo',
         'abstract': 'bar',

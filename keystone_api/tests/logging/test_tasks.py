@@ -20,7 +20,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/logs/tasks/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
 
     def setUp(self) -> None:

@@ -23,7 +23,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint_pattern = '/users/users/{pk}/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
         """Load user accounts from testing fixtures."""
@@ -124,7 +124,7 @@ class CredentialHandling(APITestCase):
     """Test the getting/setting of user credentials."""
 
     endpoint_pattern = '/users/users/{pk}/'
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
         """Load user accounts from testing fixtures."""

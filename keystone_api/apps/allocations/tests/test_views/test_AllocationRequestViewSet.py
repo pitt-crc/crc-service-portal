@@ -10,7 +10,7 @@ from apps.users.models import Team, User
 class GetQueryset(TestCase):
     """Test the filtering of database records based on user permissions."""
 
-    fixtures = ['multi_team.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_get_queryset_for_staff_user(self) -> None:
         """Test staff users can query all reviews."""
