@@ -5,7 +5,7 @@ from datetime import date
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -18,24 +18,38 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     |----------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous User | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
     | Non-Member     | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
-    | Group Member   | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
-    | Group Admin    | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
-    | Group PI       | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
+    | Team Member    | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
+    | Team Admin     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
+    | Team Owner     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
     | Staff User     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/research/grants/'
-    fixtures = ['multi_research_group.yaml']
-    valid_record_data = {
-        'title': "Grant (Group 2)",
-        'agency': "Agency Name",
-        'amount': 1000,
-        'fiscal_year': 2001,
-        'start_date': date(2000, 1, 1),
-        'end_date': date(2000, 1, 31),
-        'grant_number': 'abc-123',
-        'group': 1
-    }
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from test fixtures."""
+
+        self.generic_user = User.objects.get(username='generic_user')
+        self.staff_user = User.objects.get(username='staff_user')
+
+        # Load team members
+        self.team = Team.objects.get(name='Team 1')
+        self.team_member = User.objects.get(username='member_1')
+        self.team_admin = User.objects.get(username='admin_1')
+        self.team_owner = User.objects.get(username='owner_1')
+
+        # Define data owned by the team
+        self.valid_record_data = {
+            'title': f"Grant ({self.team.name})",
+            'agency': "Agency Name",
+            'amount': 1000,
+            'fiscal_year': 2001,
+            'start_date': date(2000, 1, 1),
+            'end_date': date(2000, 1, 31),
+            'grant_number': 'abc-123',
+            'team': self.team.pk
+        }
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -52,12 +66,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_non_group_member_permissions(self) -> None:
-        """Test users have read access but cannot create records for research groups where they are not members."""
+    def test_non_team_member_permissions(self) -> None:
+        """Test users have read access but cannot create records for teams where they are not members."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -71,12 +83,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post_body=self.valid_record_data
         )
 
-    def test_group_member_permissions(self) -> None:
-        """Test regular research group members have read-only access."""
+    def test_team_member_permissions(self) -> None:
+        """Test regular team members have read-only access."""
 
-        user = User.objects.get(username='member_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_member)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -90,12 +100,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post_body=self.valid_record_data
         )
 
-    def test_group_admin_permissions(self) -> None:
-        """Test research group admins have read and write access."""
+    def test_team_admin_permissions(self) -> None:
+        """Test team admins have read and write access."""
 
-        user = User.objects.get(username='group_admin_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_admin)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -109,12 +117,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post_body=self.valid_record_data
         )
 
-    def test_group_pi_permissions(self) -> None:
-        """Test research group PIs have read and write access."""
+    def test_team_owner_permissions(self) -> None:
+        """Test team owners have read and write access."""
 
-        user = User.objects.get(username='pi_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_owner)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -131,9 +137,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user(self) -> None:
         """Test staff users have read and write permissions."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,

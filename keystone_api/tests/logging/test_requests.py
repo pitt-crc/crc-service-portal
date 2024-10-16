@@ -20,7 +20,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/logs/requests/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.staff_user = User.objects.get(username='staff_user')
+        self.generic_user = User.objects.get(username='generic_user')
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -40,9 +46,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_permissions(self) -> None:
         """Test general authenticated users are returned a 403 status code for all request types."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_403_FORBIDDEN,
@@ -58,9 +62,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user_permissions(self) -> None:
         """Test staff users have read-only permissions."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,

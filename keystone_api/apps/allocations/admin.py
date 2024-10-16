@@ -54,10 +54,10 @@ class AllocationAdmin(admin.ModelAdmin):
 
     @staticmethod
     @admin.display
-    def group(obj: Allocation) -> str:
-        """Return the name of the group the allocation is assigned to."""
+    def team(obj: Allocation) -> str:
+        """Return the name of the user team the allocation is assigned to."""
 
-        return obj.request.group.name
+        return obj.request.team.name
 
     @staticmethod
     @admin.display
@@ -80,15 +80,15 @@ class AllocationAdmin(admin.ModelAdmin):
 
         return obj.request.StatusChoices(obj.request.status).label
 
-    group.admin_order_field = 'request__group__name'
+    team.admin_order_field = 'request__team__name'
     request.admin_order_field = 'request__title'
     cluster.admin_order_field = 'cluster__name'
     status.admin_order_field = 'request__status'
 
-    list_display = [group, request, cluster, 'requested', 'awarded', 'final', status]
+    list_display = [team, request, cluster, 'requested', 'awarded', 'final', status]
     list_display_links = list_display
-    ordering = ['request__group__name', 'cluster']
-    search_fields = ['request__group__name', 'request__title', 'cluster__name']
+    ordering = ['request__team__name', 'cluster']
+    search_fields = ['request__team__name', 'request__title', 'cluster__name']
     list_filter = [
         ('request__status', admin.ChoicesFieldListFilter)
     ]
@@ -100,10 +100,10 @@ class AllocationRequestAdmin(admin.ModelAdmin):
 
     @staticmethod
     @admin.display
-    def group(obj: Allocation) -> str:
-        """Return the name of the group the allocation is assigned to."""
+    def team(obj: Allocation) -> str:
+        """Return the name of the user team the allocation is assigned to."""
 
-        return obj.group.name
+        return obj.team.name
 
     @staticmethod
     @admin.display
@@ -112,11 +112,11 @@ class AllocationRequestAdmin(admin.ModelAdmin):
 
         return sum(1 for _ in obj.allocationrequestreview_set.all())
 
-    group.admin_order_field = 'group__name'
+    team.admin_order_field = 'team__name'
 
-    list_display = [group, 'title', 'submitted', 'active', 'expire', 'reviews', 'status']
+    list_display = [team, 'title', 'submitted', 'active', 'expire', 'reviews', 'status']
     list_display_links = list_display
-    search_fields = ['title', 'description', 'group__name']
+    search_fields = ['title', 'description', 'team__name']
     ordering = ['submitted']
     list_filter = [
         ('submitted', admin.DateFieldListFilter),

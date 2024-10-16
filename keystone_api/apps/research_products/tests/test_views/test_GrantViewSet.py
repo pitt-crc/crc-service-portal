@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from apps.research_products.models import Grant
 from apps.research_products.views import GrantViewSet
-from apps.users.models import ResearchGroup
+from apps.users.models import Team
 
 User = get_user_model()
 
@@ -16,12 +16,14 @@ class GetQueryset(TestCase):
     def setUp(self) -> None:
         """Create user accounts and research grants."""
 
-        self.staff_user = User.objects.create_user(username='staff', password='foobar123!', is_staff=True)
-        self.general_user = User.objects.create_user(username='general', password='foobar123!')
+        self.staff_user = User.objects.create(username='staff', is_staff=True)
+        self.general_user = User.objects.create(username='general')
 
-        self.group1_user = User.objects.create_user(username='user1', password='foobar123!')
-        self.group1 = ResearchGroup.objects.create(name='Group1', pi=self.group1_user)
-        self.group1_grant = Grant.objects.create(
+        self.team1 = Team.objects.create(name='Team1')
+        self.team1_user = User.objects.create(username='user1')
+        self.team1.add_or_update_member(self.team1_user)
+
+        self.team1_grant = Grant.objects.create(
             title="Grant 1",
             agency="Agency 1",
             amount=100000.00,
@@ -29,12 +31,14 @@ class GetQueryset(TestCase):
             fiscal_year=2020,
             start_date="2020-01-01",
             end_date="2021-01-01",
-            group=self.group1
+            team=self.team1
         )
 
-        self.group2_user = User.objects.create_user(username='user2', password='foobar123!')
-        self.group2 = ResearchGroup.objects.create(name='Group2', pi=self.group2_user)
-        self.group2_grant = Grant.objects.create(
+        self.team2_user = User.objects.create(username='user2')
+        self.team2 = Team.objects.create(name='Team2')
+        self.team2.add_or_update_member(self.team2_user)
+
+        self.team2_grant = Grant.objects.create(
             title="Grant 2",
             agency="Agency 2",
             amount=200000.00,
@@ -42,7 +46,7 @@ class GetQueryset(TestCase):
             fiscal_year=2021,
             start_date="2021-01-01",
             end_date="2022-01-01",
-            group=self.group2
+            team=self.team2
         )
 
     def create_viewset(self, user: User) -> GrantViewSet:
@@ -68,16 +72,16 @@ class GetQueryset(TestCase):
         queryset = viewset.get_queryset()
         self.assertEqual(len(queryset), 2)
 
-    def test_queryset_for_group_member(self) -> None:
-        """Test group members can only access their group's grants."""
+    def test_queryset_for_team_member(self) -> None:
+        """Test team members can only access their team's grants."""
 
-        viewset = self.create_viewset(self.group1_user)
+        viewset = self.create_viewset(self.team1_user)
         queryset = viewset.get_queryset()
         self.assertEqual(len(queryset), 1)
-        self.assertEqual(queryset[0].group, self.group1)
+        self.assertEqual(queryset[0].team, self.team1)
 
-    def test_queryset_for_non_group_member(self) -> None:
-        """Test users without groups cannot access any grant records."""
+    def test_queryset_for_non_team_member(self) -> None:
+        """Test non-members cannot access any grant records."""
 
         viewset = self.create_viewset(self.general_user)
         queryset = viewset.get_queryset()

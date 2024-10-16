@@ -6,7 +6,7 @@ from rest_framework.test import APIRequestFactory
 
 from apps.allocations.models import AllocationRequest, AllocationRequestReview
 from apps.allocations.serializers import AllocationRequestReviewSerializer
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 
 class Validation(TestCase):
@@ -18,11 +18,11 @@ class Validation(TestCase):
         self.user = User.objects.create_user(username='testuser', password='foobar123!')
         self.another_user = User.objects.create_user(username='anotheruser', password='foobar123!')
 
-        self.group = ResearchGroup.objects.create(name='Test Group', pi=self.user)
+        self.team = Team.objects.create(name='Test Team')
         self.request = AllocationRequest.objects.create(
             title='Test Allocation Request',
             description="This is a test.",
-            group=self.group
+            team=self.team
         )
 
     def test_reviewer_matches_submitter(self) -> None:

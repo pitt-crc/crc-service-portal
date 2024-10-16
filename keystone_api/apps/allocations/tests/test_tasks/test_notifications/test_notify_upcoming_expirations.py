@@ -21,7 +21,7 @@ class FailureReporting(TestCase):
 
         mock_user = MagicMock()
         mock_request = MagicMock()
-        mock_request.group.get_all_members.return_value.filter.return_value = [mock_user]
+        mock_request.team.get_all_members.return_value.filter.return_value = [mock_user]
         mock_filter.return_value.all.return_value = [mock_request]
 
         mock_should_notify.side_effect = Exception("Test error")

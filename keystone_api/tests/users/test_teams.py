@@ -1,9 +1,9 @@
-"""Function tests for the `/users/researchgroups/` endpoint."""
+"""Function tests for the `/users/teams/` endpoint."""
 
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -19,8 +19,14 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Staff user                  | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
-    endpoint = '/users/researchgroups/'
-    fixtures = ['multi_research_group.yaml']
+    endpoint = '/users/teams/'
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.staff_user = User.objects.get(username='staff_user')
+        self.generic_user = User.objects.get(username='generic_user')
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -38,11 +44,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         )
 
     def test_authenticated_user_permissions(self) -> None:
-        """Test general authenticated users can create new research groups."""
+        """Test general authenticated users can create new teams."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -53,15 +57,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'name': 'Group FooBar', 'pi': 1}
+            post_body={'name': 'Team FooBar'}
         )
 
     def test_staff_user_permissions(self) -> None:
         """Test staff users have full read and write permissions."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -72,5 +74,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            post_body={'name': 'Research Group 3', 'pi': 1},
+            post_body={'name': 'Team 3'},
         )

@@ -1,19 +1,19 @@
-# This test fixture creates two research groups on the same cluster.
-# Each group has a single allocation request with a single allocation, grant, and publication.
+# This test fixture creates two teams on the same cluster.
+# Each team has a single allocation request with a single allocation, grant, and publication.
 #
-# Research Group 1:
-#    pi_1          (Research group PI)
-#    group_admin_1 (Research group admin)
-#    member_1      (Generic group member)
+# Team 1:
+#    pi_1          (Team owner)
+#    admin_1       (Team admin)
+#    member_1      (Generic team member)
 #
-# Research Group 2:
-#    pi_2          (Research group PI)
-#    group_admin_2 (Research group admin)
-#    member_2      (Generic group member)
+# Team 2:
+#    pi_2         (Team owner)
+#    admin_2      (Team admin)
+#    member_2     (Generic team member)
 #
-# Accounts not affiliated with a group:
-#    super_user  (Superuser account)
-#    staff_user  (Staff user account)
+# Accounts not affiliated with a team:
+#    super_user   (Superuser account)
+#    staff_user   (Staff user account)
 #    generic_user (Generic user account)
 
 # Clusters
@@ -27,18 +27,18 @@
 - model: users.user
   pk: 1
   fields:
-    username: pi_1
+    username: owner_1
     first_name: foo
     last_name: bar
-    email: pi_1@domain.com
+    email: owner_1@domain.com
     password: foobar123
 - model: users.user
   pk: 2
   fields:
-    username: group_admin_1
+    username: admin_1
     first_name: foo
     last_name: bar
-    email: group_admin_1@domain.com
+    email: admin_1@domain.com
     password: foobar123
 - model: users.user
   pk: 3
@@ -51,18 +51,18 @@
 - model: users.user
   pk: 4
   fields:
-    username: pi_2
+    username: owner_2
     first_name: foo
     last_name: bar
-    email: pi_2@domain.com
+    email: owner_2@domain.com
     password: foobar123
 - model: users.user
   pk: 5
   fields:
-    username: group_admin_2
+    username: admin_2
     first_name: foo
     last_name: bar
-    email: group_admin_2@domain.com
+    email: admin_2@domain.com
     password: foobar123
 - model: users.user
   pk: 6
@@ -96,33 +96,65 @@
     password: foobar123
     is_staff: true
 
-# Research Groups
-- model: users.researchgroup
+# Teams and Team Membership
+- model: users.team
   pk: 1
   fields:
-    name: Research Group 1
-    pi: 1
-    admins: [ 2 ]
-    members: [ 3 ]
-- model: users.researchgroup
+    name: Team 1
+- model: users.teammembership
+  pk: 1
+  fields:
+    team: 1
+    user: 1
+    role: 'OW'
+- model: users.teammembership
   pk: 2
   fields:
-    name: Research Group 2
-    pi: 4
-    members: [ 6 ]
+    team: 1
+    user: 2
+    role: 'AD'
+- model: users.teammembership
+  pk: 3
+  fields:
+    team: 1
+    user: 3
+    role: 'MB'
+
+- model: users.team
+  pk: 2
+  fields:
+    name: Team 2
+- model: users.teammembership
+  pk: 4
+  fields:
+    team: 2
+    user: 4
+    role: 'OW'
+- model: users.teammembership
+  pk: 5
+  fields:
+    team: 2
+    user: 5
+    role: 'AD'
+- model: users.teammembership
+  pk: 6
+  fields:
+    team: 2
+    user: 6
+    role: 'MB'
 
 # Allocation Requests
 - model: allocations.allocationrequest
   pk: 1
   fields:
     status: AP
-    group: 1
+    team: 1
     submitted: "2023-01-01"
 - model: allocations.allocationrequest
   pk: 2
   fields:
     status: AP
-    group: 2
+    team: 2
     submitted: "2023-01-01"
 
 # Allocation Request Reviews
@@ -154,40 +186,40 @@
 - model: research_products.publication
   pk: 1
   fields:
-    title: "Publication (Group 1)"
+    title: "Publication (Team 1)"
     abstract: "Abstract Text"
     date: "2000-01-01"
     journal: "Journal Name"
-    group: 1
+    team: 1
 - model: research_products.publication
   pk: 2
   fields:
-    title: "Publication (Group 2)"
+    title: "Publication (Team 2)"
     abstract: "Abstract text."
     date: "2000-01-01"
     journal: "Journal Name"
-    group: 2
+    team: 2
 
 # Grants
 - model: research_products.grant
   pk: 1
   fields:
-    title: "Grant (Group 1)"
+    title: "Grant (Team 1)"
     agency: "Agency Name"
     amount: 1000
     fiscal_year: 2001
     start_date: "2000-01-01"
     end_date: "2000-01-31"
     grant_number: "abc-123"
-    group: 1
+    team: 1
 - model: research_products.grant
   pk: 2
   fields:
-    title: "Grant (Group 2)"
+    title: "Grant (Team 2)"
     agency: "Agency Name"
     amount: 1000
     fiscal_year: 2001
     start_date: "2000-01-01"
     end_date: "2000-01-31"
     grant_number: "abc-123"
-    group: 2
+    team: 2

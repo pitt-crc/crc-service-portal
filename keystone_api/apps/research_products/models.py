@@ -9,7 +9,7 @@ the associated table/fields/records are presented by parent interfaces.
 from django.db import models
 from django.template.defaultfilters import truncatechars
 
-from apps.users.models import ResearchGroup
+from apps.users.models import Team
 from .managers import *
 
 __all__ = ['Grant', 'Publication']
@@ -26,7 +26,7 @@ class Grant(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
 
-    group = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     objects = GrantManager()
 
@@ -45,7 +45,7 @@ class Publication(models.Model):
     journal = models.CharField(max_length=100)
     doi = models.CharField(max_length=50, unique=True, null=True, blank=True)
 
-    group = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     objects = PublicationManager()
 

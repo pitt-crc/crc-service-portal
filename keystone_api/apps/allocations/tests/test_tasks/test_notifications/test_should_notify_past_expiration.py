@@ -8,7 +8,7 @@ from django.test import TestCase
 from apps.allocations.models import AllocationRequest
 from apps.allocations.tasks import should_notify_past_expiration
 from apps.notifications.models import Preference
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 
 class CheckIfShouldSend(TestCase):
@@ -18,8 +18,8 @@ class CheckIfShouldSend(TestCase):
         """Set up test data."""
 
         self.user = User.objects.create_user(username='testuser', password='foobar123!')
-        self.group = ResearchGroup.objects.create(pi=self.user)
-        self.request = AllocationRequest.objects.create(group=self.group, expire=date.today())
+        self.team = Team.objects.create()
+        self.request = AllocationRequest.objects.create(team=self.team, expire=date.today())
 
     @patch('apps.notifications.models.Notification.objects.filter')
     def test_false_if_duplicate_notification(self, mock_notification_filter: Mock) -> None:

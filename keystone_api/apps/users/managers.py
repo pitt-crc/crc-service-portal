@@ -15,18 +15,13 @@ from django.db import models
 if TYPE_CHECKING:  # pragma: nocover
     from apps.users.models import User
 
-__all__ = ['ResearchGroupManager', 'UserManager']
+__all__ = ['TeamManager', 'UserManager']
 
 
 class UserManager(BaseUserManager):
     """Object manager for the `User` database model."""
 
-    def create_user(
-        self,
-        username: str,
-        password: str,
-        **extra_fields
-    ) -> 'User':
+    def create_user(self, username: str, password: str, **extra_fields) -> 'User':
         """Create a new user account.
 
         Args:
@@ -48,12 +43,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(
-        self,
-        username: str,
-        password: str,
-        **extra_fields
-    ) -> 'User':
+    def create_superuser(self, username: str, password: str, **extra_fields) -> 'User':
         """Create a new user account with superuser privileges.
 
         Args:
@@ -78,17 +68,17 @@ class UserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 
-class ResearchGroupManager(models.Manager):
-    """Object manager for the `ResearchGroup` database model."""
+class TeamManager(models.Manager):
+    """Object manager for the `Team` database model."""
 
-    def groups_for_user(self, user: 'User') -> models.QuerySet:
-        """Get all research groups the user is affiliated with.
+    def teams_for_user(self, user: 'User') -> models.QuerySet:
+        """Get all teams the user is affiliated with.
 
         Args:
-            user: The user to return affiliate groups for.
+            user: The user to return affiliate teams for.
 
         Returns:
             A filtered queryset.
         """
 
-        return self.get_queryset().filter(models.Q(pi=user.id) | models.Q(admins=user.id) | models.Q(members=user.id))
+        return self.filter(teammembership__user=user)

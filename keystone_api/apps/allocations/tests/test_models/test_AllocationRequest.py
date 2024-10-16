@@ -5,28 +5,28 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from apps.allocations.models import AllocationRequest
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 
-class ResearchGroupInterface(TestCase):
+class TeamInterface(TestCase):
     """Test the implementation of methods required by the `RGModelInterface`."""
 
     def setUp(self) -> None:
         """Create mock user records"""
 
         self.user = User.objects.create_user(username='pi', password='foobar123!')
-        self.research_group = ResearchGroup.objects.create(pi=self.user, name='Test Group')
+        self.team = Team.objects.create(name='Test Team')
         self.allocation_request = AllocationRequest.objects.create(
             title='Test Request',
             description='A test description',
-            group=self.research_group
+            team=self.team
         )
 
-    def test_get_research_group(self) -> None:
-        """Test the get_research_group method returns the correct ResearchGroup."""
+    def test_get_team(self) -> None:
+        """Test the `get_team` method returns the correct `Team`."""
 
-        research_group = self.allocation_request.get_research_group()
-        self.assertEqual(research_group, self.research_group)
+        team = self.allocation_request.get_team()
+        self.assertEqual(team, self.team)
 
 
 class Clean(TestCase):
@@ -36,7 +36,7 @@ class Clean(TestCase):
         """Create mock user records"""
 
         self.user = User.objects.create_user(username='pi', password='foobar123!')
-        self.research_group = ResearchGroup.objects.create(pi=self.user, name='Test Group')
+        self.team = Team.objects.create(name='Test Team')
 
     def test_clean_method_valid(self) -> None:
         """Test the clean method returns successfully when dates are valid."""
@@ -44,7 +44,7 @@ class Clean(TestCase):
         allocation_request = AllocationRequest.objects.create(
             title='Test Request',
             description='A test description',
-            group=self.research_group,
+            team=self.team,
             active='2024-01-01',
             expire='2024-12-31'
         )
@@ -57,7 +57,7 @@ class Clean(TestCase):
         allocation_request_after = AllocationRequest.objects.create(
             title='Test Request',
             description='A test description',
-            group=self.research_group,
+            team=self.team,
             active='2024-12-31',
             expire='2024-01-01'
         )
@@ -68,7 +68,7 @@ class Clean(TestCase):
         allocation_request_equal = AllocationRequest.objects.create(
             title='Test Request',
             description='A test description',
-            group=self.research_group,
+            team=self.team,
             active='2024-01-01',
             expire='2024-01-01'
         )
@@ -84,7 +84,7 @@ class GetDaysUntilExpired(TestCase):
         """Set up test data."""
 
         self.user = User.objects.create_user(username='pi', password='foobar123!')
-        self.research_group = ResearchGroup.objects.create(pi=self.user, name='Test Group')
+        self.team = Team.objects.create(name='Test Team')
 
     def test_future_date(self) -> None:
         """Test when the expiration date is in the future."""
@@ -93,7 +93,7 @@ class GetDaysUntilExpired(TestCase):
             title="Test Request",
             description="Test Description",
             expire=date.today() + timedelta(days=10),
-            group=self.research_group
+            team=self.team
         )
         self.assertEqual(request.get_days_until_expire(), 10)
 
@@ -104,7 +104,7 @@ class GetDaysUntilExpired(TestCase):
             title="Test Request",
             description="Test Description",
             expire=date.today() - timedelta(days=5),
-            group=self.research_group
+            team=self.team
         )
         self.assertEqual(request.get_days_until_expire(), -5)
 
@@ -115,7 +115,7 @@ class GetDaysUntilExpired(TestCase):
             title="Test Request",
             description="Test Description",
             expire=date.today(),
-            group=self.research_group
+            team=self.team
         )
         self.assertEqual(request.get_days_until_expire(), 0)
 
@@ -126,6 +126,6 @@ class GetDaysUntilExpired(TestCase):
             title="Test Request",
             description="Test Description",
             expire=None,
-            group=self.research_group
+            team=self.team
         )
         self.assertIsNone(request.get_days_until_expire())

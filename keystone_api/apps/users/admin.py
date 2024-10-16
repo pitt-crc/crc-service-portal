@@ -12,11 +12,11 @@ from .models import *
 
 settings.JAZZMIN_SETTINGS['icons'].update({
     'users.User': 'fa fa-user',
-    'users.ResearchGroup': 'fa fa-users',
+    'users.Team': 'fa fa-users',
 })
 
 settings.JAZZMIN_SETTINGS['order_with_respect_to'].extend([
-    'users.User', 'users.ResearchGroup'
+    'users.User', 'users.Team'
 ])
 
 
@@ -50,20 +50,36 @@ class UserAdmin(auth.admin.UserAdmin):
     )
 
 
-@admin.register(ResearchGroup)
-class ResearchGroupAdmin(admin.ModelAdmin):
-    """Admin interface for managing research group delegates."""
+class TeamMembershipInline(admin.TabularInline):
+    """Inline interface for managing team membership."""
+
+    model = TeamMembership
+    raw_id_fields = ('user',)
+    extra = 1
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    """Admin interface for managing user teams."""
 
     @staticmethod
     @admin.display
-    def pi(obj: ResearchGroup) -> str:
-        """Return the username of the research group PI."""
+    def owners(obj: Team) -> str:
+        """Return a CSV of team owners."""
 
-        return obj.pi.username
+        owners = obj.users.filter(teammembership__role=TeamMembership.Role.OWNER)
+        return ', '.join(owners.values_list('username', flat=True))
 
-    pi.admin_order_field = 'pi__username'
+    @staticmethod
+    @admin.display
+    def get_member_count(obj: Team) -> int:
+        """Return the total number of team members."""
 
-    list_display = ['name', pi]
-    filter_horizontal = ('admins', 'members')
-    ordering = ['name', ]
-    search_fields = ['name', 'pi__username']
+        return obj.users.count()
+
+    get_member_count.short_description = 'Member Count'
+
+    list_display = ('name', 'is_active', 'get_member_count', owners)
+    search_fields = ('name',)
+    list_filter = ('is_active',)
+    inlines = [TeamMembershipInline]

@@ -66,6 +66,7 @@ def ldap_update_users(prune: bool = settings.PURGE_REMOVED_LDAP_USERS) -> None:
     from .models import User
     keystone_names = set(User.objects.filter(is_ldap_user=True).values_list('username', flat=True))
     removed_usernames = keystone_names - ldap_names
+
     if prune:
         User.objects.filter(username__in=removed_usernames).delete()
 

@@ -20,7 +20,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/users/users/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.staff_user = User.objects.get(username='staff_user')
+        self.generic_user = User.objects.get(username='generic_user')
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
@@ -40,9 +46,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_permissions(self) -> None:
         """Test general authenticated users can access all user info."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -58,9 +62,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user_permissions(self) -> None:
         """Test staff users can access all user info."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -83,7 +85,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 class CredentialHandling(APITestCase):
     """Test the handling of user credentials."""
 
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.staff_user = User.objects.get(username='staff_user')
+        self.generic_user = User.objects.get(username='generic_user')
 
     def test_new_user_credentials(self) -> None:
         """Test the user is created with the correct password.
@@ -91,9 +99,7 @@ class CredentialHandling(APITestCase):
         Passwords are provided in plain text but stored in the DB as a hash.
         """
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
-
+        self.client.force_authenticate(user=self.staff_user)
         response = self.client.post(
             path='/users/users/',
             data={
@@ -120,9 +126,7 @@ class CredentialHandling(APITestCase):
     def test_credentials_not_gettable(self) -> None:
         """Test credentials are not included in get requests."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
-
+        self.client.force_authenticate(user=self.staff_user)
         response = self.client.get('/users/users/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(response.json())
@@ -133,9 +137,7 @@ class CredentialHandling(APITestCase):
     def test_passwords_validated(self) -> None:
         """Test passwords are validated against security requirements."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
-
+        self.client.force_authenticate(user=self.staff_user)
         response = self.client.post(
             path='/users/users/',
             data={

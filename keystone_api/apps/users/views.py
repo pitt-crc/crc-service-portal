@@ -8,18 +8,18 @@ from rest_framework import permissions, viewsets
 from rest_framework.serializers import Serializer
 
 from .models import *
-from .permissions import IsGroupAdminOrReadOnly, IsSelfOrReadOnly
+from .permissions import IsSelfOrReadOnly, IsTeamAdminOrReadOnly
 from .serializers import *
 
-__all__ = ['ResearchGroupViewSet', 'UserViewSet']
+__all__ = ['TeamViewSet', 'UserViewSet']
 
 
-class ResearchGroupViewSet(viewsets.ModelViewSet):
-    """Manage user membership in research groups."""
+class TeamViewSet(viewsets.ModelViewSet):
+    """Manage user team membership."""
 
-    queryset = ResearchGroup.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsGroupAdminOrReadOnly]
-    serializer_class = ResearchGroupSerializer
+    queryset = Team.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsTeamAdminOrReadOnly]
+    serializer_class = TeamSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -31,7 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self) -> type[Serializer]:
         """Return the appropriate data serializer based on user roles/permissions."""
 
+        # Allow staff users to read/write administrative fields
         if self.request.user.is_staff:
-            return PrivilegeUserSerializer
+            return PrivilegedUserSerializer
 
         return RestrictedUserSerializer

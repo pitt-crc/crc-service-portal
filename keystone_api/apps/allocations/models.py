@@ -16,7 +16,7 @@ from django.db import models
 from django.template.defaultfilters import truncatechars
 
 from apps.allocations.managers import AllocationManager
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 __all__ = [
     'Allocation',
@@ -24,19 +24,19 @@ __all__ = [
     'AllocationRequestReview',
     'Attachment',
     'Cluster',
-    'RGModelInterface',
+    'TeamModelInterface',
 ]
 
 
-class RGModelInterface:
-    """Interface class for database models affiliated with a research group."""
+class TeamModelInterface:
+    """Interface class for database models affiliated with a team."""
 
     @abc.abstractmethod
-    def get_research_group(self) -> ResearchGroup:
-        """Return the research group tied to the current record."""
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
 
 
-class Allocation(RGModelInterface, models.Model):
+class Allocation(TeamModelInterface, models.Model):
     """User service unit allocation."""
 
     requested = models.PositiveIntegerField()
@@ -48,18 +48,18 @@ class Allocation(RGModelInterface, models.Model):
 
     objects = AllocationManager()
 
-    def get_research_group(self) -> ResearchGroup:
-        """Return the research group tied to the current record."""
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
 
-        return self.request.group
+        return self.request.team
 
     def __str__(self) -> str:  # pragma: nocover
         """Return a human-readable summary of the allocation."""
 
-        return f'{self.cluster} allocation for {self.request.group}'
+        return f'{self.cluster} allocation for {self.request.team}'
 
 
-class AllocationRequest(RGModelInterface, models.Model):
+class AllocationRequest(TeamModelInterface, models.Model):
     """User request for additional service units on one or more clusters."""
 
     class StatusChoices(models.TextChoices):
@@ -78,7 +78,7 @@ class AllocationRequest(RGModelInterface, models.Model):
     active = models.DateField(null=True, blank=True)
     expire = models.DateField(null=True, blank=True)
 
-    group: ResearchGroup = models.ForeignKey(ResearchGroup, on_delete=models.CASCADE)
+    team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
     assignees: User = models.ManyToManyField(User, blank=True, related_name='assigned_allocationrequest_set')
 
     def clean(self) -> None:
@@ -91,10 +91,10 @@ class AllocationRequest(RGModelInterface, models.Model):
         if self.active and self.expire and self.active >= self.expire:
             raise ValidationError('The expiration date must come after the activation date.')
 
-    def get_research_group(self) -> ResearchGroup:
-        """Return the research group tied to the current record."""
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
 
-        return self.group
+        return self.team
 
     def get_days_until_expire(self) -> int:
         """Calculate the number of days until this request expires."""
@@ -107,7 +107,7 @@ class AllocationRequest(RGModelInterface, models.Model):
         return truncatechars(self.title, 100)
 
 
-class AllocationRequestReview(RGModelInterface, models.Model):
+class AllocationRequestReview(TeamModelInterface, models.Model):
     """Reviewer feedback for an allocation request."""
 
     class StatusChoices(models.TextChoices):
@@ -125,10 +125,10 @@ class AllocationRequestReview(RGModelInterface, models.Model):
     request: AllocationRequest = models.ForeignKey(AllocationRequest, on_delete=models.CASCADE)
     reviewer: User = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
 
-    def get_research_group(self) -> ResearchGroup:
-        """Return the research group tied to the current record."""
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
 
-        return self.request.group
+        return self.request.team
 
     def __str__(self) -> str:  # pragma: nocover
         """Return a human-readable identifier for the allocation request."""

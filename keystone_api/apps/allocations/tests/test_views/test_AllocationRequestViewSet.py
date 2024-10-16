@@ -4,19 +4,19 @@ from django.test import RequestFactory, TestCase
 
 from apps.allocations.models import AllocationRequest
 from apps.allocations.views import AllocationRequestViewSet
-from apps.users.models import ResearchGroup, User
+from apps.users.models import Team, User
 
 
 class GetQueryset(TestCase):
     """Test the filtering of database records based on user permissions."""
 
-    fixtures = ['common.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_get_queryset_for_staff_user(self) -> None:
         """Test staff users can query all reviews."""
 
         request = RequestFactory()
-        request.user = User.objects.get(username='staff')
+        request.user = User.objects.get(username='staff_user')
 
         viewset = AllocationRequestViewSet()
         viewset.request = request
@@ -25,10 +25,10 @@ class GetQueryset(TestCase):
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
     def test_get_queryset_for_non_staff_user(self) -> None:
-        """Test non-staff users can only query requests from their own research groups."""
+        """Test non-staff users can only query requests from their own teams."""
 
-        user = User.objects.get(username='user1')
-        group = ResearchGroup.objects.get(name='group1')
+        user = User.objects.get(username='member_1')
+        team = Team.objects.get(name='Team 1')
 
         request = RequestFactory()
         request.user = user
@@ -36,5 +36,5 @@ class GetQueryset(TestCase):
         viewset = AllocationRequestViewSet()
         viewset.request = request
 
-        expected_queryset = AllocationRequest.objects.filter(group__in=[group.id])
+        expected_queryset = AllocationRequest.objects.filter(team__in=[team.id])
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)

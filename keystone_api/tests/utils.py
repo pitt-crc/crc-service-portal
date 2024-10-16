@@ -8,7 +8,7 @@ class CustomAsserts:
     """Custom assert methods for testing responses from REST endpoints."""
 
     client: Client
-    assertEqual: callable
+    assertEqual: callable  # Provided by TestCase class
 
     def assert_http_responses(self, endpoint: str, **kwargs) -> None:
         """Execute a series of API calls and assert the returned status matches the given values.

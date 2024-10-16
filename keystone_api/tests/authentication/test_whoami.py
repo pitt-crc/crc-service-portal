@@ -19,7 +19,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """
 
     endpoint = '/authentication/whoami/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['testing_common.yaml']
 
     def test_user_not_authenticated(self) -> None:
         """Test unauthenticated users cannot access the endpoint."""
@@ -58,29 +58,30 @@ class UserData(APITestCase):
     """Test the fetching of user metadata."""
 
     endpoint = '/authentication/whoami/'
-    fixtures = ['multi_research_group.yaml']
+    fixtures = ['testing_common.yaml']
+
+    def setUp(self) -> None:
+        """Load user accounts from testing fixtures."""
+
+        self.user = User.objects.get(username='generic_user')
 
     def test_metadata_is_returned(self) -> None:
         """Test GET responses include metadata for the currently authenticated user."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(self.endpoint)
         data = response.json()
 
-        self.assertEqual(user.username, data['username'])
-        self.assertEqual(user.email, data['email'])
-        self.assertEqual(user.first_name, data['first_name'])
-        self.assertEqual(user.last_name, data['last_name'])
-        self.assertEqual(user.is_staff, data['is_staff'])
-        self.assertEqual(user.is_active, data['is_active'])
+        self.assertEqual(self.user.username, data['username'])
+        self.assertEqual(self.user.email, data['email'])
+        self.assertEqual(self.user.first_name, data['first_name'])
+        self.assertEqual(self.user.last_name, data['last_name'])
+        self.assertEqual(self.user.is_staff, data['is_staff'])
+        self.assertEqual(self.user.is_active, data['is_active'])
 
     def test_password_is_not_returned(self) -> None:
         """Test the password field is excluded from the returned data."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(self.endpoint)
         self.assertNotIn('password', response.json())

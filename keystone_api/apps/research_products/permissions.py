@@ -8,34 +8,34 @@ predefined access rules.
 
 from rest_framework import permissions
 
-from apps.users.models import ResearchGroup
+from apps.users.models import Team
 
-__all__ = ['GroupMemberAll', 'GroupMemberReadGroupAdminWrite']
+__all__ = ['TeamMemberAll', 'TeamMemberReadTeamAdminWrite']
 
 
 class CustomPermissionsBase(permissions.BasePermission):
     """Base manager class for common request processing logic."""
 
-    def get_research_group(self, request) -> ResearchGroup | None:
-        """Return the research group indicated in the `group` filed of an incoming request.
+    def get_team(self, request) -> Team | None:
+        """Return the team indicated in the `team` field of an incoming request.
 
         Args:
             request: The HTTP request
 
         Returns:
-            The research group or None
+            The team or None
         """
 
         try:
-            group_id = request.data.get('group', None)
-            return ResearchGroup.objects.get(pk=group_id)
+            team_id = request.data.get('team', None)
+            return Team.objects.get(pk=team_id)
 
-        except ResearchGroup.DoesNotExist:
+        except Team.DoesNotExist:
             return None
 
 
-class GroupMemberAll(CustomPermissionsBase):
-    """Permissions class providing read and write access to all users within the research group."""
+class TeamMemberAll(CustomPermissionsBase):
+    """Permissions class providing read and write access to all users within the team."""
 
     def has_permission(self, request, view) -> bool:
         """Return whether the request has permissions to access the requested resource."""
@@ -43,17 +43,17 @@ class GroupMemberAll(CustomPermissionsBase):
         if request.method == 'TRACE' and not request.user.is_staff:
             return False
 
-        research_group = self.get_research_group(request)
-        return research_group is None or request.user in research_group.get_all_members()
+        team = self.get_team(request)
+        return team is None or request.user in team.get_all_members()
 
     def has_object_permission(self, request, view, obj):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
-        return request.user in obj.group.get_all_members()
+        return request.user in obj.team.get_all_members()
 
 
-class GroupMemberReadGroupAdminWrite(CustomPermissionsBase):
-    """Permissions class providing read access to regular users and read/write access to group admins."""
+class TeamMemberReadTeamAdminWrite(CustomPermissionsBase):
+    """Permissions class providing read access to regular users and read/write access to team admins."""
 
     def has_permission(self, request, view) -> bool:
         """Return whether the request has permissions to access the requested resource."""
@@ -61,13 +61,13 @@ class GroupMemberReadGroupAdminWrite(CustomPermissionsBase):
         if request.method == 'TRACE' and not request.user.is_staff:
             return False
 
-        research_group = self.get_research_group(request)
-        return research_group is None or request.user in research_group.get_privileged_members()
+        team = self.get_team(request)
+        return team is None or request.user in team.get_privileged_members()
 
     def has_object_permission(self, request, view, obj):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
         read_only = request.method in permissions.SAFE_METHODS
-        is_group_member = request.user in obj.group.get_all_members()
-        is_group_admin = request.user in obj.group.get_privileged_members()
-        return is_group_admin or (read_only and is_group_member)
+        is_team_member = request.user in obj.team.get_all_members()
+        is_team_admin = request.user in obj.team.get_privileged_members()
+        return is_team_admin or (read_only and is_team_member)

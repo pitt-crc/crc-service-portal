@@ -36,21 +36,21 @@ def update_limits_for_cluster(cluster: Cluster) -> None:
             continue
 
         try:
-            account = ResearchGroup.objects.get(name=account_name)
+            account = Team.objects.get(name=account_name)
 
-        except ResearchGroup.DoesNotExist:
-            log.warning(f"No existing ResearchGroup for account {account_name} on {cluster.name}, skipping for now")
+        except Team.DoesNotExist:
+            log.warning(f"No existing team for account {account_name} on {cluster.name}, skipping for now")
             continue
 
         update_limit_for_account(account, cluster)
 
 
 @shared_task()
-def update_limit_for_account(account: ResearchGroup, cluster: Cluster) -> None:
+def update_limit_for_account(account: Team, cluster: Cluster) -> None:
     """Update the allocation limits for an individual Slurm account and close out any expired allocations.
 
     Args:
-        account: ResearchGroup object for the account.
+        account: Team object for the account.
         cluster: Cluster object corresponding to the Slurm cluster.
     """
 
