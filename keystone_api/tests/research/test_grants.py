@@ -40,7 +40,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.team_owner = User.objects.get(username='owner_1')
 
         # Define data owned by the team
-        self.grant_record_data = {
+        self.valid_record_data = {
             'title': f"Grant ({self.team.name})",
             'agency': "Agency Name",
             'amount': 1000,
@@ -80,7 +80,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.grant_record_data
+            post_body=self.valid_record_data
         )
 
     def test_team_member_permissions(self) -> None:
@@ -97,7 +97,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.grant_record_data
+            post_body=self.valid_record_data
         )
 
     def test_team_admin_permissions(self) -> None:
@@ -114,7 +114,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.grant_record_data
+            post_body=self.valid_record_data
         )
 
     def test_team_owner_permissions(self) -> None:
@@ -131,7 +131,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body=self.grant_record_data
+            post_body=self.valid_record_data
         )
 
     def test_staff_user(self) -> None:
@@ -148,5 +148,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            post_body=self.grant_record_data
+            post_body=self.valid_record_data
         )

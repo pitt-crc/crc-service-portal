@@ -5,7 +5,8 @@ from datetime import date
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.research_products.models import Grant
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -26,23 +27,36 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     endpoint_pattern = '/research/grants/{pk}/'
     fixtures = ['testing_common.yaml']
-    valid_record_data = {
-        'title': "Grant (Team 2)",
-        'agency': "Agency Name",
-        'amount': 1000,
-        'fiscal_year': 2001,
-        'start_date': date(2000, 1, 1),
-        'end_date': date(2000, 1, 31),
-        'grant_number': 'abc-123',
-        'team': 1
-    }
+
+    def setUp(self) -> None:
+        """Load user accounts and allocation data from test fixtures."""
+
+        # Load a team of users and define an allocation endpoint belonging to that team
+        self.team = Team.objects.get(name='Team 1')
+        self.grant = Grant.objects.filter(team=self.team).first()
+        self.endpoint = self.endpoint_pattern.format(pk=self.grant.pk)
+
+        # Load (non)member accounts for the team
+        self.staff_user = User.objects.get(username='staff_user')
+        self.non_member = User.objects.get(username='generic_user')
+        self.team_member = User.objects.get(username='member_1')
+
+        self.valid_record_data = {
+            'title': "Grant (Team 2)",
+            'agency': "Agency Name",
+            'amount': 1000,
+            'fiscal_year': 2001,
+            'start_date': date(2000, 1, 1),
+            'end_date': date(2000, 1, 31),
+            'grant_number': 'abc-123',
+            'team': self.team.pk
+        }
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_403_FORBIDDEN,
             head=status.HTTP_403_FORBIDDEN,
             options=status.HTTP_403_FORBIDDEN,
@@ -56,13 +70,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_different_team(self) -> None:
         """Test permissions for authenticated users accessing records owned by someone else's team."""
 
-        # Define a user / record endpoint from DIFFERENT teams
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='member_2')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.non_member)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_404_NOT_FOUND,
             head=status.HTTP_404_NOT_FOUND,
             options=status.HTTP_200_OK,
@@ -76,13 +86,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_same_team(self) -> None:
         """Test permissions for authenticated users accessing records owned by their own team."""
 
-        # Define a user / record endpoint from the SAME teams
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='member_1')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.team_member)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -96,12 +102,9 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
-        endpoint = self.endpoint_pattern.format(pk=1)
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
-            endpoint,
+            self.endpoint,
             get=status.HTTP_200_OK,
             head=status.HTTP_200_OK,
             options=status.HTTP_200_OK,
@@ -111,5 +114,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
             put_body=self.valid_record_data,
-            patch_body={'title': 'New Title'}
+            patch_body=self.valid_record_data
         )
