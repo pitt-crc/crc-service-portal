@@ -132,7 +132,7 @@
     status: AP
     request: 1
     reviewer: 9
-    date_modified: "2023-01-01T12:00:00Z"
+    last_modified: "2023-01-01"
 
 # Allocations
 - model: allocations.allocation

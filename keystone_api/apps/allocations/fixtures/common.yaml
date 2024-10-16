@@ -82,7 +82,7 @@
     request: 1
     reviewer: 2  # username `reviewer`
     status: AP
-    date_modified: "2023-01-01T12:00:00Z"
+    last_modified: "2023-01-01"
 
 - model: allocations.AllocationRequestReview
   pk: 2
@@ -90,4 +90,4 @@
     request: 2
     reviewer: 2  # username: `reviewer`
     status: AP
-    date_modified: "2023-01-01T12:00:00Z"
+    last_modified: "2023-01-01"

@@ -887,6 +887,23 @@ paths:
         schema:
           type: number
       - in: query
+        name: submitter
+        schema:
+          type: integer
+      - in: query
+        name: submitter__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: submitter__isnull
+        schema:
+          type: boolean
+      - in: query
         name: title
         schema:
           type: string
@@ -1070,77 +1087,6 @@ paths:
       description: Manage reviews of allocation request submitted by administrators.
       parameters:
       - in: query
-        name: date_modified
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: date_modified__day
-        schema:
-          type: number
-      - in: query
-        name: date_modified__gt
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: date_modified__gte
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: date_modified__hour
-        schema:
-          type: number
-      - in: query
-        name: date_modified__in
-        schema:
-          type: array
-          items:
-            type: string
-            format: date-time
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: date_modified__isnull
-        schema:
-          type: boolean
-      - in: query
-        name: date_modified__lt
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: date_modified__lte
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: date_modified__minute
-        schema:
-          type: number
-      - in: query
-        name: date_modified__month
-        schema:
-          type: number
-      - in: query
-        name: date_modified__second
-        schema:
-          type: number
-      - in: query
-        name: date_modified__week
-        schema:
-          type: number
-      - in: query
-        name: date_modified__week_day
-        schema:
-          type: number
-      - in: query
-        name: date_modified__year
-        schema:
-          type: number
-      - in: query
         name: id
         schema:
           type: integer
@@ -1173,6 +1119,77 @@ paths:
         name: id__lte
         schema:
           type: integer
+      - in: query
+        name: last_modified
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_modified__day
+        schema:
+          type: number
+      - in: query
+        name: last_modified__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_modified__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_modified__hour
+        schema:
+          type: number
+      - in: query
+        name: last_modified__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: date-time
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: last_modified__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: last_modified__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_modified__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_modified__minute
+        schema:
+          type: number
+      - in: query
+        name: last_modified__month
+        schema:
+          type: number
+      - in: query
+        name: last_modified__second
+        schema:
+          type: number
+      - in: query
+        name: last_modified__week
+        schema:
+          type: number
+      - in: query
+        name: last_modified__week_day
+        schema:
+          type: number
+      - in: query
+        name: last_modified__year
+        schema:
+          type: number
       - in: query
         name: private_comments
         schema:
@@ -4614,6 +4631,9 @@ components:
           type: string
           format: date
           nullable: true
+        submitter:
+          type: integer
+          nullable: true
         group:
           type: integer
         assignees:
@@ -4643,7 +4663,7 @@ components:
           type: string
           nullable: true
           maxLength: 1600
-        date_modified:
+        last_modified:
           type: string
           format: date-time
           readOnly: true
@@ -4653,8 +4673,8 @@ components:
           type: integer
           nullable: true
       required:
-      - date_modified
       - id
+      - last_modified
       - request
       - status
     AllocationRequestReviewStatusEnum:
@@ -4862,6 +4882,9 @@ components:
           type: string
           format: date
           nullable: true
+        submitter:
+          type: integer
+          nullable: true
         group:
           type: integer
         assignees:
@@ -4885,7 +4908,7 @@ components:
           type: string
           nullable: true
           maxLength: 1600
-        date_modified:
+        last_modified:
           type: string
           format: date-time
           readOnly: true
