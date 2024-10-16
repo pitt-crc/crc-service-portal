@@ -3,7 +3,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.users.models import User
+from apps.allocations.models import AllocationRequest
+from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
 
@@ -25,6 +26,20 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     endpoint = '/allocations/requests/'
     fixtures = ['testing_common.yaml']
 
+    def setUp(self) -> None:
+        """Load user accounts and request data from test fixtures."""
+
+        # Load a team of users and define a request endpoint belonging to that team
+        self.team = Team.objects.get(name='Team 1')
+        self.request = AllocationRequest.objects.filter(team=self.team).first()
+
+        # Load (non)member accounts for the team
+        self.staff_user = User.objects.get(username='staff_user')
+        self.non_member = User.objects.get(username='generic_user')
+        self.team_member = User.objects.get(username='member_1')
+        self.team_admin = User.objects.get(username='admin_1')
+        self.team_owner = User.objects.get(username='owner_1')
+
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
@@ -43,10 +58,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_non_team_member_permissions(self) -> None:
         """Test users have read access but cannot create records for teams where they are not members."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
-        # Post data reflects a team ID for which the user is not a member
+        self.client.force_authenticate(user=self.non_member)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -57,16 +69,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'title': 'foo', 'description': 'bar', 'team' : 1}
+            post_body={'title': 'foo', 'description': 'bar', 'team' : self.team.pk}
         )
 
     def test_team_member_permissions(self) -> None:
         """Test regular team members have read-only access."""
 
-        user = User.objects.get(username='member_1')
-        self.client.force_authenticate(user=user)
-
-        # Post data reflects a team ID for which the user is a regular member
+        self.client.force_authenticate(user=self.team_member)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -77,16 +86,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'title': 'foo', 'description': 'bar', 'team' : 1}
+            post_body={'title': 'foo', 'description': 'bar', 'team' : self.team.pk}
         )
 
     def test_team_admin_permissions(self) -> None:
         """Test team admins have read and write access."""
 
-        user = User.objects.get(username='admin_1')
-        self.client.force_authenticate(user=user)
-
-        # Post data reflects a team ID for which the user is an admin
+        self.client.force_authenticate(user=self.team_admin)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -97,16 +103,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'title': 'foo', 'description': 'bar', 'team' : 1}
+            post_body={'title': 'foo', 'description': 'bar', 'team' : self.team.pk}
         )
 
     def test_team_owner_permissions(self) -> None:
         """Test team owners have read and write access."""
 
-        user = User.objects.get(username='pi_1')
-        self.client.force_authenticate(user=user)
-
-        # Post data reflects a team ID for which the user is an owner
+        self.client.force_authenticate(user=self.team_owner)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -117,15 +120,13 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
             trace=status.HTTP_403_FORBIDDEN,
-            post_body={'title': 'foo', 'description': 'bar', 'team': 1}
+            post_body={'title': 'foo', 'description': 'bar', 'team': self.team.pk}
         )
 
     def test_staff_user(self) -> None:
         """Test staff users have read and write permissions."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -136,5 +137,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            post_body={'title': 'foo', 'description': 'bar', 'team': 1}
+            post_body={'title': 'foo', 'description': 'bar', 'team': self.team.pk}
         )

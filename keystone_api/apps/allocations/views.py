@@ -38,7 +38,7 @@ class AllocationViewSet(viewsets.ModelViewSet):
 
 
 class AllocationRequestViewSet(viewsets.ModelViewSet):
-    """Manage allocation requests submitted by user teams."""
+    """Manage allocation requests."""
 
     queryset = AllocationRequest.objects.all()
     serializer_class = AllocationRequestSerializer

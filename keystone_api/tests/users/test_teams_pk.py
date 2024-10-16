@@ -57,7 +57,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         )
 
     def test_authenticated_user_different_team(self) -> None:
-        """Test authenticated users have read-only permissions for user teams."""
+        """Test authenticated users have read-only permissions for other teams."""
 
         self.client.force_authenticate(user=self.non_team_member)
         self.assert_http_responses(

@@ -22,6 +22,12 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     endpoint = '/allocations/reviews/'
     fixtures = ['testing_common.yaml']
 
+    def setUp(self) -> None:
+        """Load user accounts from test fixtures."""
+
+        self.generic_user = User.objects.get(username='generic_user')
+        self.staff_user = User.objects.get(username='staff_user')
+
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
@@ -40,9 +46,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_authenticated_user_permissions(self) -> None:
         """Test general authenticated users have read-only permissions."""
 
-        user = User.objects.get(username='generic_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -58,9 +62,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
-        user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=user)
-
+        self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
             self.endpoint,
             get=status.HTTP_200_OK,
@@ -81,34 +83,36 @@ class ReviewerAssignment(APITestCase):
     endpoint = '/allocations/reviews/'
     fixtures = ['testing_common.yaml']
 
+    def setUp(self) -> None:
+        """Load user accounts from test fixtures."""
+
+        self.generic_user = User.objects.get(username='generic_user')
+        self.staff_user = User.objects.get(username='staff_user')
+
     def test_default_reviewer(self) -> None:
         """Test the reviewer field defaults to the current user."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
+        self.client.force_authenticate(user=self.staff_user)
 
         response = self.client.post(self.endpoint, {'request': 1, 'status': 'AP'})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        self.assertEqual(staff_user.id, response.data['reviewer'])
+        self.assertEqual(self.staff_user.id, response.data['reviewer'])
 
     def test_reviewer_provided(self) -> None:
         """Test the reviewer is set correctly when provided."""
 
-        staff_user = User.objects.get(username='staff_user')
-        self.client.force_authenticate(user=staff_user)
+        self.client.force_authenticate(user=self.staff_user)
 
-        response = self.client.post(self.endpoint, {'request': 1, 'reviewer': staff_user.id, 'status': 'AP'})
+        response = self.client.post(self.endpoint, {'request': 1, 'reviewer': self.staff_user.id, 'status': 'AP'})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        self.assertEqual(staff_user.id, response.data['reviewer'])
+        self.assertEqual(self.staff_user.id, response.data['reviewer'])
 
     def test_error_when_not_matching_submitter(self) -> None:
         """Test an error is raised when the reviewer field does not match the request submitter."""
 
-        staff_user = User.objects.get(username='staff_user')
-        other_user = User.objects.get(username='member_1')
-        self.client.force_authenticate(user=staff_user)
+        self.client.force_authenticate(user=self.staff_user)
 
-        response = self.client.post(self.endpoint, {'request': 1, 'reviewer': other_user.id, 'status': 'AP'})
+        response = self.client.post(self.endpoint, {'request': 1, 'reviewer': self.generic_user.id, 'status': 'AP'})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('reviewer', response.data)
