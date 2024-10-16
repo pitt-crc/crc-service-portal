@@ -34,10 +34,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.endpoint = self.endpoint_pattern.format(pk=self.team.pk)
 
         self.staff_user = User.objects.get(username='staff_user')
+        self.non_team_member = User.objects.get(username='generic_user')
         self.team_owner = User.objects.get(username='owner_1')
         self.team_admin = User.objects.get(username='admin_1')
         self.team_member = User.objects.get(username='member_1')
-        self.non_team_member = User.objects.get(username='member_2')
 
     def test_anonymous_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
