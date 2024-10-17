@@ -11,15 +11,23 @@ from .models import *
 from .permissions import IsSelfOrReadOnly, IsTeamAdminOrReadOnly
 from .serializers import *
 
-__all__ = ['TeamViewSet', 'UserViewSet']
+__all__ = ['TeamViewSet', 'TeamMembershipViewSet', 'UserViewSet']
 
 
 class TeamViewSet(viewsets.ModelViewSet):
-    """Manage user team membership."""
+    """Manage user teams."""
 
     queryset = Team.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsTeamAdminOrReadOnly]
     serializer_class = TeamSerializer
+
+
+class TeamMembershipViewSet(viewsets.ModelViewSet):
+    """Manage team membership."""
+
+    queryset = TeamMembership.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsTeamAdminOrReadOnly]
+    serializer_class = TeamMembershipSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
