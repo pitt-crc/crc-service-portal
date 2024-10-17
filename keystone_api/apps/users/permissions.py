@@ -12,13 +12,14 @@ from rest_framework.views import View
 
 from .models import *
 
-__all__ = ['IsTeamAdminOrReadOnly', 'IsSelfOrReadOnly']
+__all__ = ['TeamPermissions', 'UserPermissions']
 
 
-class IsTeamAdminOrReadOnly(permissions.BasePermission):
-    """Grant read-only access to all authenticated users.
+class TeamPermissions(permissions.BasePermission):
+    """Permissions model for `Team` objects.
 
-    Staff users retain all read/write permissions.
+    Grants read-only access to all authenticated users.
+    Write access is granted to staff and team administrators.
     """
 
     def has_permission(self, request: Request, view: View) -> bool:
@@ -40,8 +41,32 @@ class IsTeamAdminOrReadOnly(permissions.BasePermission):
         return request.user.is_staff or request.user in obj.get_privileged_members()
 
 
-class IsSelfOrReadOnly(permissions.BasePermission):
-    """Grant read-only permissions to everyone and limit write access to staff and record owners."""
+class TeamMembershipPermissions(TeamPermissions):
+    """Permissions model for `TeamMembership` objects.
+
+    Grants read-only access to all authenticated users.
+    Write access is granted to staff and team administrators.
+    """
+
+    def has_object_permission(self, request: Request, view: View, obj: TeamMembership):
+        """Return whether the incoming HTTP request has permission to access a database record."""
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Users can delete their own group membership
+        if request.method == "DELETE" and obj.user == request.user:
+            return True
+
+        return request.user.is_staff or request.user in obj.team.get_privileged_members()
+
+
+class UserPermissions(permissions.BasePermission):
+    """Permissions model for `User` objects.
+
+    Grants read-only permissions to everyone and limits write access to staff and
+    to user's accessing their own user record.
+    """
 
     def has_permission(self, request: Request, view: View) -> bool:
         """Return whether the request has permissions to access the requested resource."""
