@@ -17,8 +17,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous user              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | User accessing own account  | 200 | 200  | 200     | 403  | 200 | 200   | 403    | 403   |
-    | User accessing other user   | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 403   |
+    | User accessing own account  | 200 | 200  | 200     | 403  | 200 | 200   | 204    | 405   |
+    | User accessing other user   | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 405   |
     | Staff user                  | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
@@ -64,8 +64,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post=status.HTTP_403_FORBIDDEN,
             put=status.HTTP_200_OK,
             patch=status.HTTP_200_OK,
-            delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN,
+            delete=status.HTTP_204_NO_CONTENT,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
             put_body={
                 'username': 'foobar',
                 'password': 'foobar123',
@@ -91,7 +91,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_403_FORBIDDEN,
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def test_staff_user_permissions(self) -> None:

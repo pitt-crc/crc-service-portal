@@ -17,10 +17,10 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Authentication               | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |------------------------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous user               | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Nonmember accessing team     | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 403   |
-    | Team member accessing team   | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 403   |
-    | Team admin accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 403   |
-    | Team owner accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 403   |
+    | Nonmember accessing team     | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
+    | Team member accessing team   | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
+    | Team admin accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | Team owner accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     | Staff user                   | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
@@ -69,7 +69,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_403_FORBIDDEN,
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def test_authenticated_team_member(self) -> None:
@@ -85,7 +85,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_403_FORBIDDEN,
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def test_authenticated_team_admin(self) -> None:
@@ -101,7 +101,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_200_OK,
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
             put_body={'name': 'Team 3'},
             patch_body={'name': 'New Name'},
         )
@@ -119,7 +119,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_200_OK,
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
             put_body={'name': 'Team 3'},
             patch_body={'name': 'New Name'},
         )

@@ -22,14 +22,6 @@ class TeamPermissions(permissions.BasePermission):
     Write access is granted to staff and team administrators.
     """
 
-    def has_permission(self, request: Request, view: View) -> bool:
-        """Return whether the request has permissions to access the requested resource."""
-
-        if request.method == 'TRACE':
-            return request.user.is_staff
-
-        return True
-
     def has_object_permission(self, request: Request, view: View, obj: Team):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
@@ -71,13 +63,10 @@ class UserPermissions(permissions.BasePermission):
     def has_permission(self, request: Request, view: View) -> bool:
         """Return whether the request has permissions to access the requested resource."""
 
-        # Allow all users to read/update existing records
-        # Rely on object level permissions for further refinement of update permissions
-        if request.method in permissions.SAFE_METHODS or request.method in ('PUT', 'PATCH'):
-            return True
+        if request.method == 'POST':
+            return request.user.is_staff
 
-        # Record creation/deletion is allowed for staff
-        return request.user.is_staff
+        return True
 
     def has_object_permission(self, request: Request, view: View, obj: User) -> bool:
         """Return whether the incoming HTTP request has permission to access a database record."""
