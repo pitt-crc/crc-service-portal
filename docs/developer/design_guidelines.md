@@ -2,15 +2,14 @@
 
 The Keystone-API project adheres to the following design guidelines.
 
-## Serializing Relational Data
+### Serializing Relational Data
 
-When serializing relational data, the handling of child records is determined by their relationship to the parent record.
-If an entity is _contained_ by a parent record (e.g., by aggregation or composition) it is included in the serialized parent as a nested field.
-In all other cases related entities are linked to in the serialized parent via a reference (e.g. as an ID or URL).
+Serialized records will always reference related entities using ID values.
+When serializing a one-to-one relationship, ID values are included for both directions of the relationship.
 
-??? example "Example: Related Entities"
+!!! example "Example: Serializing A One-to-One Relationship"
 
-    In example model below, the `Library` model shares a generic relationship with the `Address` model.
+    The following example demonstrates a one-to-one relationship between the `Library` and `Address` models.
 
     ```mermaid
     classDiagram
@@ -19,6 +18,7 @@ In all other cases related entities are linked to in the serialized parent via a
         class Library {
           +id: int
           +name: string
+          +address_id: int
         }
         class Address {
           +id: int
@@ -26,19 +26,32 @@ In all other cases related entities are linked to in the serialized parent via a
         }
     ```
 
-    When serializing generic relationships, the related records are linked to by a reference identifier (in this case by ID).
+    When serializing a `Library` instance, the corresponding `Address` record is linked to by its ID.
 
     ```json
     {
       "id": 1,
       "name": "Franklin Public Library",
-      "address": 1
+      "address": 5
     }
     ```
 
-??? example "Example: Nested Entities"
+    ID values are always included in both directions of a one-to-one relationship.
+    
+    ```json
+    {
+      "id": 1,
+      "street": "Franklin Public Library",
+      "library": 5
+    }
+    ```
 
-    In example model below, the `Library` model contains zero or more `Book` instances.
+In all other cases ID values are only required in one direction.
+Including ID values in both directions is allowed but not required.
+
+!!! example "Example: Serializing A One-to-Many Relationship"
+
+    The following example demonstrates a one-to-many relationship between the `Library` and `Book` models.
 
     ```mermaid
     classDiagram
@@ -54,23 +67,12 @@ In all other cases related entities are linked to in the serialized parent via a
         }
     ```
 
-    When serializing instances of the `Library` model, any related `Book` instances are also serialized and included in the rendered response.
+    When serializing instances of the `Library` model, any related `Book` instances are returned as a list of ID vlaues.
 
     ```json
     {
       "id": 1,
       "name": "Franklin Public Library",
-      "books": [
-        {
-          "id": 1,
-          "title": "Title 1",
-        }, {
-          "id": 2,
-          "title": "Title 2",
-        },
-      ]
+      "books": [1, 2]
     }
     ```
-
-Write operations are always supported for nested data, however, the values in a nested record are immutable.
-One or more nested records may be removed or replaced when modifying a parent record, but the content of the nested records cannot be changed.
