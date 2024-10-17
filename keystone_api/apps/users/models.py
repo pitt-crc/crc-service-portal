@@ -23,6 +23,80 @@ from .managers import *
 __all__ = ['Team', 'TeamMembership', 'User']
 
 
+class TeamMembership(models.Model):
+    """Relationship table between the `User` and `Team` models."""
+
+    class Meta:
+        """Database model settings."""
+
+        unique_together = ('user', 'team')
+
+    class Role(models.TextChoices):
+        """Define choices for the `role` field.
+
+        Roles are used to define user permissions within a team.
+        """
+
+        OWNER = 'OW', 'Owner'
+        ADMIN = 'AD', 'Admin'
+        MEMBER = 'MB', 'Member'
+
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE)
+    role = models.CharField(max_length=2, choices=Role.choices)
+
+
+class Team(models.Model):
+    """A collection of users who share resources and permissions."""
+
+    name = models.CharField(max_length=255, unique=True)
+    users = models.ManyToManyField('User', through=TeamMembership)
+    is_active = models.BooleanField(default=True)
+
+    objects = TeamManager()
+
+    def get_all_members(self) -> models.QuerySet:
+        """Return a queryset of all team members."""
+
+        return self.users.all()
+
+    def get_privileged_members(self) -> models.QuerySet:
+        """Return a queryset of all team with admin privileges."""
+
+        return self.users.filter(teammembership__role__in=[
+            TeamMembership.Role.ADMIN,
+            TeamMembership.Role.OWNER
+        ])
+
+    def add_or_update_member(self, user: 'User', role: str = TeamMembership.Role.MEMBER) -> TeamMembership:
+        """Add a user to the team with the specified role.
+
+        If the user is already a member, their role will be updated.
+
+        Args:
+            user: The user to add to the team.
+            role: The role to assign to the user. Defaults to 'Member'.
+
+        Returns:
+            The team membership record
+        """
+
+        membership_query = TeamMembership.objects.filter(user=user, team=self)
+        if membership_query.exists():
+            record = membership_query.first()
+            record.role = role
+            record.save()
+            return record
+
+        else:
+            return TeamMembership.objects.create(user=user, team=self, role=role)
+
+    def __str__(self) -> str:  # pragma: nocover
+        """Return the team's account name."""
+
+        return str(self.name)
+
+
 class User(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
     """Proxy model for the built-in django `User` model."""
 
@@ -89,77 +163,3 @@ class User(auth_models.AbstractBaseUser, auth_models.PermissionsMixin):
             self.profile_image.save(f'{self.username}.png', ContentFile(image_io.getvalue()), save=False)
 
         super().save(*args, **kwargs)
-
-
-class TeamMembership(models.Model):
-    """Relationship table between the `User` and `Team` models."""
-
-    class Meta:
-        """Database model settings."""
-
-        unique_together = ('user', 'team')
-
-    class Role(models.TextChoices):
-        """Define choices for the `role` field.
-
-        Roles are used to define user permissions within a team.
-        """
-
-        OWNER = 'OW', 'Owner'
-        ADMIN = 'AD', 'Admin'
-        MEMBER = 'MB', 'Member'
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    team = models.ForeignKey('Team', on_delete=models.CASCADE)
-    role = models.CharField(max_length=2, choices=Role.choices)
-
-
-class Team(models.Model):
-    """A collection of users who share resources and permissions."""
-
-    name = models.CharField(max_length=255, unique=True)
-    users = models.ManyToManyField(User, through=TeamMembership)
-    is_active = models.BooleanField(default=True)
-
-    objects = TeamManager()
-
-    def get_all_members(self) -> models.QuerySet:
-        """Return a queryset of all team members."""
-
-        return self.users.all()
-
-    def get_privileged_members(self) -> models.QuerySet:
-        """Return a queryset of all team with admin privileges."""
-
-        return self.users.filter(teammembership__role__in=[
-            TeamMembership.Role.ADMIN,
-            TeamMembership.Role.OWNER
-        ])
-
-    def add_or_update_member(self, user: User, role: str = TeamMembership.Role.MEMBER) -> TeamMembership:
-        """Add a user to the team with the specified role.
-
-        If the user is already a member, their role will be updated.
-
-        Args:
-            user: The user to add to the team.
-            role: The role to assign to the user. Defaults to 'Member'.
-
-        Returns:
-            The team membership record
-        """
-
-        membership_query = TeamMembership.objects.filter(user=user, team=self)
-        if membership_query.exists():
-            record = membership_query.first()
-            record.role = role
-            record.save()
-            return record
-
-        else:
-            return TeamMembership.objects.create(user=user, team=self, role=role)
-
-    def __str__(self) -> str:  # pragma: nocover
-        """Return the team's account name."""
-
-        return str(self.name)

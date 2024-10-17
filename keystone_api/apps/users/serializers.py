@@ -20,16 +20,6 @@ __all__ = [
 ]
 
 
-class TeamMembershipSerializer(serializers.ModelSerializer):
-    """Object serializer for the `TeamMembership` model."""
-
-    class Meta:
-        """Serializer settings."""
-
-        model = TeamMembership
-        fields = '__all__'
-
-
 class TeamSerializer(serializers.ModelSerializer):
     """Object serializer for the `Team` model."""
 
@@ -37,6 +27,16 @@ class TeamSerializer(serializers.ModelSerializer):
         """Serializer settings."""
 
         model = Team
+        fields = '__all__'
+
+
+class TeamMembershipSerializer(serializers.ModelSerializer):
+    """Object serializer for the `TeamMembership` model."""
+
+    class Meta:
+        """Serializer settings."""
+
+        model = TeamMembership
         fields = '__all__'
 
 
