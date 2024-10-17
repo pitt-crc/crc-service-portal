@@ -12,3 +12,4 @@ nav:
     - api/filtering.md
   - Developer Notes:
       - Common Tasks: developer/common.md
+      - developer/design_guidelines.md
