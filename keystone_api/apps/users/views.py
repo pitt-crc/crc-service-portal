@@ -26,7 +26,7 @@ class TeamMembershipViewSet(viewsets.ModelViewSet):
     """Manage team membership."""
 
     queryset = TeamMembership.objects.all()
-    permission_classes = [permissions.IsAuthenticated, TeamMembershipPermissions]
+    permission_classes = [TeamMembershipPermissions]
     serializer_class = TeamMembershipSerializer
 
 

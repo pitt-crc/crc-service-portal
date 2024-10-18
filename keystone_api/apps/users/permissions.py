@@ -40,17 +40,31 @@ class TeamMembershipPermissions(TeamPermissions):
     Write access is granted to staff and team administrators.
     """
 
+    def has_permission(self, request, view):
+
+        # Staff have all permissions
+        if request.user.is_staff:
+            return True
+
+        # Write access to specific teams is based on the user's relation to the team
+        try:
+            team = Team.objects.get(id=request.data.get('team'))
+            return request.user in team.get_privileged_members()
+
+        except Team.DoesNotExist:
+            return request.user.is_authenticated
+
     def has_object_permission(self, request: Request, view: View, obj: TeamMembership):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
-        if request.method in permissions.SAFE_METHODS:
+        if request.user.is_staff or request.method in permissions.SAFE_METHODS:
             return True
 
         # Users can delete their own group membership
         if request.method == "DELETE" and obj.user == request.user:
             return True
 
-        return request.user.is_staff or request.user in obj.team.get_privileged_members()
+        return request.user in obj.team.get_privileged_members()
 
 
 class UserPermissions(permissions.BasePermission):
