@@ -148,7 +148,6 @@ class CredentialHandling(APITestCase):
         """Test a user can set their own password."""
 
         self.client.force_authenticate(user=self.user1)
-
         response = self.client.patch(
             path=self.endpoint_pattern.format(pk=self.user1.id),
             data={'password': 'new_password123'}

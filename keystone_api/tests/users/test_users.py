@@ -128,6 +128,7 @@ class CredentialHandling(APITestCase):
 
         self.client.force_authenticate(user=self.staff_user)
         response = self.client.get('/users/users/')
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(response.json())
 
