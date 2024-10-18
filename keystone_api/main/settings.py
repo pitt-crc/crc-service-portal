@@ -178,6 +178,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'plugins.filter.AdvancedFilterBackend',
+        'rest_framework.filters.OrderingFilter'
+
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
