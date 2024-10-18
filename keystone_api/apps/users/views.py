@@ -4,11 +4,11 @@ View objects handle the processing of incoming HTTP requests and return the
 appropriately rendered HTML template or other HTTP response.
 """
 
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 from rest_framework.serializers import Serializer
 
 from .models import *
-from .permissions import TeamMembershipPermissions, TeamPermissions, UserPermissions
+from .permissions import *
 from .serializers import *
 
 __all__ = ['TeamViewSet', 'TeamMembershipViewSet', 'UserViewSet']
@@ -18,7 +18,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     """Manage user teams."""
 
     queryset = Team.objects.all()
-    permission_classes = [permissions.IsAuthenticated, TeamPermissions]
+    permission_classes = [TeamPermissions]
     serializer_class = TeamSerializer
 
 
@@ -34,7 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """Manage user account data."""
 
     queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticated, UserPermissions]
+    permission_classes = [UserPermissions]
 
     def get_serializer_class(self) -> type[Serializer]:
         """Return the appropriate data serializer based on user roles/permissions."""

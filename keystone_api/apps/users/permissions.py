@@ -12,7 +12,7 @@ from rest_framework.views import View
 
 from .models import *
 
-__all__ = ['TeamPermissions', 'UserPermissions']
+__all__ = ['TeamPermissions', 'TeamMembershipPermissions', 'UserPermissions']
 
 
 class TeamPermissions(permissions.BasePermission):
@@ -22,12 +22,17 @@ class TeamPermissions(permissions.BasePermission):
     Write access is granted to staff and team administrators.
     """
 
+    def has_permission(self, request: Request, view: View) -> bool:
+        """Return whether the request has permissions to access the requested resource."""
+
+        return request.user.is_authenticated
+
     def has_object_permission(self, request: Request, view: View, obj: Team):
         """Return whether the incoming HTTP request has permission to access a database record."""
 
         # Read permissions are allowed to any request
         if request.method in permissions.SAFE_METHODS:
-            return True
+            return request.user.is_authenticated
 
         # Update permissions are only allowed for staff and team admins
         return request.user.is_staff or request.user in obj.get_privileged_members()
@@ -40,7 +45,8 @@ class TeamMembershipPermissions(TeamPermissions):
     Write access is granted to staff and team administrators.
     """
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: View) -> bool:
+        """Return whether the request has permissions to access the requested resource."""
 
         # Staff have all permissions
         if request.user.is_staff:
@@ -80,7 +86,7 @@ class UserPermissions(permissions.BasePermission):
         if request.method == 'POST':
             return request.user.is_staff
 
-        return True
+        return request.user.is_authenticated
 
     def has_object_permission(self, request: Request, view: View, obj: User) -> bool:
         """Return whether the incoming HTTP request has permission to access a database record."""
