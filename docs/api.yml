@@ -125,6 +125,12 @@ paths:
         name: id__lte
         schema:
           type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: request
         schema:
@@ -435,6 +441,12 @@ paths:
           type: boolean
       - in: query
         name: name__startswith
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
         schema:
           type: string
       tags:
@@ -771,6 +783,12 @@ paths:
         name: id__lte
         schema:
           type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: status
         schema:
@@ -1190,6 +1208,12 @@ paths:
         name: last_modified__year
         schema:
           type: number
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: private_comments
         schema:
@@ -1774,6 +1798,12 @@ paths:
         name: name__startswith
         schema:
           type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: pathname
         schema:
@@ -2092,6 +2122,12 @@ paths:
           type: boolean
       - in: query
         name: method__startswith
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
@@ -2546,6 +2582,12 @@ paths:
           type: boolean
       - in: query
         name: meta__startswith
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
@@ -3086,6 +3128,12 @@ paths:
         name: id__lte
         schema:
           type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: start_date
         schema:
@@ -3524,6 +3572,12 @@ paths:
         name: journal__startswith
         schema:
           type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - in: query
         name: team
         schema:
@@ -3801,6 +3855,12 @@ paths:
           type: boolean
       - in: query
         name: name__startswith
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
         schema:
           type: string
       tags:
@@ -4314,6 +4374,12 @@ paths:
           type: boolean
       - in: query
         name: last_name__startswith
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
