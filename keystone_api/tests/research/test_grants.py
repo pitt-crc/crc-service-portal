@@ -13,15 +13,16 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
+    Permissions depend on the user's role within the team owning the accessed record.
 
-    | Authentication | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |----------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous User | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Non-Member     | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
-    | Team Member    | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
-    | Team Admin     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
-    | Team Owner     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
-    | Staff User     | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
+    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated User       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated non-member   | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
+    | Team Member                | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 403   |
+    | Team Admin                 | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
+    | Team Owner                 | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
+    | Staff User                 | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/research/grants/'
@@ -51,7 +52,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             'team': self.team.pk
         }
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
         self.assert_http_responses(
@@ -66,7 +67,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_non_team_member_permissions(self) -> None:
+    def test_non_member_permissions(self) -> None:
         """Test users have read access but cannot create records for teams where they are not members."""
 
         self.client.force_authenticate(user=self.generic_user)
@@ -134,7 +135,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post_body=self.valid_record_data
         )
 
-    def test_staff_user(self) -> None:
+    def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
         self.client.force_authenticate(user=self.staff_user)

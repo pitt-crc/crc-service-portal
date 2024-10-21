@@ -12,11 +12,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication     | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |--------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous user     | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated user | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 405   |
-    | Staff user         | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
+    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated user       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated user         | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 405   |
+    | Staff user                 | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/users/users/'
@@ -28,7 +28,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.staff_user = User.objects.get(username='staff_user')
         self.generic_user = User.objects.get(username='generic_user')
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
         self.assert_http_responses(
@@ -93,7 +93,7 @@ class CredentialHandling(APITestCase):
         self.staff_user = User.objects.get(username='staff_user')
         self.generic_user = User.objects.get(username='generic_user')
 
-    def test_new_user_credentials(self) -> None:
+    def test_new_user_credentials_are_set(self) -> None:
         """Test the user is created with the correct password.
 
         Passwords are provided in plain text but stored in the DB as a hash.
@@ -135,7 +135,7 @@ class CredentialHandling(APITestCase):
         for record in response.json():
             self.assertNotIn('password', record.keys(), f'Password field found in record: {record}')
 
-    def test_passwords_validated(self) -> None:
+    def test_passwords_are_validated(self) -> None:
         """Test passwords are validated against security requirements."""
 
         self.client.force_authenticate(user=self.staff_user)

@@ -12,11 +12,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication      | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |---------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous User      | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated User  | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Staff User          | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
+    | Authentication             | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated User       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated User         | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Staff User                 | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/logs/apps/'

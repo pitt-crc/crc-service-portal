@@ -12,6 +12,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
+    Permissions depend on the user's role within the team owning the accessed record.
 
     | Authentication | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |----------------|-----|------|---------|------|-----|-------|--------|-------|
@@ -123,7 +124,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post_body={'title': 'foo', 'description': 'bar', 'team': self.team.pk}
         )
 
-    def test_staff_user(self) -> None:
+    def test_staff_user_permissions(self) -> None:
         """Test staff users have read and write permissions."""
 
         self.client.force_authenticate(user=self.staff_user)

@@ -12,11 +12,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous user              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated user          | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
-    | Staff user                  | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
+    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated user       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated user         | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
+    | Staff user                 | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/users/teams/'
@@ -28,7 +28,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.staff_user = User.objects.get(username='staff_user')
         self.generic_user = User.objects.get(username='generic_user')
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
         self.assert_http_responses(
@@ -44,7 +44,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         )
 
     def test_authenticated_user_permissions(self) -> None:
-        """Test general authenticated users can create new teams."""
+        """Test authenticated users can create new teams."""
 
         self.client.force_authenticate(user=self.generic_user)
         self.assert_http_responses(
@@ -61,7 +61,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         )
 
     def test_staff_user_permissions(self) -> None:
-        """Test staff users have full read and write permissions."""
+        """Test staff users have read and write permissions."""
 
         self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(

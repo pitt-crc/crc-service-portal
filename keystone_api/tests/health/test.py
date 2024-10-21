@@ -10,12 +10,14 @@ class EndpointPermissions(APITransactionTestCase):
     """Test endpoint user permissions.
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
+    The returned response value depends on the result of the system helath check.
+    A 200/500 response is used when health checks pass/fail.
 
-    | Authentication      | GET     | HEAD     | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |---------------------|---------|----------|---------|------|-----|-------|--------|-------|
-    | Anonymous User      | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
-    | Authenticated User  | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
-    | Staff User          | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
+    | User Status                | GET     | HEAD     | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|---------|----------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated User       | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
+    | Authenticated User         | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
+    | Staff User                 | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/health/'
@@ -41,7 +43,7 @@ class EndpointPermissions(APITransactionTestCase):
         self.assertEqual(self.client.delete(self.endpoint).status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertEqual(self.client.trace(self.endpoint).status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users have read-only permissions."""
 
         self.assert_read_only_responses()
