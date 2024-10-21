@@ -148,7 +148,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Keystone",
     "site_header": "Keystone",
     "site_brand": "Keystone",
-    "hide_apps": ["sites", "auth", "token_blacklist"],
+    "hide_apps": ["sites", "auth", "authtoken", "token_blacklist"],
     "order_with_respect_to": [
         "users",
         "allocations",
