@@ -12,12 +12,12 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous user              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | User accessing own account  | 200 | 200  | 200     | 403  | 200 | 200   | 204    | 405   |
-    | User accessing other user   | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 405   |
-    | Staff user                  | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated user       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | User accessing own account | 200 | 200  | 200     | 403  | 200 | 200   | 204    | 405   |
+    | User accessing other user  | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 405   |
+    | Staff user                 | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
     endpoint_pattern = '/users/users/{pk}/'
@@ -30,7 +30,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.user2 = User.objects.get(username='member_2')
         self.staff_user = User.objects.get(username='staff_user')
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
         endpoint = self.endpoint_pattern.format(pk=self.user1.id)

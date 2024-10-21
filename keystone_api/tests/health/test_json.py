@@ -12,11 +12,11 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
 
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication      | GET     | HEAD     | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |---------------------|---------|----------|---------|------|-----|-------|--------|-------|
-    | Anonymous User      | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
-    | Authenticated User  | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
-    | Staff User          | 200/500 | 200/500  | 200/500 | 405  | 405 | 405   | 405    | 405   |
+    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated User       | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
+    | Authenticated User         | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
+    | Staff User                 | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/health/json/'
@@ -28,7 +28,7 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
         self.staff_user = User.objects.get(username='staff_user')
         self.generic_user = User.objects.get(username='generic_user')
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users have read-only permissions."""
 
         self.assert_http_responses(

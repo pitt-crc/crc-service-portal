@@ -14,14 +14,14 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
     | Authentication      | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |---------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous User      | 401 | 401  | 200     | 405  | 405 | 405   | 405    | 405   |
+    | Unauthenticated User      | 401 | 401  | 200     | 405  | 405 | 405   | 405    | 405   |
     | Authenticated User  | 200 | 200  | 200     | 405  | 405 | 405   | 405    | 405   |
     """
 
     endpoint = '/authentication/whoami/'
     fixtures = ['testing_common.yaml']
 
-    def test_user_not_authenticated(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access the endpoint."""
 
         self.assert_http_responses(
@@ -36,7 +36,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
-    def test_user_authenticated(self) -> None:
+    def test_authenticated_user_permissions(self) -> None:
         """Test authenticated users can perform read operations."""
 
         user = User.objects.get(username='generic_user')

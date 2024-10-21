@@ -11,15 +11,14 @@ from tests.utils import CustomAsserts
 class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
-    Permissions depend on whether the user is a member of the record's associated team.
-
     Endpoint permissions are tested against the following matrix of HTTP responses.
+    Permissions depend on whether the user is a member of the record's associated team.
 
     | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous User              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | User accessing own team     | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 403   |
-    | User accessing other team   | 404 | 404  | 200     | 403  | 403 | 403   | 403    | 403   |
+    | Unauthenticated User        | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated non-member    | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 403   |
+    | Team member                 | 404 | 404  | 200     | 403  | 403 | 403   | 403    | 403   |
     | Staff User                  | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
@@ -39,7 +38,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
         self.non_member = User.objects.get(username='generic_user')
         self.team_member = User.objects.get(username='member_1')
 
-    def test_anonymous_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self) -> None:
         """Test unauthenticated users cannot access resources."""
 
         self.assert_http_responses(
@@ -54,23 +53,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_authenticated_user_same_team(self) -> None:
-        """Test permissions for authenticated users accessing records owned by their team."""
-
-        self.client.force_authenticate(user=self.team_member)
-        self.assert_http_responses(
-            self.endpoint,
-            get=status.HTTP_200_OK,
-            head=status.HTTP_200_OK,
-            options=status.HTTP_200_OK,
-            post=status.HTTP_403_FORBIDDEN,
-            put=status.HTTP_403_FORBIDDEN,
-            patch=status.HTTP_403_FORBIDDEN,
-            delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN
-        )
-
-    def test_authenticated_user_different_team(self) -> None:
+    def test_non_team_member_permissions(self) -> None:
         """Test permissions for authenticated users accessing records owned by someone else's team."""
 
         self.client.force_authenticate(user=self.non_member)
@@ -84,6 +67,22 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
             trace=status.HTTP_403_FORBIDDEN,
+        )
+
+    def test_team_member_permissions(self) -> None:
+        """Test permissions for authenticated users accessing records owned by their team."""
+
+        self.client.force_authenticate(user=self.team_member)
+        self.assert_http_responses(
+            self.endpoint,
+            get=status.HTTP_200_OK,
+            head=status.HTTP_200_OK,
+            options=status.HTTP_200_OK,
+            post=status.HTTP_403_FORBIDDEN,
+            put=status.HTTP_403_FORBIDDEN,
+            patch=status.HTTP_403_FORBIDDEN,
+            delete=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_403_FORBIDDEN
         )
 
     def test_staff_user_permissions(self) -> None:
