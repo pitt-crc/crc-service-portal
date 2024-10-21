@@ -15,7 +15,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous user              | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated user          | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 403   |
+    | Authenticated user          | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     | Staff user                  | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
@@ -56,7 +56,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_405_METHOD_NOT_ALLOWED,
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
             delete=status.HTTP_405_METHOD_NOT_ALLOWED,
-            trace=status.HTTP_403_FORBIDDEN,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
             post_body={'name': 'Team FooBar'}
         )
 

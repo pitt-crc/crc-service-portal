@@ -1,4 +1,4 @@
-"""Function tests for the `/users/teams/<pk>/` endpoint."""
+"""Function tests for the `/users/membership/<pk>/` endpoint."""
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -10,21 +10,19 @@ from tests.utils import CustomAsserts
 class EndpointPermissions(APITestCase, CustomAsserts):
     """Test endpoint user permissions.
 
-    Permissions depend on whether the user is a member of the record's associated team.
-
     Endpoint permissions are tested against the following matrix of HTTP responses.
 
-    | Authentication               | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |------------------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Anonymous user               | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Nonmember accessing team     | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
-    | Team member accessing team   | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
-    | Team admin accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
-    | Team owner accessing team    | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
-    | Staff user                   | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | Authentication                     | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |------------------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Anonymous user                     | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Non-member                         | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
+    | Team member                        | 200 | 200  | 200     | 405  | 403 | 403   | 403    | 405   |
+    | Team admin                         | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | Team owner                         | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | Staff user                         | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
-    endpoint_pattern = '/users/teams/{pk}/'
+    endpoint_pattern = '/users/membership/{pk}/'
     fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
@@ -56,8 +54,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_authenticated_user_different_team(self) -> None:
-        """Test authenticated users have read-only permissions for other teams."""
+    def test_non_member_user_permissions(self) -> None:
+        """Test regular user accessing another user's membership (read-only)."""
 
         self.client.force_authenticate(user=self.non_team_member)
         self.assert_http_responses(
@@ -72,8 +70,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def test_authenticated_team_member(self) -> None:
-        """Test team members have read-only permissions for their own team."""
+    def test_team_member_permissions(self) -> None:
+        """Test team member accessing another member's details (can update or delete)."""
 
         self.client.force_authenticate(user=self.team_member)
         self.assert_http_responses(
@@ -88,8 +86,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def test_authenticated_team_admin(self) -> None:
-        """Test team admins have read and write permissions for their own team."""
+    def test_team_admin_permissions(self) -> None:
+        """Test team admin accessing another member's details (can update or delete)."""
 
         self.client.force_authenticate(user=self.team_admin)
         self.assert_http_responses(
@@ -102,12 +100,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            put_body={'name': 'Team 3'},
-            patch_body={'name': 'New Name'},
+            put_body={'user': self.non_team_member.pk, 'team': self.team.pk, 'role': 'MB'}
         )
 
-    def test_authenticated_team_owner(self) -> None:
-        """Test team owners have read and write permissions for the team."""
+    def test_team_owner_permissions(self) -> None:
+        """Test team owner accessing another member's details (can update or delete)."""
 
         self.client.force_authenticate(user=self.team_owner)
         self.assert_http_responses(
@@ -120,12 +117,11 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            put_body={'name': 'Team 3'},
-            patch_body={'name': 'New Name'},
+            put_body={'user': self.non_team_member.pk, 'team': self.team.pk, 'role': 'MB'}
         )
 
     def test_staff_user_permissions(self) -> None:
-        """Test staff users have read and write permissions."""
+        """Test staff users can manage memberships (can update or delete)."""
 
         self.client.force_authenticate(user=self.staff_user)
         self.assert_http_responses(
@@ -138,6 +134,5 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            put_body={'name': 'Team 3'},
-            patch_body={'name': 'New Name'},
+            put_body={'user': self.non_team_member.pk, 'team': self.team.pk, 'role':'MB'}
         )

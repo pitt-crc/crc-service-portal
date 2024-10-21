@@ -20,6 +20,16 @@ __all__ = [
 ]
 
 
+class TeamSerializer(serializers.ModelSerializer):
+    """Object serializer for the `Team` model."""
+
+    class Meta:
+        """Serializer settings."""
+
+        model = Team
+        fields = '__all__'
+
+
 class TeamMembershipSerializer(serializers.ModelSerializer):
     """Object serializer for the `TeamMembership` model."""
 
@@ -27,66 +37,7 @@ class TeamMembershipSerializer(serializers.ModelSerializer):
         """Serializer settings."""
 
         model = TeamMembership
-        fields = ['user', 'role']
-
-
-class TeamSerializer(serializers.ModelSerializer):
-    """Object serializer for the `Team` model."""
-
-    memberships = TeamMembershipSerializer(source='teammembership_set', many=True, required=False)
-
-    class Meta:
-        """Serializer settings."""
-
-        model = Team
-        fields = ['id', 'name', 'is_active', 'memberships']
-
-    def create(self, validated_data: dict) -> Team:
-        """Create a new database record, including relationships.
-
-        Args:
-            validated_data: Validated record data.
-
-        Returns:
-            The new record instance.
-        """
-
-        memberships_data = validated_data.pop('teammembership_set', [])
-        team = Team.objects.create(**validated_data)
-
-        for membership in memberships_data:
-            team.add_or_update_member(
-                user=membership['user'],
-                role=membership.get('role', TeamMembership.Role.MEMBER)
-            )
-
-        return team
-
-    def update(self, instance: Team, validated_data: dict) -> Team:
-        """Update a new database record, including relationships.
-
-        Args:
-            instance: The record instance to update
-            validated_data: Validated record data.
-
-        Returns:
-            The updated record instance.
-        """
-
-        # Update the team record
-        memberships_data = validated_data.pop('teammembership_set', [])
-        instance.name = validated_data.get('name', instance.name)
-        instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.save()
-
-        # Update or create team memberships
-        for membership in memberships_data:
-            instance.add_or_update_member(
-                user=membership['user'],
-                role=membership.get('role', TeamMembership.Role.MEMBER)
-            )
-
-        return instance
+        fields = '__all__'
 
 
 class PrivilegedUserSerializer(serializers.ModelSerializer):

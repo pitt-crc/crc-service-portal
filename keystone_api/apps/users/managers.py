@@ -18,6 +18,22 @@ if TYPE_CHECKING:  # pragma: nocover
 __all__ = ['TeamManager', 'UserManager']
 
 
+class TeamManager(models.Manager):
+    """Object manager for the `Team` database model."""
+
+    def teams_for_user(self, user: 'User') -> models.QuerySet:
+        """Get all teams the user is affiliated with.
+
+        Args:
+            user: The user to return affiliate teams for.
+
+        Returns:
+            A filtered queryset.
+        """
+
+        return self.filter(teammembership__user=user)
+
+
 class UserManager(BaseUserManager):
     """Object manager for the `User` database model."""
 
@@ -66,19 +82,3 @@ class UserManager(BaseUserManager):
             raise ValueError('When creating a superuser you must set  `is_superuser=True`.')
 
         return self.create_user(username, password, **extra_fields)
-
-
-class TeamManager(models.Manager):
-    """Object manager for the `Team` database model."""
-
-    def teams_for_user(self, user: 'User') -> models.QuerySet:
-        """Get all teams the user is affiliated with.
-
-        Args:
-            user: The user to return affiliate teams for.
-
-        Returns:
-            A filtered queryset.
-        """
-
-        return self.filter(teammembership__user=user)

@@ -3773,10 +3773,274 @@ paths:
       responses:
         '204':
           description: No response body
+  /users/membership/:
+    get:
+      operationId: users_membership_list
+      description: Manage team membership.
+      parameters:
+      - in: query
+        name: id
+        schema:
+          type: integer
+      - in: query
+        name: id__gt
+        schema:
+          type: integer
+      - in: query
+        name: id__gte
+        schema:
+          type: integer
+      - in: query
+        name: id__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: id__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: id__lt
+        schema:
+          type: integer
+      - in: query
+        name: id__lte
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: role
+        schema:
+          type: string
+          enum:
+          - AD
+          - MB
+          - OW
+        description: |-
+          * `OW` - Owner
+          * `AD` - Admin
+          * `MB` - Member
+      - in: query
+        name: role__contains
+        schema:
+          type: string
+      - in: query
+        name: role__endswith
+        schema:
+          type: string
+      - in: query
+        name: role__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: role__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: role__startswith
+        schema:
+          type: string
+      - in: query
+        name: team
+        schema:
+          type: integer
+      - in: query
+        name: team__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: team__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: user
+        schema:
+          type: integer
+      - in: query
+        name: user__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: user__isnull
+        schema:
+          type: boolean
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamMembership'
+          description: ''
+    post:
+      operationId: users_membership_create
+      description: Manage team membership.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembership'
+          description: ''
+  /users/membership/{id}/:
+    get:
+      operationId: users_membership_retrieve
+      description: Manage team membership.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team membership.
+        required: true
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembership'
+          description: ''
+    put:
+      operationId: users_membership_update
+      description: Manage team membership.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team membership.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeamMembership'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembership'
+          description: ''
+    patch:
+      operationId: users_membership_partial_update
+      description: Manage team membership.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team membership.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTeamMembership'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTeamMembership'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTeamMembership'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembership'
+          description: ''
+    delete:
+      operationId: users_membership_destroy
+      description: Manage team membership.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team membership.
+        required: true
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
   /users/teams/:
     get:
       operationId: users_teams_list
-      description: Manage user team membership.
+      description: Manage user teams.
       parameters:
       - in: query
         name: id
@@ -3879,7 +4143,7 @@ paths:
           description: ''
     post:
       operationId: users_teams_create
-      description: Manage user team membership.
+      description: Manage user teams.
       tags:
       - users
       requestBody:
@@ -3907,7 +4171,7 @@ paths:
   /users/teams/{id}/:
     get:
       operationId: users_teams_retrieve
-      description: Manage user team membership.
+      description: Manage user teams.
       parameters:
       - in: path
         name: id
@@ -3929,7 +4193,7 @@ paths:
           description: ''
     put:
       operationId: users_teams_update
-      description: Manage user team membership.
+      description: Manage user teams.
       parameters:
       - in: path
         name: id
@@ -3963,7 +4227,7 @@ paths:
           description: ''
     patch:
       operationId: users_teams_partial_update
-      description: Manage user team membership.
+      description: Manage user teams.
       parameters:
       - in: path
         name: id
@@ -3996,7 +4260,7 @@ paths:
           description: ''
     delete:
       operationId: users_teams_destroy
-      description: Manage user team membership.
+      description: Manage user teams.
       parameters:
       - in: path
         name: id
@@ -5130,10 +5394,24 @@ components:
           maxLength: 255
         is_active:
           type: boolean
-        memberships:
+        users:
           type: array
           items:
-            $ref: '#/components/schemas/TeamMembership'
+            type: integer
+          readOnly: true
+    PatchedTeamMembership:
+      type: object
+      description: Object serializer for the `TeamMembership` model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        user:
+          type: integer
+        team:
+          type: integer
     Publication:
       type: object
       description: Object serializer for the `Publication` class.
@@ -5443,23 +5721,32 @@ components:
           maxLength: 255
         is_active:
           type: boolean
-        memberships:
+        users:
           type: array
           items:
-            $ref: '#/components/schemas/TeamMembership'
+            type: integer
+          readOnly: true
       required:
       - id
       - name
+      - users
     TeamMembership:
       type: object
       description: Object serializer for the `TeamMembership` model.
       properties:
-        user:
+        id:
           type: integer
+          readOnly: true
         role:
           $ref: '#/components/schemas/RoleEnum'
+        user:
+          type: integer
+        team:
+          type: integer
       required:
+      - id
       - role
+      - team
       - user
     Token:
       type: object

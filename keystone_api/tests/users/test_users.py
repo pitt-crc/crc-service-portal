@@ -15,7 +15,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     | Authentication     | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
     |--------------------|-----|------|---------|------|-----|-------|--------|-------|
     | Anonymous user     | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated user | 200 | 200  | 200     | 403  | 405 | 405   | 403    | 403   |
+    | Authenticated user | 200 | 200  | 200     | 403  | 405 | 405   | 405    | 405   |
     | Staff user         | 200 | 200  | 200     | 201  | 405 | 405   | 405    | 405   |
     """
 
@@ -55,8 +55,8 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             post=status.HTTP_403_FORBIDDEN,
             put=status.HTTP_405_METHOD_NOT_ALLOWED,
             patch=status.HTTP_405_METHOD_NOT_ALLOWED,
-            delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN,
+            delete=status.HTTP_405_METHOD_NOT_ALLOWED,
+            trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def test_staff_user_permissions(self) -> None:
@@ -128,6 +128,7 @@ class CredentialHandling(APITestCase):
 
         self.client.force_authenticate(user=self.staff_user)
         response = self.client.get('/users/users/')
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(response.json())
 
