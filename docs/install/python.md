@@ -91,6 +91,11 @@ celery -A keystone_api.apps.scheduler beat --scheduler django_celery_beat.schedu
 The `celery` command executes as a foreground process by default.
 The following unit files are provided as a starting point to daemonize the process via the systemd service manager.
 
+!!! warning 
+
+    Depending on the number of deployed workers, Celery can fill up it's log directory fairly quickly.
+    Rotating log files to prevent excessive storage is strongly recommended.
+
 === "keystone-worker.service"
 
     ```toml
