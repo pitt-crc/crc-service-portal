@@ -26,13 +26,13 @@ Improperly configured settings can introduce dangerous vulnerabilities and may d
 
 ### CORS/CSRF
 
-| Setting Name             | Default Value                                                                                                                                         | Description                                                            |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| `SECURE_ALLOWED_HOSTS`   | <code>localhost</code><br><code>127.0.0.1</code>                                                                                                                                | Comma-separated list of accepted host/domain names (without protocol). |
+| Setting Name             | Default Value                                                                                                                                          | Description                                                            |
+|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| `SECURE_ALLOWED_HOSTS`   | <code>localhost</code><br><code>127.0.0.1</code>                                                                                                       | Comma-separated list of accepted host/domain names (without protocol). |
 | `SECURE_ALLOWED_ORIGINS` | <code>http://localhost:4200</code><br><code>https://localhost:4200</code><br><code>http://127.0.0.1:4200</code><br><code>https://127.0.0.1:4200</code> | Comma-separated list of accepted CORS origin domains (with protocol).  |
 | `SECURE_CSRF_ORIGINS`    | <code>http://localhost:4200</code><br><code>https://localhost:4200</code><br><code>http://127.0.0.1:4200</code><br><code>https://127.0.0.1:4200</code> | Comma-separated list of accepted CSRF origin domains (with protocol).  |
-| `SECURE_SSL_TOKENS`      | `False`                                                                                                                                               | Only issue session/CSRF tokens over secure connections.                |
-| `SECURE_SESSION_AGE`     | `1209600` (2 weeks)                                                                                                                                   | Number of seconds before session tokens expire.                        |
+| `SECURE_SSL_TOKENS`      | `False`                                                                                                                                                | Only issue session/CSRF tokens over secure connections.                |
+| `SECURE_SESSION_AGE`     | `1209600` (2 weeks)                                                                                                                                    | Number of seconds before session tokens expire.                        |
 
 ## General Configuration
 
@@ -45,8 +45,8 @@ By default, these files are stored in subdirectories of the installed applicatio
 | `CONFIG_STATIC_DIR`        | `<app>/static_files` | Where to store internal static files required by the application.                                           |
 | `CONFIG_UPLOAD_DIR`        | `<app>/upload_files` | Where to store file data uploaded by users.                                                                 |
 | `CONFIG_LOG_LEVEL`         | `WARNING`            | Only record application logs above this level (accepts `CRITICAL`, `ERROR`, `WARNING`, `INFO`, or `DEBUG`). |
-| `CONFIG_LOG_RETENTION`     | `2592000` (30 days)  | How long to store application logs in seconds. Set to 0 to keep all records.                                |
-| `CONFIG_REQUEST_RETENTION` | `2592000` (30 days)  | How long to store request logs in seconds. Set to 0 to keep all records.                                    |
+| `CONFIG_LOG_RETENTION`     | `604800` (1 week)    | How long to store application logs in seconds. Set to 0 to keep all records.                                |
+| `CONFIG_REQUEST_RETENTION` | `604800` (1 week)    | How long to store request logs in seconds. Set to 0 to keep all records.                                    |
 
 ## API Throttling
 
