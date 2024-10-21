@@ -148,7 +148,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Keystone",
     "site_header": "Keystone",
     "site_brand": "Keystone",
-    "hide_apps": ["sites", "auth", "token_blacklist"],
+    "hide_apps": ["sites", "auth", "authtoken", "token_blacklist"],
     "order_with_respect_to": [
         "users",
         "allocations",
@@ -178,6 +178,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'plugins.filter.AdvancedFilterBackend',
+        'rest_framework.filters.OrderingFilter'
+
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -299,8 +301,8 @@ TIME_ZONE = env.str('CONFIG_TIMEZONE', 'UTC')
 
 # Logging
 
-CONFIG_LOG_RETENTION = env.int('CONFIG_LOG_RETENTION', timedelta(days=30).total_seconds())
-CONFIG_REQUEST_RETENTION = env.int('CONFIG_REQUEST_RETENTION', timedelta(days=30).total_seconds())
+CONFIG_LOG_RETENTION = env.int('CONFIG_LOG_RETENTION', timedelta(days=14).total_seconds())
+CONFIG_REQUEST_RETENTION = env.int('CONFIG_REQUEST_RETENTION', timedelta(days=14).total_seconds())
 
 LOGGING = {
     "version": 1,

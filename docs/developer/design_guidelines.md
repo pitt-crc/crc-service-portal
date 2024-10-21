@@ -2,7 +2,26 @@
 
 The Keystone-API project adheres to the following design guidelines.
 
-### Serializing Relational Data
+## Choosing HTTP Error Codes
+
+When an HTTP request fails, the reason should be easily discernible.
+Unfortunately, an invalid or improper request will sometimes fail for more than one reason.
+To ensure response codes are generated consistently across endpoints, user requests are validated according to a standard order of operations.
+The appropriate failure response is determined by the first validation step to fail.
+
+### Request Validation Order
+
+1. **User authentication status:** 
+   Unauthenticated users attempting to access an endpoint requiring authentication are returned a `403 - Forbidden` error.
+2. **Support for the requested method:** 
+   Requests containing an unsupported HTTP method (e.g., `TRACE`) are returned a `405 - Method Not Allowed` error.
+3. **Role Based Access Controls (RBAC):** 
+   Requests that are prohibited by RBAC or other buisiness permissions logic are returned a `403 - Forbidden` error.
+4. **Additional request verification:**
+   Any request verification not included in the previous checks are evaluated last.
+   Response codes in this step are generated according to standard practices.
+
+## Serializing Relational Data
 
 Serialized records will always reference related entities using ID values.
 When serializing a one-to-one relationship, ID values are included for both directions of the relationship.

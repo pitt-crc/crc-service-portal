@@ -1,18 +1,40 @@
-# Filtering Requests
+# Structuring Queries
 
-When querying data from an API endpoint, the returned records can be filtered using URL parameters.
+Keystone API uses query parameters to sort and filter records in API responses.
+Since these operations are applied at the database level, using query parameters is often more performant than processing data client side.
+
+## Sorting Requests
+
+The `ordering` parameter is used to sort records by one or more fields.
+
+```
+.../endpoint/?ordering=field1
+.../endpoint/?ordering=field1,field2
+```
+
+To sort in descending order, a hyphen is prefixed to the field name.
+In the following example, `field1` is sorted in ascending order and `field2` in descending order.
+
+```bash
+.../endpoint/?ordering=field1,-field2
+```
+
+
+## Filtering Requests
+
+Query parameters provide basic support for filtering records by the value of their fields.
 In the following example, returned records are limited to those where the `example` field equals `100`:
 
 ```
-my.domain.com/endpoint?example=100
+.../endpoint?example=100
 ```
 
-More advanced filtering is achieved by adding query filters.
-Query filters are specified using a double underscre (`__`) followed by filter expression.
+More advanced filtering is achieved by adding filters.
+Query filters are specified using a double underscore (`__`) followed by a filter expression.
 For example, the following API call will return records when the `example` field is greater than `50` but less than `150`:
 
 ```
-my.domain.com/endpoint?example__gt=50&example_lt=150
+.../endpoint?example__gt=50&example_lt=150
 ```
 
 Available query filters are summarized in the tables below.
