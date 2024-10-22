@@ -1,9 +1,47 @@
-# Manually created on 2024-10-12
-
 import django.db.models.deletion
 from django.conf import settings
-from django.db import migrations, models
+from django.db import migrations, models, connection
 
+def insert_team_memberships(apps, schema_editor):
+    if connection.vendor == 'postgresql':
+        schema_editor.execute("""
+            INSERT INTO users_teammembership (user_id, team_id, role)
+            SELECT user_id, team_id, 'MB'
+            FROM users_team_members;
+            """)
+
+        schema_editor.execute("""
+            INSERT INTO users_teammembership (user_id, team_id, role)
+            SELECT user_id, team_id, 'AD'
+            FROM users_team_admins
+            ON CONFLICT (user_id, team_id) DO UPDATE SET role = 'AD';
+            """)
+
+        schema_editor.execute("""
+            INSERT INTO users_teammembership (user_id, team_id, role)
+            SELECT pi_id, id, 'OW'
+            FROM users_team
+            ON CONFLICT (user_id, team_id) DO UPDATE SET role = 'OW';
+        """)
+
+    elif connection.vendor == 'sqlite':
+        schema_editor.execute("""
+            INSERT INTO users_teammembership (user_id, team_id, role)
+            SELECT user_id, team_id, 'MB'
+            FROM users_team_members;
+        """)
+
+        schema_editor.execute("""
+            INSERT OR REPLACE INTO users_teammembership (user_id, team_id, role)
+            SELECT user_id, team_id, 'AD'
+            FROM users_team_admins;
+        """)
+
+        schema_editor.execute("""
+            INSERT OR REPLACE INTO users_teammembership (user_id, team_id, role)
+            SELECT pi_id, id, 'OW'
+            FROM users_team;
+        """)
 
 class Migration(migrations.Migration):
 
@@ -40,21 +78,7 @@ class Migration(migrations.Migration):
         ),
 
         # Move old user permissions to the new model
-        migrations.RunSQL("""
-            INSERT INTO users_teammembership (user_id, team_id, role) 
-            SELECT pi_id, id, 'OW' 
-            FROM users_team;
-        """),
-        migrations.RunSQL("""
-            INSERT INTO users_teammembership (user_id, team_id, role)
-            SELECT user_id, team_id, 'AD'
-            FROM users_team_admins;
-        """),
-        migrations.RunSQL("""
-            INSERT INTO users_teammembership (user_id, team_id, role)
-            SELECT user_id, team_id, 'ME'
-            FROM users_team_members;
-        """),
+        migrations.RunPython(insert_team_memberships),
 
         # Remove models/fields used to track the old permissions
         migrations.RemoveField(model_name='Team', name='pi'),
