@@ -5,7 +5,7 @@ It provides management utilities for:
 
 - The allocation of HPC compute resources across one or more clusters
 - The tracking of user research products, including grants and publications
-- The management of user accounts, research groups, and access permissions
+- The management of user accounts, teams, and RBAC permissions
 - Administrative activities, including health check monitoring and application logging
 
 For more information, see the resources below.
