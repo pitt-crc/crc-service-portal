@@ -1,6 +1,8 @@
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models, connection
+from django.db.models import UniqueConstraint
+
 
 def insert_team_memberships(apps, schema_editor):
     if connection.vendor == 'postgresql':
@@ -66,7 +68,9 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'unique_together': {('user', 'team')},
+                'constraints': [
+                    UniqueConstraint(fields=['user', 'team'], name='unique_user_team')
+                ],
             },
         ),
 

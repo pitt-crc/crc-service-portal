@@ -15,6 +15,7 @@ from django.contrib.auth import models as auth_models
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.files.base import ContentFile
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.utils import timezone
 from PIL import Image
 
@@ -29,7 +30,9 @@ class TeamMembership(models.Model):
     class Meta:
         """Database model settings."""
 
-        unique_together = ('user', 'team')
+        constraints = [
+            UniqueConstraint(fields=['user', 'team'], name='unique_user_team')
+        ]
 
     class Role(models.TextChoices):
         """Define choices for the `role` field.
