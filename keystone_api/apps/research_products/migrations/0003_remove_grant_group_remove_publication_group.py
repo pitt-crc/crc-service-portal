@@ -10,12 +10,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='grant',
-            name='group',
+            old_name='group',
+            new_name='team',
         ),
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='publication',
-            name='group',
+            old_name='group',
+            new_name='team',
         ),
     ]
