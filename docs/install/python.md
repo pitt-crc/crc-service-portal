@@ -239,11 +239,16 @@ server {
 
 ## Upgrading Application Versions
 
-When upgrading the application, ensure the database and static files are up-to-date before relaunching the application server.
+!!! important
+    The `keystone-server` systemd configuration defined above defined to start on demand.
+    When taking the system offline, it is best to also prevent incoming traffic from the upstream proxy.
+    This is achieved in the example below by stopping the proxy.
+    If the proxy is forwarding traffic to multiple locations, this can also be achieved by modifying the proxy config and restarting the `nginx` service
 
 === "pipx (recommended)"
 
     ```bash
+    systemctl stop nginx
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
@@ -255,11 +260,13 @@ When upgrading the application, ensure the database and static files are up-to-d
     systemctl start keystone-worker
     systemctl start keystone-beat
     systemctl start keystone-server
+    systemctl start nginx
     ```
 
 === "pip"
 
     ```bash
+    systemctl stop nginx
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
@@ -271,4 +278,5 @@ When upgrading the application, ensure the database and static files are up-to-d
     systemctl start keystone-worker
     systemctl start keystone-beat
     systemctl start keystone-server
+    systemctl start nginx
     ```
