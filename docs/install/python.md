@@ -246,8 +246,8 @@ System services should be taken offline before upgrading to a new version.
     Always ensure the production database is backed up before applying application updates.
 
 !!! note
-    The `keystone-server` systemd configuration outlined above is defined to start the API server on demand.
-    When taking the system offline, it is best to also prevent system restarts by stopping incoming traffic from the upstream proxy.
+    The `keystone-server` systemd configuration outlined above is designed to automatically start the API server in response to incoming traffic.
+    When taking the system offline, it is best to also prevent inadvertent restarts by stopping incoming traffic from the upstream proxy.
     This is achievable by or by modifying the proxy config and restarting the proxy service
 
 === "pipx (recommended)"
