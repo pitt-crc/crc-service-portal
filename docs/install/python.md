@@ -243,12 +243,13 @@ API upgrades are handled by the Python package manager.
 System services should be taken offline before upgrading to a new version.
 
 !!! danger
-    Always ensure the production database is backed up before applying application updates.
+    Application upgrades may involve irreversible database migrations.
+    Always ensure the production database is backed up before applying updates.
 
 !!! note
-    The `keystone-server` systemd configuration outlined above is designed to automatically start the API server in response to incoming traffic.
-    When taking the system offline, it is best to also prevent inadvertent restarts by stopping incoming traffic from the upstream proxy.
-    This is achievable by or by modifying the proxy config and restarting the proxy service
+    The systemd configurations outlined above are designed to automatically start the `keystone-server` service in response to incoming traffic.
+    When performing upgrades, it is best to prevent inadvertent restarts by stopping incoming traffic from the upstream proxy.
+    This is achievable by taking the proxy offline or by modifying the proxy config and restarting the proxy service.
 
 === "pipx (recommended)"
 
