@@ -12,11 +12,24 @@ from apps.users.models import User
 from .models import *
 
 __all__ = [
+    'AttachmentSerializer',
     'AllocationSerializer',
     'AllocationRequestSerializer',
     'AllocationRequestReviewSerializer',
     'ClusterSerializer',
 ]
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    """Object serializer for the `Attachment` class."""
+
+    path = serializers.FileField(use_url=False, read_only=True)
+
+    class Meta:
+        """Serializer settings."""
+
+        model = Attachment
+        fields = '__all__'
 
 
 class AllocationSerializer(serializers.ModelSerializer):

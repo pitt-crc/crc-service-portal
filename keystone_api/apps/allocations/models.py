@@ -136,13 +136,18 @@ class AllocationRequestReview(TeamModelInterface, models.Model):
         return f'{self.reviewer} review for \"{self.request.title}\"'
 
 
-class Attachment(models.Model):
+class Attachment(TeamModelInterface, models.Model):
     """File data uploaded by users."""
 
-    file_data = models.FileField()
+    path = models.FileField(upload_to='allocations')
     uploaded = models.DateTimeField(auto_now=True)
 
     request = models.ForeignKey('AllocationRequest', on_delete=models.CASCADE)
+
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
+
+        return self.request.team
 
 
 class Cluster(models.Model):

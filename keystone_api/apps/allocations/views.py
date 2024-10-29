@@ -13,6 +13,7 @@ from .serializers import *
 from ..users.models import Team
 
 __all__ = [
+    'AttachmentViewSet',
     'AllocationViewSet',
     'AllocationRequestViewSet',
     'AllocationRequestReviewViewSet',
@@ -35,6 +36,23 @@ class AllocationViewSet(viewsets.ModelViewSet):
 
         teams = Team.objects.teams_for_user(self.request.user)
         return Allocation.objects.filter(request__team__in=teams)
+
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+    """Files submitted as attachments to allocation requests"""
+
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
+
+    def get_queryset(self) -> list[Allocation]:
+        """Return a list of attachments for the currently authenticated user."""
+
+        if self.request.user.is_staff:
+            return self.queryset
+
+        teams = Team.objects.teams_for_user(self.request.user)
+        return Attachment.objects.filter(request__team__in=teams)
 
 
 class AllocationRequestViewSet(viewsets.ModelViewSet):
