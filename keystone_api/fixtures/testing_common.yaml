@@ -182,6 +182,20 @@
     requested: 10000
     awarded: 10000
 
+# Attachments
+- model: allocations.attachment
+  pk: 1
+  fields:
+    request: 1
+    path: /dummy/file1.txt
+    uploaded: "2000-01-01"
+- model: allocations.attachment
+  pk: 2
+  fields:
+    request: 1
+    path: /dummy/file1.txt
+    uploaded: "2000-01-01"
+
 # Publications
 - model: research_products.publication
   pk: 1
