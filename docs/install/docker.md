@@ -27,24 +27,35 @@ New administrator accounts can also be created manually by running the `keystone
 ```bash
 docker exec -i -t keystone keystone-api createsuperuser
 ```
-
-You can test the new credentials by authenticating against the API and generating a pair of JWT tokens.
+Keystone uses session tokens to manage user authentication and permissions. New sessions are generate using the authentication/login/ endpoint. Once successfully authenticated, the endpoint will automatically issue a 200 response and include cookies for the session ID and CSRF token.
 
 ```bash
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"username": "[USERNAME]", "password": "[PASSWORD]"}' \
-  http://localhost:80/api/token/
+credentials='{"username": "user", "password": "userpassword"}'
+headers='Content-Type: application/json'
+
+curl -s -X POST \
+  -c cookies.txt \
+  -H "$headers" \
+  -d "$credentials" \
+  https://keystone.domain.com/authentication/login/
+
+cat cookies.txt
 ```
 
-If successful, you will receive a response similar to the following:
+Future requests to API endpoints are authenticated by including the session cookie. Write operations will also require the CSRF token in the request header
 
-```json
-{
-  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3BrIjoxLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiY29sZF9zdHVmZiI6IuKYgyIsImV4cCI6MTIzNDU2LCJqdGkiOiJmZDJmOWQ1ZTFhN2M0MmU4OTQ5MzVlMzYyYmNhOGJjYSJ9.NHlztMGER7UADHZJlxNG0WSi22a2KaYSfd1S-AuT7lU",
-  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3BrIjoxLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImNvbGRfc3R1ZmYiOiLimIMiLCJleHAiOjIzNDU2NywianRpIjoiZGUxMmY0ZTY3MDY4NDI3ODg5ZjE1YWMyNzcwZGEwNTEifQ.aEoAYkSJjoWH1boshQAaTkf8G3yn0kapko6HFRt7Rh4"
-}
+```# Read operations only require session cookies
+get_response=$(curl -s -b cookies.txt "https://keystone.domain.com/users/users/")
+echo "$get_response"
+
+# Write operations require CSRF headers and session cookies
+csrf_token=$(grep 'csrftoken' cookies.txt | awk '{print $7}')
+patch_response=$(curl -s -X PATCH \
+  -b cookies.txt \
+  -H "X-CSRFToken: $csrf_token" \
+  "https://keystone.domain.com/users/users/1")
+
+echo "$patch_response"
 ```
 
 !!! important
