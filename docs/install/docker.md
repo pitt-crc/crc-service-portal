@@ -37,7 +37,7 @@ curl -s -X POST \
   -c cookies.txt \
   -H "$headers" \
   -d "$credentials" \
-  https://keystone.domain.com/authentication/login/
+  http://localhost:8000/authentication/login/
 
 cat cookies.txt
 ```
@@ -45,7 +45,7 @@ cat cookies.txt
 Future requests to API endpoints are authenticated by including the session cookie. Write operations will also require the CSRF token in the request header
 
 ```# Read operations only require session cookies
-get_response=$(curl -s -b cookies.txt "https://keystone.domain.com/users/users/")
+get_response=$(curl -s -b cookies.txt "http://localhost:8000/users/users/")
 echo "$get_response"
 
 # Write operations require CSRF headers and session cookies
@@ -53,7 +53,7 @@ csrf_token=$(grep 'csrftoken' cookies.txt | awk '{print $7}')
 patch_response=$(curl -s -X PATCH \
   -b cookies.txt \
   -H "X-CSRFToken: $csrf_token" \
-  "https://keystone.domain.com/users/users/1")
+  "http://localhost:8000/authentication/login/users/users/1")
 
 echo "$patch_response"
 ```
