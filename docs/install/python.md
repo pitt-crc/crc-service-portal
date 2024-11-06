@@ -205,10 +205,6 @@ Nginx is recommended, but administrators are welcome to use a proxy of their cho
 A starter Nginx configuration file is provided below for convenience.
 
 ```nginx
-upstream keystone_api {
-    server localhost:8000;
-}
-
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -226,6 +222,11 @@ server {
     ssl_certificate_key /etc/pki/tls/private/keystone.key;
 
     location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
         proxy_pass http://unix:/run/gunicorn.sock;
     }
 
