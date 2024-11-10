@@ -1,8 +1,12 @@
 # Deploying with Python
 
-Keystone-API can be installed using system packages and managed using the systemd service manager.
+Keystone-API can be installed directly on a machine using system packages.
 Doing so requires administrative privileges and assumes you are managing system services via systemd.
-These instructions also assume you are installing applications under a dedicated, unprivileged user account called `keystone`. 
+
+!!! note
+
+    When deploying to production, it is strongly recommended to install the application under a dedicated, unprivileged service account.
+    In the following example, a user account called `keystone` is used. 
 
 ## Installing the API
 
@@ -74,8 +78,8 @@ Make sure to replace the password field with a secure value.
 
 ```postgresql
 create database keystone;
-create user keystone_sa with encrypted password '[PASSWORD]';
-grant all privileges on database keystone to keystone_sa;
+create user keystone with encrypted password '[PASSWORD]';
+grant all privileges on database keystone to keystone;
 ```
 
 ### Celery
@@ -94,7 +98,7 @@ The following unit files are provided as a starting point to daemonize the proce
 !!! warning 
 
     Celery can fill up it's log directory fairly quickly, especially when running multiple workers simultaneously.
-    Rotating the Celery log files to prevent excessive storage is strongly recommended.
+    The Celery log files should be rotated regularly to prevent excessive disk usage.
 
 === "keystone-worker.service"
 
@@ -205,10 +209,6 @@ Nginx is recommended, but administrators are welcome to use a proxy of their cho
 A starter Nginx configuration file is provided below for convenience.
 
 ```nginx
-upstream keystone_api {
-    server localhost:8000;
-}
-
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -235,16 +235,16 @@ server {
 }
 ```
 
-1. The `/uploads` alias must match the `CONFIG_UPLOAD_DIR` in application settings.
+1. The `/uploads` directory is used to host user files and should match the `CONFIG_UPLOAD_DIR` in application settings.
 
 ## Upgrading Application Versions
 
-API upgrades are handled by the Python package manager.
+Software updates are handled by the Python package manager.
 System services should be taken offline before upgrading to a new version.
 
 !!! danger
     Application upgrades may involve irreversible database migrations.
-    Always ensure the production database is backed up before applying updates.
+    Always ensure the application database is backed up before applying updates.
 
 !!! note
     The systemd configurations outlined above are designed to automatically start the `keystone-server` service in response to incoming traffic.
@@ -258,6 +258,8 @@ System services should be taken offline before upgrading to a new version.
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
+
+    # Pause here to backup the application database
 
     pipx upgrade keystone-api
     keystone-api migrate
@@ -276,6 +278,8 @@ System services should be taken offline before upgrading to a new version.
     systemctl stop keystone-server
     systemctl stop keystone-beat
     systemctl stop keystone-worker
+
+    # Pause here to backup the application database
     
     pip install --upgrade keystone-api
     keystone-api migrate
