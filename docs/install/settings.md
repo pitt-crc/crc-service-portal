@@ -55,8 +55,8 @@ Limits are specified as the maximum number of requests per `day`, `minute`, `hou
 
 | Setting Name        | Default Value | Description                                          |
 |---------------------|---------------|------------------------------------------------------|
-| `API_THROTTLE_ANON` | `1000/day`    | Rate limiting for anonymous (unauthenticated) users. |
-| `API_THROTTLE_USER` | `10000/day`   | Rate limiting for authenticated users.               |
+| `API_THROTTLE_ANON` | `120/min`     | Rate limiting for anonymous (unauthenticated) users. |
+| `API_THROTTLE_USER` | `240/min`     | Rate limiting for authenticated users.               |
 
 ## Database Connection
 
