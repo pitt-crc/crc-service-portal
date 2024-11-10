@@ -6,23 +6,29 @@ Multi-container deployments are strongly recommended for teams operating at scal
 
 ## Using Docker Standalone
 
-The following command will automatically pull and launch the latest application image from the GitHub container registry.
-In this example the image is launched as a container called `keystone` and the API is mapped to port 8000 on the local machine.
+!!! danger
+
+    The default container instance is **not** suitable for production out of the box.
+    See the [Settings](settings.md) page for a complete overview of configurable options and recommended settings.
+
+The following command will automatically pull and launch the latest API image.
+In this example, the image is launched as a container called `keystone` and the API is mapped to port 8000 on the local machine.
 
 ```bash
 docker run --detach --publish 8000:80 --name keystone ghcr.io/better-hpc/keystone-api
 ```
 
-The health of the running API instance can be checked by querying the API `health` endpoint.
+The health of the running API instance can be checked by checking the container status or by querying the API `health` endpoint.
 
 ```bash
-curl -L http://localhost:8000/health | jq .
+curl -L http://localhost:8000/health/json | jq .
 ```
 
 The default container command executes the `quickstart` utility, which automatically spins up system dependencies (Postgres, Redis, etc.) within the container.
 The command also checks for any existing user accounts and, if no accounts are found, creates an admin account with username `admin` password `quickstart`.
 This behavior can be overwritten by manually specifying the docker deployment command.
-New administrator accounts can also be created manually by running the `keystone-api` utility from within the container.
+
+New administrator accounts are created by running the `createsuperuser` command from within the container.
 
 ```bash
 docker exec -i -t keystone keystone-api createsuperuser
@@ -53,12 +59,6 @@ If successful, the cookies file will contain a `sessionid` token similar to the 
 
 #HttpOnly_localhost	FALSE	/	FALSE	1731614955	sessionid	to8ut2q5l2t3trikm8zaq1yh9vstodyq
 ```
-
-!!! important
-
-    The default container instance is **not** suitable for production out of the box.
-    Supporting services will not save data between container restarts and should be deployed separately to ensure data persistence. 
-    See the [Settings](settings.md) page for a complete overview of configurable options and recommended settings.
 
 ## Using Docker Compose
 
@@ -150,7 +150,7 @@ volumes:
 The following examples define the minimal required settings for deploying the recipe.
 The `DJANGO_SETTINGS_MODULE="keystone_api.main.settings"` setting is required by the application.
 
-!!! important
+!!! warning
 
     The settings provided below are intended for demonstrative purposes only.
     These values are not iherintly secure and should be customized to meet the needs at hand.
