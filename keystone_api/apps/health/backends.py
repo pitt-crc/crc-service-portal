@@ -13,8 +13,6 @@ from health_check.backends import BaseHealthCheckBackend
 class SMTPHealthCheck(BaseHealthCheckBackend):
     """Health check plugin for the SMTP server defined in application settings."""
 
-    critical_service = False
-
     def check_status(self) -> None:
         """Check the status of the SMTP server."""
 
