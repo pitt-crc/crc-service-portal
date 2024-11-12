@@ -44,6 +44,16 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title="Keystone API"
+            org.opencontainers.image.description="API service for the Keystone HPC project."
+            org.opencontainers.image.url="https://github.com/better-hpc/keystone-api"
+            org.opencontainers.image.source="https://github.com/better-hpc/keystone-api"
+            org.opencontainers.image.version="${{ inputs.version }}"
+            org.opencontainers.image.authors="Better HPC LLC"
+            org.opencontainers.image.revision="${{ github.sha }}"
+            org.opencontainers.image.vendor="Better HPC LLC"
+            org.opencontainers.image.ref.name="ghcr.io/better-hpc/keystone-api:${{ inputs.version }}"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
