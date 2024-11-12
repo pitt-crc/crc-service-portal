@@ -63,6 +63,10 @@ Specific instructions are provided below on configuring each dependency.
 
 Most Redis server instances will work out of the box so long as the connection and authentication values are set correctly in the API settings.
 
+### SMTP
+
+The API requires an SMTP server to issue user notifications. No specific requirements are imposed on the server itself, only that the connection and authentication values are set correctly in the API settings.
+
 ### PostgreSQL
 
 Using PostgreSQL for the application database is strongly recommended.
