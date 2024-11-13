@@ -1,4 +1,4 @@
-"""Unit tests for the `AllocationRequestReviewViewSet` class."""
+"""Unit tests for the `AllocationReviewViewSet` class."""
 
 from django.test import RequestFactory, TestCase
 from rest_framework import status

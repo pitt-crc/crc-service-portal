@@ -1,4 +1,4 @@
-"""Unit tests for the `AllocationRequestReview` class."""
+"""Unit tests for the `AllocationReview` class."""
 
 from django.test import TestCase
 
@@ -23,7 +23,7 @@ class TeamInterface(TestCase):
             team=self.team
         )
 
-        # Create an AllocationRequestReview instance linked to the AllocationRequest
+        # Create an AllocationReview instance linked to the AllocationRequest
         self.reviewer = User.objects.create_user(username='reviewer', password='foobar123!')
         self.allocation_request_review = AllocationReview.objects.create(
             status=AllocationReview.StatusChoices.APPROVED,

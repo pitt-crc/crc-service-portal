@@ -53,7 +53,7 @@ class AllocationRequestSerializer(serializers.ModelSerializer):
 
 
 class AllocationReviewSerializer(serializers.ModelSerializer):
-    """Object serializer for the `AllocationRequestReview` class."""
+    """Object serializer for the `AllocationReview` class."""
 
     class Meta:
         """Serializer settings."""

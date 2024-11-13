@@ -83,7 +83,7 @@ class AllocationReviewViewSet(viewsets.ModelViewSet):
         return AllocationReview.objects.filter(request__team__in=teams)
 
     def create(self, request, *args, **kwargs) -> Response:
-        """Create a new `AllocationRequestReview` object."""
+        """Create a new `AllocationReview` object."""
 
         data = request.data.copy()
         data.setdefault('reviewer', request.user.pk)

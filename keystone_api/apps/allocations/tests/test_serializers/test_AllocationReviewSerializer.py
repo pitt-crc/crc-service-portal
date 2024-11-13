@@ -1,4 +1,4 @@
-"""Unit tests for the `AllocationRequestReviewSerializer` class."""
+"""Unit tests for the `AllocationReviewSerializer` class."""
 
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
