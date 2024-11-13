@@ -4,6 +4,37 @@ info:
   version: 0.0.0
   description: A REST API for managing user resource allocations on HPC systems.
 paths:
+  /allocations/allocation-request/status-choices/:
+    get:
+      operationId: allocations_allocation_request_status_choices_retrieve
+      description: Returns the enumerated status choices for AllocationRequest.
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                PD: Pending
+                AP: Approved
+                DC: Declined
+                CR: Changes Requested
+          description: ''
+  /allocations/allocation-review/status-choices/:
+    get:
+      operationId: allocations_allocation_review_status_choices_retrieve
+      description: Returns the enumerated status choices for AllocationReview.
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
   /allocations/allocations/:
     get:
       operationId: allocations_allocations_list
@@ -1636,7 +1667,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AllocationRequestReview'
+                  $ref: '#/components/schemas/AllocationReview'
           description: ''
     post:
       operationId: allocations_reviews_create
@@ -1647,13 +1678,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
         required: true
       security:
       - cookieAuth: []
@@ -1663,7 +1694,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
   /allocations/reviews/{id}/:
     get:
@@ -1674,7 +1705,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1686,7 +1717,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     put:
       operationId: allocations_reviews_update
@@ -1696,7 +1727,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1704,13 +1735,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
         required: true
       security:
       - cookieAuth: []
@@ -1720,7 +1751,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     patch:
       operationId: allocations_reviews_partial_update
@@ -1730,7 +1761,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1738,13 +1769,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -1753,7 +1784,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     delete:
       operationId: allocations_reviews_destroy
@@ -1763,7 +1794,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -5240,7 +5271,19 @@ components:
       - submitted
       - team
       - title
-    AllocationRequestReview:
+    AllocationRequestStatusEnum:
+      enum:
+      - PD
+      - AP
+      - DC
+      - CR
+      type: string
+      description: |-
+        * `PD` - Pending
+        * `AP` - Approved
+        * `DC` - Declined
+        * `CR` - Changes Requested
+    AllocationReview:
       type: object
       description: Object serializer for the `AllocationRequestReview` class.
       properties:
@@ -5248,7 +5291,7 @@ components:
           type: integer
           readOnly: true
         status:
-          $ref: '#/components/schemas/AllocationRequestReviewStatusEnum'
+          $ref: '#/components/schemas/AllocationReviewStatusEnum'
         public_comments:
           type: string
           nullable: true
@@ -5271,25 +5314,13 @@ components:
       - last_modified
       - request
       - status
-    AllocationRequestReviewStatusEnum:
+    AllocationReviewStatusEnum:
       enum:
       - AP
       - DC
       - CR
       type: string
       description: |-
-        * `AP` - Approved
-        * `DC` - Declined
-        * `CR` - Changes Requested
-    AllocationRequestStatusEnum:
-      enum:
-      - PD
-      - AP
-      - DC
-      - CR
-      type: string
-      description: |-
-        * `PD` - Pending
         * `AP` - Approved
         * `DC` - Declined
         * `CR` - Changes Requested
@@ -5506,7 +5537,7 @@ components:
           type: array
           items:
             type: integer
-    PatchedAllocationRequestReview:
+    PatchedAllocationReview:
       type: object
       description: Object serializer for the `AllocationRequestReview` class.
       properties:
@@ -5514,7 +5545,7 @@ components:
           type: integer
           readOnly: true
         status:
-          $ref: '#/components/schemas/AllocationRequestReviewStatusEnum'
+          $ref: '#/components/schemas/AllocationReviewStatusEnum'
         public_comments:
           type: string
           nullable: true

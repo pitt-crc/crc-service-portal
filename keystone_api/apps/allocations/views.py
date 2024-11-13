@@ -4,7 +4,9 @@ View objects handle the processing of incoming HTTP requests and return the
 appropriately rendered HTML template or other HTTP response.
 """
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from .models import *
@@ -13,12 +15,87 @@ from .serializers import *
 from ..users.models import Team
 
 __all__ = [
-    'AttachmentViewSet',
-    'AllocationViewSet',
+    'AllocationRequestStatusChoicesView',
     'AllocationRequestViewSet',
+    'AllocationReviewStatusChoicesView',
     'AllocationReviewViewSet',
-    'ClusterViewSet',
+    'AllocationViewSet',
+    'AttachmentViewSet',
+    'ClusterViewSet'
 ]
+
+
+class AllocationRequestStatusChoicesView(GenericAPIView):
+    """Returns the enumerated status choices for AllocationRequest."""
+
+    @extend_schema(responses={'200': dict(AllocationRequest.StatusChoices.choices)})
+    def get(self, request, *args, **kwargs):
+        """Return valid values for the allocation review `status` field."""
+
+        status_choices = [
+            {"code": choice[0], "label": choice[1]} for choice in AllocationRequest.StatusChoices.choices
+        ]
+        return Response(status_choices, status=status.HTTP_200_OK)
+
+
+class AllocationRequestViewSet(viewsets.ModelViewSet):
+    """Manage allocation requests."""
+
+    queryset = AllocationRequest.objects.all()
+    serializer_class = AllocationRequestSerializer
+    permission_classes = [permissions.IsAuthenticated, TeamAdminCreateMemberRead]
+
+    def get_queryset(self) -> list[AllocationRequest]:
+        """Return a list of allocation requests for the currently authenticated user."""
+
+        if self.request.user.is_staff:
+            return self.queryset
+
+        teams = Team.objects.teams_for_user(self.request.user)
+        return AllocationRequest.objects.filter(team__in=teams)
+
+
+class AllocationReviewStatusChoicesView(GenericAPIView):
+    """Returns the enumerated status choices for AllocationReview."""
+
+    @extend_schema(responses={'200': dict(AllocationReview.StatusChoices.choices)})
+    def get(self, request, *args, **kwargs):
+        """Return valid values for the allocation review `status` field."""
+
+        status_choices = [
+            {"code": choice[0], "label": choice[1]} for choice in AllocationReview.StatusChoices.choices
+        ]
+        return Response(status_choices, status=status.HTTP_200_OK)
+
+
+class AllocationReviewViewSet(viewsets.ModelViewSet):
+    """Manage administrator reviews of allocation requests."""
+
+    queryset = AllocationReview.objects.all()
+    serializer_class = AllocationReviewSerializer
+    permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
+
+    def get_queryset(self) -> list[Allocation]:
+        """Return a list of allocation reviews for the currently authenticated user."""
+
+        if self.request.user.is_staff:
+            return self.queryset
+
+        teams = Team.objects.teams_for_user(self.request.user)
+        return AllocationReview.objects.filter(request__team__in=teams)
+
+    def create(self, request, *args, **kwargs) -> Response:
+        """Create a new `AllocationRequestReview` object."""
+
+        data = request.data.copy()
+        data.setdefault('reviewer', request.user.pk)
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AllocationViewSet(viewsets.ModelViewSet):
@@ -53,53 +130,6 @@ class AttachmentViewSet(viewsets.ModelViewSet):
 
         teams = Team.objects.teams_for_user(self.request.user)
         return Attachment.objects.filter(request__team__in=teams)
-
-
-class AllocationRequestViewSet(viewsets.ModelViewSet):
-    """Manage allocation requests."""
-
-    queryset = AllocationRequest.objects.all()
-    serializer_class = AllocationRequestSerializer
-    permission_classes = [permissions.IsAuthenticated, TeamAdminCreateMemberRead]
-
-    def get_queryset(self) -> list[AllocationRequest]:
-        """Return a list of allocation requests for the currently authenticated user."""
-
-        if self.request.user.is_staff:
-            return self.queryset
-
-        teams = Team.objects.teams_for_user(self.request.user)
-        return AllocationRequest.objects.filter(team__in=teams)
-
-
-class AllocationReviewViewSet(viewsets.ModelViewSet):
-    """Manage administrator reviews of allocation requests."""
-
-    queryset = AllocationReview.objects.all()
-    serializer_class = AllocationReviewSerializer
-    permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
-
-    def get_queryset(self) -> list[Allocation]:
-        """Return a list of allocation reviews for the currently authenticated user."""
-
-        if self.request.user.is_staff:
-            return self.queryset
-
-        teams = Team.objects.teams_for_user(self.request.user)
-        return AllocationReview.objects.filter(request__team__in=teams)
-
-    def create(self, request, *args, **kwargs) -> Response:
-        """Create a new `AllocationRequestReview` object."""
-
-        data = request.data.copy()
-        data.setdefault('reviewer', request.user.pk)
-
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ClusterViewSet(viewsets.ModelViewSet):
