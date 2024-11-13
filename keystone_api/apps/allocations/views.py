@@ -32,10 +32,7 @@ class AllocationRequestStatusChoicesView(GenericAPIView):
     def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
-        status_choices = [
-            {"code": choice[0], "label": choice[1]} for choice in AllocationRequest.StatusChoices.choices
-        ]
-        return Response(status_choices, status=status.HTTP_200_OK)
+        return Response(dict(AllocationRequest.StatusChoices.choices), status=status.HTTP_200_OK)
 
 
 class AllocationRequestViewSet(viewsets.ModelViewSet):
@@ -62,10 +59,7 @@ class AllocationReviewStatusChoicesView(GenericAPIView):
     def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
-        status_choices = [
-            {"code": choice[0], "label": choice[1]} for choice in AllocationReview.StatusChoices.choices
-        ]
-        return Response(status_choices, status=status.HTTP_200_OK)
+        return Response(dict(AllocationReview.StatusChoices.choices), status=status.HTTP_200_OK)
 
 
 class AllocationReviewViewSet(viewsets.ModelViewSet):

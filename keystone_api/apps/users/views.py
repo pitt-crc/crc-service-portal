@@ -37,8 +37,7 @@ class TeamMembershipRoleChoicesView(APIView):
     def get(self, request) -> Response:
         """Return valid values for the team membership `role` field."""
 
-        choices = [{"value": choice[0], "label": choice[1]} for choice in TeamMembership.Role.choices]
-        return Response(choices, status=status.HTTP_200_OK)
+        return Response(dict(TeamMembership.Role.choices), status=status.HTTP_200_OK)
 
 
 class TeamMembershipViewSet(viewsets.ModelViewSet):
