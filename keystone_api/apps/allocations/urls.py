@@ -11,6 +11,6 @@ router.register(r'allocations', AllocationViewSet)
 router.register(r'attachments', AttachmentViewSet)
 router.register(r'clusters', ClusterViewSet)
 router.register(r'requests', AllocationRequestViewSet)
-router.register(r'reviews', AllocationRequestReviewViewSet)
+router.register(r'reviews', AllocationReviewViewSet)
 
 urlpatterns = router.urls

@@ -33,7 +33,7 @@ class AllocationInline(admin.TabularInline):
 class AllocationRequestReviewInline(admin.StackedInline):
     """Inline admin interface for the `AllocationRequestReview` model."""
 
-    model = AllocationRequestReview
+    model = AllocationReview
     verbose_name = 'Review'
     show_change_link = True
     readonly_fields = ('last_modified',)

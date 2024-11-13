@@ -16,7 +16,7 @@ __all__ = [
     'AttachmentViewSet',
     'AllocationViewSet',
     'AllocationRequestViewSet',
-    'AllocationRequestReviewViewSet',
+    'AllocationReviewViewSet',
     'ClusterViewSet',
 ]
 
@@ -72,11 +72,11 @@ class AllocationRequestViewSet(viewsets.ModelViewSet):
         return AllocationRequest.objects.filter(team__in=teams)
 
 
-class AllocationRequestReviewViewSet(viewsets.ModelViewSet):
+class AllocationReviewViewSet(viewsets.ModelViewSet):
     """Manage administrator reviews of allocation requests."""
 
-    queryset = AllocationRequestReview.objects.all()
-    serializer_class = AllocationRequestReviewSerializer
+    queryset = AllocationReview.objects.all()
+    serializer_class = AllocationReviewSerializer
     permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
 
     def get_queryset(self) -> list[Allocation]:
@@ -86,7 +86,7 @@ class AllocationRequestReviewViewSet(viewsets.ModelViewSet):
             return self.queryset
 
         teams = Team.objects.teams_for_user(self.request.user)
-        return AllocationRequestReview.objects.filter(request__team__in=teams)
+        return AllocationReview.objects.filter(request__team__in=teams)
 
     def create(self, request, *args, **kwargs) -> Response:
         """Create a new `AllocationRequestReview` object."""

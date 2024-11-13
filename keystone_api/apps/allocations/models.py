@@ -21,7 +21,7 @@ from apps.users.models import Team, User
 __all__ = [
     'Allocation',
     'AllocationRequest',
-    'AllocationRequestReview',
+    'AllocationReview',
     'Attachment',
     'Cluster',
     'TeamModelInterface',
@@ -107,7 +107,7 @@ class AllocationRequest(TeamModelInterface, models.Model):
         return truncatechars(self.title, 100)
 
 
-class AllocationRequestReview(TeamModelInterface, models.Model):
+class AllocationReview(TeamModelInterface, models.Model):
     """Reviewer feedback for an allocation request."""
 
     class StatusChoices(models.TextChoices):

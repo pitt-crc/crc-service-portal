@@ -15,7 +15,7 @@ __all__ = [
     'AttachmentSerializer',
     'AllocationSerializer',
     'AllocationRequestSerializer',
-    'AllocationRequestReviewSerializer',
+    'AllocationReviewSerializer',
     'ClusterSerializer',
 ]
 
@@ -52,13 +52,13 @@ class AllocationRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AllocationRequestReviewSerializer(serializers.ModelSerializer):
+class AllocationReviewSerializer(serializers.ModelSerializer):
     """Object serializer for the `AllocationRequestReview` class."""
 
     class Meta:
         """Serializer settings."""
 
-        model = AllocationRequestReview
+        model = AllocationReview
         fields = '__all__'
         extra_kwargs = {'reviewer': {'required': False}}  # Default reviewer value is set by the view class
 
