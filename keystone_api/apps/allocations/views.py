@@ -28,11 +28,13 @@ __all__ = [
 class AllocationRequestStatusChoicesView(GenericAPIView):
     """Exposes valid values for the allocation request `status` field."""
 
-    @extend_schema(responses={'200': dict(AllocationRequest.StatusChoices.choices)})
+    _resp_body = dict(AllocationRequest.StatusChoices.choices)
+
+    @extend_schema(responses={'200': _resp_body})
     def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
-        return Response(dict(AllocationRequest.StatusChoices.choices), status=status.HTTP_200_OK)
+        return Response(self._resp_body, status=status.HTTP_200_OK)
 
 
 class AllocationRequestViewSet(viewsets.ModelViewSet):
@@ -55,11 +57,13 @@ class AllocationRequestViewSet(viewsets.ModelViewSet):
 class AllocationReviewStatusChoicesView(GenericAPIView):
     """Exposes valid values for the allocation review `status` field."""
 
-    @extend_schema(responses={'200': dict(AllocationReview.StatusChoices.choices)})
+    _resp_body = dict(AllocationReview.StatusChoices.choices)
+
+    @extend_schema(responses={'200': _resp_body})
     def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
-        return Response(dict(AllocationReview.StatusChoices.choices), status=status.HTTP_200_OK)
+        return Response(self._resp_body, status=status.HTTP_200_OK)
 
 
 class AllocationReviewViewSet(viewsets.ModelViewSet):

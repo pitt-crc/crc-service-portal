@@ -7,7 +7,7 @@ paths:
   /allocations/allocation-request/status-choices/:
     get:
       operationId: allocations_allocation_request_status_choices_retrieve
-      description: Returns the enumerated status choices for AllocationRequest.
+      description: Return valid values for the allocation review `status` field.
       tags:
       - allocations
       security:
@@ -26,7 +26,7 @@ paths:
   /allocations/allocation-review/status-choices/:
     get:
       operationId: allocations_allocation_review_status_choices_retrieve
-      description: Returns the enumerated status choices for AllocationReview.
+      description: Return valid values for the allocation review `status` field.
       tags:
       - allocations
       security:
@@ -34,7 +34,13 @@ paths:
       - basicAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                AP: Approved
+                DC: Declined
+                CR: Changes Requested
+          description: ''
   /allocations/allocations/:
     get:
       operationId: allocations_allocations_list
@@ -4349,6 +4355,24 @@ paths:
       responses:
         '204':
           description: No response body
+  /users/team-membership/role-choices/:
+    get:
+      operationId: users_team_membership_role_choices_retrieve
+      description: Return valid values for the team membership `role` field.
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                OW: Owner
+                AD: Admin
+                MB: Member
+          description: ''
   /users/teams/:
     get:
       operationId: users_teams_list

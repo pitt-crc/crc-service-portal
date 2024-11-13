@@ -33,11 +33,13 @@ class TeamViewSet(viewsets.ModelViewSet):
 class TeamMembershipRoleChoicesView(APIView):
     """Exposes valid values for the team membership `role` field."""
 
-    @extend_schema(responses={'200': dict(TeamMembership.Role.choices)})
+    _resp_body = dict(TeamMembership.Role.choices)
+
+    @extend_schema(responses={'200': _resp_body})
     def get(self, request) -> Response:
         """Return valid values for the team membership `role` field."""
 
-        return Response(dict(TeamMembership.Role.choices), status=status.HTTP_200_OK)
+        return Response(self._resp_body, status=status.HTTP_200_OK)
 
 
 class TeamMembershipViewSet(viewsets.ModelViewSet):
