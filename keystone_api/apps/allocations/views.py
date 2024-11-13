@@ -26,10 +26,10 @@ __all__ = [
 
 
 class AllocationRequestStatusChoicesView(GenericAPIView):
-    """Returns the enumerated status choices for AllocationRequest."""
+    """Exposes valid values for the allocation request `status` field."""
 
     @extend_schema(responses={'200': dict(AllocationRequest.StatusChoices.choices)})
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
         status_choices = [
@@ -56,10 +56,10 @@ class AllocationRequestViewSet(viewsets.ModelViewSet):
 
 
 class AllocationReviewStatusChoicesView(GenericAPIView):
-    """Returns the enumerated status choices for AllocationReview."""
+    """Exposes valid values for the allocation review `status` field."""
 
     @extend_schema(responses={'200': dict(AllocationReview.StatusChoices.choices)})
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> Response:
         """Return valid values for the allocation review `status` field."""
 
         status_choices = [
