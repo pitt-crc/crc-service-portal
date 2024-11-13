@@ -158,7 +158,7 @@
     submitted: "2023-01-01"
 
 # Allocation Request Reviews
-- model: allocations.allocationrequestreview
+- model: allocations.allocationreview
   pk: 1
   fields:
     status: AP
