@@ -1677,7 +1677,7 @@ paths:
           description: ''
     post:
       operationId: allocations_reviews_create
-      description: Create a new `AllocationRequestReview` object.
+      description: Create a new `AllocationReview` object.
       tags:
       - allocations
       requestBody:
@@ -5309,7 +5309,7 @@ components:
         * `CR` - Changes Requested
     AllocationReview:
       type: object
-      description: Object serializer for the `AllocationRequestReview` class.
+      description: Object serializer for the `AllocationReview` class.
       properties:
         id:
           type: integer
@@ -5563,7 +5563,7 @@ components:
             type: integer
     PatchedAllocationReview:
       type: object
-      description: Object serializer for the `AllocationRequestReview` class.
+      description: Object serializer for the `AllocationReview` class.
       properties:
         id:
           type: integer
