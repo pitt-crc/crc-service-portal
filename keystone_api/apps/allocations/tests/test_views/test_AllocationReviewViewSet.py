@@ -1,10 +1,10 @@
-"""Unit tests for the `AllocationRequestReviewViewSet` class."""
+"""Unit tests for the `AllocationReviewViewSet` class."""
 
 from django.test import RequestFactory, TestCase
 from rest_framework import status
 
-from apps.allocations.models import AllocationRequest, AllocationRequestReview
-from apps.allocations.views import AllocationRequestReviewViewSet
+from apps.allocations.models import AllocationRequest, AllocationReview
+from apps.allocations.views import AllocationReviewViewSet
 from apps.users.models import Team, User
 
 
@@ -19,10 +19,10 @@ class GetQueryset(TestCase):
         request = RequestFactory()
         request.user = User.objects.get(username='staff_user')
 
-        viewset = AllocationRequestReviewViewSet()
+        viewset = AllocationReviewViewSet()
         viewset.request = request
 
-        expected_queryset = AllocationRequestReview.objects.all()
+        expected_queryset = AllocationReview.objects.all()
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
     def test_get_queryset_for_non_staff_user(self) -> None:
@@ -31,11 +31,11 @@ class GetQueryset(TestCase):
         request = RequestFactory()
         request.user = User.objects.get(username='member_1')
 
-        viewset = AllocationRequestReviewViewSet()
+        viewset = AllocationReviewViewSet()
         viewset.request = request
 
         team1 = Team.objects.get(name='Team 1')
-        expected_queryset = AllocationRequestReview.objects.filter(request__team__in=[team1.id])
+        expected_queryset = AllocationReview.objects.filter(request__team__in=[team1.id])
         self.assertQuerySetEqual(expected_queryset, viewset.get_queryset(), ordered=False)
 
 
@@ -60,7 +60,7 @@ class Create(TestCase):
             'status': 'AP'
         }
 
-        viewset = AllocationRequestReviewViewSet()
+        viewset = AllocationReviewViewSet()
         viewset.request = request
         viewset.format_kwarg = None
 
@@ -70,7 +70,7 @@ class Create(TestCase):
         self.assertEqual(response.data['reviewer'], self.staff_user.id)
 
         # Test the created DB record
-        review = AllocationRequestReview.objects.get(pk=response.data['id'])
+        review = AllocationReview.objects.get(pk=response.data['id'])
         self.assertEqual(review.reviewer, self.staff_user)
         self.assertEqual(review.request, self.request)
         self.assertEqual(review.status, 'AP')
@@ -86,7 +86,7 @@ class Create(TestCase):
             'status': 'AP'
         }
 
-        viewset = AllocationRequestReviewViewSet()
+        viewset = AllocationReviewViewSet()
         viewset.request = request
         viewset.format_kwarg = None
 
@@ -96,7 +96,7 @@ class Create(TestCase):
         self.assertEqual(response.data['reviewer'], self.staff_user.id)
 
         # Test the created DB record
-        review = AllocationRequestReview.objects.get(pk=response.data['id'])
+        review = AllocationReview.objects.get(pk=response.data['id'])
         self.assertEqual(review.reviewer, self.staff_user)
         self.assertEqual(review.request, self.request)
         self.assertEqual(review.status, 'AP')

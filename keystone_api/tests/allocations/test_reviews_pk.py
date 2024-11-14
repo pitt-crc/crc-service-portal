@@ -3,7 +3,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.allocations.models import AllocationRequestReview
+from apps.allocations.models import AllocationReview
 from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
@@ -30,7 +30,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
 
         # Load a team of users and define an allocation endpoint belonging to that team
         self.team = Team.objects.get(name='Team 1')
-        self.review = AllocationRequestReview.objects.filter(request__team=self.team).first()
+        self.review = AllocationReview.objects.filter(request__team=self.team).first()
         self.endpoint = self.endpoint_pattern.format(pk=self.review.pk)
 
         # Load (non)member accounts for the team
