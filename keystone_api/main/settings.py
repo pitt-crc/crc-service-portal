@@ -162,7 +162,6 @@ JAZZMIN_SETTINGS = {
 # REST API settings
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
@@ -182,8 +181,8 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter'
 
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    'DEFAULT_PAGINATION_CLASS': 'plugins.pagination.PaginationHandler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Customize the generation of OpenAPI specifications
