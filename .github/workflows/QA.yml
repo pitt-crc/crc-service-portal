@@ -69,6 +69,23 @@ jobs:
             exit 1
           fi
 
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: API Spec Scan
+    needs:
+      - api-spec
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: ZAP Scan
+        uses: zaproxy/action-api-scan@v0.9.0
+        with:
+          target: docs/api.yml
+
+
   report-qa-status:
     name: Report QA Status
     runs-on: ubuntu-latest
