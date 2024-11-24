@@ -1,5 +1,7 @@
 """Function tests for the `/health/json/` endpoint."""
 
+from unittest.mock import Mock, patch
+
 from rest_framework import status
 from rest_framework.test import APITransactionTestCase
 
@@ -7,6 +9,7 @@ from apps.users.models import User
 from tests.utils import CustomAsserts
 
 
+@patch('health_check.backends.BaseHealthCheckBackend.run_check', return_value=None)
 class EndpointPermissions(APITransactionTestCase, CustomAsserts):
     """Test endpoint user permissions.
 
@@ -28,7 +31,7 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
         self.staff_user = User.objects.get(username='staff_user')
         self.generic_user = User.objects.get(username='generic_user')
 
-    def test_unauthenticated_user_permissions(self) -> None:
+    def test_unauthenticated_user_permissions(self, _mock_run_check: Mock) -> None:
         """Test unauthenticated users have read-only permissions."""
 
         self.assert_http_responses(
@@ -43,7 +46,7 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def test_authenticated_user_permissions(self) -> None:
+    def test_authenticated_user_permissions(self, _mock_run_check: Mock) -> None:
         """Test authenticated users have read-only permissions."""
 
         self.client.force_authenticate(user=self.generic_user)
@@ -59,7 +62,7 @@ class EndpointPermissions(APITransactionTestCase, CustomAsserts):
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def test_staff_user_permissions(self) -> None:
+    def test_staff_user_permissions(self, _mock_run_check: Mock) -> None:
         """Test staff users have read-only permissions."""
 
         self.client.force_authenticate(user=self.staff_user)
