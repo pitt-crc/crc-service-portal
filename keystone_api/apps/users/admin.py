@@ -38,6 +38,7 @@ class UserAdmin(auth.admin.UserAdmin):
 
     readonly_fields = ("last_login", "date_joined", "is_ldap_user")
     actions = [activate_selected_users, deactivate_selected_users]
+    search_fields = ['username', 'first_name', 'last_name', 'email', 'department', 'role']
     fieldsets = (
         ("User Info", {"fields": ("first_name", "last_name", "email", "department", "role", "last_login", "date_joined", 'is_ldap_user')}),
         ("Credentials", {"fields": ("username", "password")}),

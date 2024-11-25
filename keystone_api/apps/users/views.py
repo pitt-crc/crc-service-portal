@@ -28,6 +28,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     permission_classes = [TeamPermissions]
     serializer_class = TeamSerializer
+    search_fields = ['name']
 
 
 class TeamMembershipRoleChoicesView(APIView):
@@ -55,6 +56,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     permission_classes = [UserPermissions]
+    search_fields = ['username', 'first_name', 'last_name', 'email', 'department', 'role']
 
     def get_serializer_class(self) -> type[Serializer]:
         """Return the appropriate data serializer based on user roles/permissions."""

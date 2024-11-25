@@ -18,6 +18,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
 
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
+    search_fields = ['title', 'abstract', 'journal', 'doi', 'team__name']
     permission_classes = [
         permissions.IsAuthenticated,
         permissions.IsAdminUser | TeamMemberAll
@@ -37,6 +38,7 @@ class GrantViewSet(viewsets.ModelViewSet):
 
     queryset = Grant.objects.all()
     serializer_class = GrantSerializer
+    search_fields = ['title', 'agency', 'team__name']
     permission_classes = [
         permissions.IsAuthenticated,
         permissions.IsAdminUser | TeamMemberReadTeamAdminWrite
