@@ -10,8 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='allocationrequest',
-            name='group',
+            old_name='group',
+            new_name='team',
         ),
     ]

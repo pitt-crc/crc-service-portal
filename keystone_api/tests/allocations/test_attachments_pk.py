@@ -1,9 +1,9 @@
-"""Function tests for the `/allocations/reviews/<pk>/` endpoint."""
+"""Function tests for the `/allocations/attachments/<pk>/` endpoint."""
 
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.allocations.models import AllocationReview
+from apps.allocations.models import Allocation
 from apps.users.models import Team, User
 from tests.utils import CustomAsserts
 
@@ -14,24 +14,24 @@ class EndpointPermissions(APITestCase, CustomAsserts):
     Endpoint permissions are tested against the following matrix of HTTP responses.
     Permissions depend on whether the user is a member of the record's associated team.
 
-    | User Status                | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
-    |----------------------------|-----|------|---------|------|-----|-------|--------|-------|
-    | Unauthenticated user       | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
-    | Authenticated non-member   | 404 | 404  | 200     | 403  | 403 | 403   | 403    | 403   |
-    | Team member                | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 403   |
-    | Staff user                 | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
+    | Authentication              | GET | HEAD | OPTIONS | POST | PUT | PATCH | DELETE | TRACE |
+    |-----------------------------|-----|------|---------|------|-----|-------|--------|-------|
+    | Unauthenticated User        | 403 | 403  | 403     | 403  | 403 | 403   | 403    | 403   |
+    | Authenticated non-member    | 200 | 200  | 200     | 403  | 403 | 403   | 403    | 403   |
+    | Team member                 | 404 | 404  | 200     | 403  | 403 | 403   | 403    | 403   |
+    | Staff User                  | 200 | 200  | 200     | 405  | 200 | 200   | 204    | 405   |
     """
 
-    endpoint_pattern = '/allocations/reviews/{pk}/'
+    endpoint_pattern = '/allocations/attachments/{pk}/'
     fixtures = ['testing_common.yaml']
 
     def setUp(self) -> None:
-        """Load user accounts and requet review data from test fixtures."""
+        """Load user accounts and allocation data from test fixtures."""
 
         # Load a team of users and define an allocation endpoint belonging to that team
         self.team = Team.objects.get(name='Team 1')
-        self.review = AllocationReview.objects.filter(request__team=self.team).first()
-        self.endpoint = self.endpoint_pattern.format(pk=self.review.pk)
+        self.allocation = Allocation.objects.filter(request__team=self.team).first()
+        self.endpoint = self.endpoint_pattern.format(pk=self.allocation.pk)
 
         # Load (non)member accounts for the team
         self.staff_user = User.objects.get(username='staff_user')
@@ -53,7 +53,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             trace=status.HTTP_403_FORBIDDEN
         )
 
-    def test_non_member_permissions(self) -> None:
+    def test_non_team_member_permissions(self) -> None:
         """Test permissions for authenticated users accessing records owned by someone else's team."""
 
         self.client.force_authenticate(user=self.non_member)
@@ -66,7 +66,7 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             put=status.HTTP_403_FORBIDDEN,
             patch=status.HTTP_403_FORBIDDEN,
             delete=status.HTTP_403_FORBIDDEN,
-            trace=status.HTTP_403_FORBIDDEN
+            trace=status.HTTP_403_FORBIDDEN,
         )
 
     def test_team_member_permissions(self) -> None:
@@ -99,6 +99,6 @@ class EndpointPermissions(APITestCase, CustomAsserts):
             patch=status.HTTP_200_OK,
             delete=status.HTTP_204_NO_CONTENT,
             trace=status.HTTP_405_METHOD_NOT_ALLOWED,
-            put_body={'status': 'DC', 'request': self.review.request.pk},
-            patch_body={'status': 'DC'}
+            put_body={'request': 1, 'path': 'new/path.txt'},
+            patch_body={'request': 1}
         )

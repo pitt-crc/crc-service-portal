@@ -1,12 +1,23 @@
 # Configuring Slurm
 
+Slurm categorizes system usage in terms of trackable resources (TRES).
+Keystone uses these TRES values to enforces allocation limits in the Slurm scheduler.
+The total billable TRES for a given Slurm job is determined as a sum over the TRES usage $\left ( U \right )$ scaled by an administrator defined billing weight $\left ( W \right )$ :
+
+$$ 
+\text{Billable Usage} = \sum_\text{TRES} \,\, \left ( W_\text{TRES} * U_\text{TRES} \right )
+$$
+
+Keystone interfaces with Slurm to automatically enforce per-cluster limits on a group's total allowed *Billable Usage*.
+When a group reaches their allocation limit, their Slurm jobs will no longer get scheduled on the target cluster.
+
 Keystone is agnostic to most Slurm settings, and requires minimal modification to a running Slurm cluster.
 However, certain fairshare features are incompatible with the Keystone accounting system and must be disabled.
+The steps below walk through the necessary setup and configuration for a successful integration.
 
 ## Enable Resource Tracking
 
-Slurm categorizes system usage in terms of trackable resources (TRES).
-To impose a usage limit on a computational resource, that resource must be represented in Slurm as a TRES.
+For Keystone to impose a usage limit on a computational resource, that resource must be represented in Slurm as a TRES.
 Resource tracking for common TRES' like CPU, memory, and energy usage is enabled by default.
 However, administrators may wish to extend the default list to enable limits on additional resource types (e.g., for GPU usage).
 
@@ -51,16 +62,9 @@ PriorityUsageResetPeriod=NONE
     Disabling the `PriorityDecayHalfLife` and `PriorityUsageResetPeriod` values may affect your Slurm fairshare policy.
     Administrators should adjust the rest of their fairshair policy settings as they see appropriate. 
 
-## Configuring Charging Rates
+## Configure Charging Rates
 
-Keystone enforces allocation limits in units of billable TRES.
-The total billable TRES for a given job is determined as a sum over the TRES usage $\left ( U \right )$ scaled by a billing weight $\left ( W \right )$ :
-
-$$ 
-\text{Billable Usage} = \sum_\text{TRES} \,\, \left ( W_\text{TRES} * U_\text{TRES} \right )
-$$
-
-The billing weights default to zero and are set on a per-partition basis using the `TRESBillingWeights` setting.
+TRES billing weights default to zero and are set on a per-partition basis using the `TRESBillingWeights` setting.
 Billing weights are definable in variety of units. 
 See the [Slurm documentation](https://slurm.schedmd.com/tres.html) for more details.
 

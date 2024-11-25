@@ -8,17 +8,20 @@ to handle database migrations, static file collection, and web server deployment
 
 | Argument    | Description                                                      |
 |-------------|------------------------------------------------------------------|
-| --static    | Collect static files                                             |
-| --migrate   | Run database migrations                                          |
-| --celery    | Launch a Celery worker with a Redis backend                      |
-| --demo-user | Create an admin user account if no other accounts exist          |
-| --gunicorn  | Run a web server using Gunicorn                                  |
-| --all       | Launch all available services                                    |
+| --all       | Launch all available services.                                   |
+| --celery    | Launch a Celery worker with a Redis backend.                     |
+| --demo-user | Create an admin user account if no other accounts exist.         |
+| --gunicorn  | Run a web server using Gunicorn.                                 |
+| --migrate   | Run database migrations.                                         |
+| --smtp      | Run an SMTP server using AIOSMTPD.                               |
+| --static    | Collect static files.                                            |
 """
 
 import subprocess
 from argparse import ArgumentParser
 
+from aiosmtpd.controller import Controller
+from aiosmtpd.handlers import Message
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -37,12 +40,13 @@ class Command(BaseCommand):
         """
 
         group = parser.add_argument_group('quickstart options')
-        group.add_argument('--static', action='store_true', help='Collect static files.')
-        group.add_argument('--migrate', action='store_true', help='Run database migrations.')
-        group.add_argument('--celery', action='store_true', help='Launch a background Celery worker.')
-        group.add_argument('--admin', action='store_true', help='Create an admin account if no other accounts exist.')
-        group.add_argument('--gunicorn', action='store_true', help='Run a web server using Gunicorn.')
         group.add_argument('--all', action='store_true', help='Launch all available services.')
+        group.add_argument('--celery', action='store_true', help='Launch a background Celery worker.')
+        group.add_argument('--demo-user', action='store_true', help='Create an admin user account if no other accounts exist.')
+        group.add_argument('--gunicorn', action='store_true', help='Run a web server using Gunicorn.')
+        group.add_argument('--migrate', action='store_true', help='Run database migrations.')
+        group.add_argument('--smtp', action='store_true', help='Run a SMTP server.')
+        group.add_argument('--static', action='store_true', help='Collect static files.')
 
     def handle(self, *args, **options) -> None:
         """Handle the command execution.
@@ -54,21 +58,25 @@ class Command(BaseCommand):
 
         # Note: `no_input=False` indicates the user should not be prompted for input
 
+        if options['static'] or options['all']:
+            self.stdout.write(self.style.SUCCESS('Collecting static files...'))
+            call_command('collectstatic', no_input=False)
+
         if options['migrate'] or options['all']:
             self.stdout.write(self.style.SUCCESS('Running database migrations...'))
             call_command('migrate', no_input=False)
 
-        if options['static'] or options['all']:
-            self.stdout.write(self.style.SUCCESS('Collecting static files...'))
-            call_command('collectstatic', no_input=False)
+        if options['demo_user'] or options['all']:
+            self.stdout.write(self.style.SUCCESS('Checking for admin account...'))
+            self.create_admin()
 
         if options['celery'] or options['all']:
             self.stdout.write(self.style.SUCCESS('Starting Celery worker...'))
             self.run_celery()
 
-        if options['admin'] or options['all']:
-            self.stdout.write(self.style.SUCCESS('Checking for admin account...'))
-            self.create_admin()
+        if options['smtp'] or options['all']:
+            self.stdout.write(self.style.SUCCESS('Starting SMTP server...'))
+            self.run_smtp()
 
         if options['gunicorn'] or options['all']:
             self.stdout.write(self.style.SUCCESS('Starting Gunicorn server...'))
@@ -104,3 +112,23 @@ class Command(BaseCommand):
 
         command = ['gunicorn', '--bind', f'{host}:{port}', 'keystone_api.main.wsgi:application']
         subprocess.run(command, check=True)
+
+    @staticmethod
+    def run_smtp(host: str = '0.0.0.0', port: int = 25) -> None:
+        """Start an SMTP server.
+
+        Args:
+          host: The host to bind to.
+          port: The port to bind to.
+        """
+
+        class CustomMessageHandler(Message):
+            def handle_message(self, message):
+                print(f"Received message from: {message['from']}")
+                print(f"To: {message['to']}")
+                print(f"Subject: {message['subject']}")
+                print("Body:", message.get_payload())
+
+        controller = Controller(CustomMessageHandler(), hostname=host, port=port)
+        controller.start()
+        print(f"SMTP server running on {host}:{port}")

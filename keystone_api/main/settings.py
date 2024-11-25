@@ -170,8 +170,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': env.str('API_THROTTLE_ANON', '1000/day'),
-        'user': env.str('API_THROTTLE_USER', '10000/day')
+        'anon': env.str('API_THROTTLE_ANON', '120/min'),
+        'user': env.str('API_THROTTLE_USER', '240/min')
     },
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -288,7 +288,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = Path(env.path('CONFIG_STATIC_DIR', BASE_DIR / 'static_files'))
 STATIC_ROOT.mkdir(parents=True, exist_ok=True)
 
-MEDIA_URL = 'media/'
 MEDIA_ROOT = Path(env.path('CONFIG_UPLOAD_DIR', BASE_DIR / 'media'))
 MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 

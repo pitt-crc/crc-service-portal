@@ -21,7 +21,7 @@ from apps.users.models import Team, User
 __all__ = [
     'Allocation',
     'AllocationRequest',
-    'AllocationRequestReview',
+    'AllocationReview',
     'Attachment',
     'Cluster',
     'TeamModelInterface',
@@ -107,7 +107,7 @@ class AllocationRequest(TeamModelInterface, models.Model):
         return truncatechars(self.title, 100)
 
 
-class AllocationRequestReview(TeamModelInterface, models.Model):
+class AllocationReview(TeamModelInterface, models.Model):
     """Reviewer feedback for an allocation request."""
 
     class StatusChoices(models.TextChoices):
@@ -136,13 +136,18 @@ class AllocationRequestReview(TeamModelInterface, models.Model):
         return f'{self.reviewer} review for \"{self.request.title}\"'
 
 
-class Attachment(models.Model):
+class Attachment(TeamModelInterface, models.Model):
     """File data uploaded by users."""
 
-    file_data = models.FileField()
+    path = models.FileField(upload_to='allocations')
     uploaded = models.DateTimeField(auto_now=True)
 
     request = models.ForeignKey('AllocationRequest', on_delete=models.CASCADE)
+
+    def get_team(self) -> Team:
+        """Return the user team tied to the current record."""
+
+        return self.request.team
 
 
 class Cluster(models.Model):

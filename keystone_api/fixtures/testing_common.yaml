@@ -158,7 +158,7 @@
     submitted: "2023-01-01"
 
 # Allocation Request Reviews
-- model: allocations.allocationrequestreview
+- model: allocations.allocationreview
   pk: 1
   fields:
     status: AP
@@ -181,6 +181,20 @@
     cluster: 1
     requested: 10000
     awarded: 10000
+
+# Attachments
+- model: allocations.attachment
+  pk: 1
+  fields:
+    request: 1
+    path: /dummy/file1.txt
+    uploaded: "2000-01-01"
+- model: allocations.attachment
+  pk: 2
+  fields:
+    request: 1
+    path: /dummy/file1.txt
+    uploaded: "2000-01-01"
 
 # Publications
 - model: research_products.publication

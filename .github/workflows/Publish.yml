@@ -19,6 +19,14 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: false
+
+      - name: Set package version
+        run: poetry version "${{ inputs.version }}"
+
       - name: Fetch image artifact
         uses: actions/download-artifact@v4
         with:
@@ -36,6 +44,16 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title="Keystone API"
+            org.opencontainers.image.description="API service for the Keystone HPC project."
+            org.opencontainers.image.url="https://github.com/better-hpc/keystone-api"
+            org.opencontainers.image.source="https://github.com/better-hpc/keystone-api"
+            org.opencontainers.image.version="${{ inputs.version }}"
+            org.opencontainers.image.authors="Better HPC LLC"
+            org.opencontainers.image.revision="${{ github.sha }}"
+            org.opencontainers.image.vendor="Better HPC LLC"
+            org.opencontainers.image.ref.name="ghcr.io/better-hpc/keystone-api:${{ inputs.version }}"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -85,6 +103,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           print-hash: true
+          attestations: false
 
   trigger-docs:
     name: Trigger Docs

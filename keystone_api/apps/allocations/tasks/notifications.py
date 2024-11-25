@@ -136,7 +136,7 @@ def notify_past_expirations() -> None:
         for user in request.team.get_all_members().filter(is_active=True):
 
             try:
-                if should_notify_past_expiration(request, user):
+                if should_notify_past_expiration(user, request):
                     send_notification_past_expiration(user, request)
 
             except Exception as error:

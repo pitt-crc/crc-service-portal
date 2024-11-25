@@ -12,11 +12,24 @@ from apps.users.models import User
 from .models import *
 
 __all__ = [
+    'AttachmentSerializer',
     'AllocationSerializer',
     'AllocationRequestSerializer',
-    'AllocationRequestReviewSerializer',
+    'AllocationReviewSerializer',
     'ClusterSerializer',
 ]
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    """Object serializer for the `Attachment` class."""
+
+    path = serializers.FileField(use_url=False, read_only=True)
+
+    class Meta:
+        """Serializer settings."""
+
+        model = Attachment
+        fields = '__all__'
 
 
 class AllocationSerializer(serializers.ModelSerializer):
@@ -39,13 +52,13 @@ class AllocationRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AllocationRequestReviewSerializer(serializers.ModelSerializer):
-    """Object serializer for the `AllocationRequestReview` class."""
+class AllocationReviewSerializer(serializers.ModelSerializer):
+    """Object serializer for the `AllocationReview` class."""
 
     class Meta:
         """Serializer settings."""
 
-        model = AllocationRequestReview
+        model = AllocationReview
         fields = '__all__'
         extra_kwargs = {'reviewer': {'required': False}}  # Default reviewer value is set by the view class
 

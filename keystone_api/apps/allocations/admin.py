@@ -30,10 +30,10 @@ class AllocationInline(admin.TabularInline):
     extra = 1
 
 
-class AllocationRequestReviewInline(admin.StackedInline):
-    """Inline admin interface for the `AllocationRequestReview` model."""
+class AllocationReviewInline(admin.StackedInline):
+    """Inline admin interface for the `AllocationReview` model."""
 
-    model = AllocationRequestReview
+    model = AllocationReview
     verbose_name = 'Review'
     show_change_link = True
     readonly_fields = ('last_modified',)
@@ -110,7 +110,7 @@ class AllocationRequestAdmin(admin.ModelAdmin):
     def reviews(obj: AllocationRequest) -> int:
         """Return the total number of submitted reviews."""
 
-        return sum(1 for _ in obj.allocationrequestreview_set.all())
+        return sum(1 for _ in obj.allocationreview_set.all())
 
     team.admin_order_field = 'team__name'
 
@@ -124,7 +124,7 @@ class AllocationRequestAdmin(admin.ModelAdmin):
         ('expire', admin.DateFieldListFilter),
         ('status', admin.ChoicesFieldListFilter),
     ]
-    inlines = [AllocationInline, AllocationRequestReviewInline, AttachmentInline]
+    inlines = [AllocationInline, AllocationReviewInline, AttachmentInline]
 
 
 @admin.register(Cluster)

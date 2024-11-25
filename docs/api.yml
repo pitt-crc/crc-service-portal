@@ -4,6 +4,43 @@ info:
   version: 0.0.0
   description: A REST API for managing user resource allocations on HPC systems.
 paths:
+  /allocations/allocation-request/status-choices/:
+    get:
+      operationId: allocations_allocation_request_status_choices_retrieve
+      description: Return valid values for the allocation review `status` field.
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                PD: Pending
+                AP: Approved
+                DC: Declined
+                CR: Changes Requested
+          description: ''
+  /allocations/allocation-review/status-choices/:
+    get:
+      operationId: allocations_allocation_review_status_choices_retrieve
+      description: Return valid values for the allocation review `status` field.
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                AP: Approved
+                DC: Declined
+                CR: Changes Requested
+          description: ''
   /allocations/allocations/:
     get:
       operationId: allocations_allocations_list
@@ -321,6 +358,287 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this allocation.
+        required: true
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /allocations/attachments/:
+    get:
+      operationId: allocations_attachments_list
+      description: Files submitted as attachments to allocation requests
+      parameters:
+      - in: query
+        name: id
+        schema:
+          type: integer
+      - in: query
+        name: id__gt
+        schema:
+          type: integer
+      - in: query
+        name: id__gte
+        schema:
+          type: integer
+      - in: query
+        name: id__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: id__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: id__lt
+        schema:
+          type: integer
+      - in: query
+        name: id__lte
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: request
+        schema:
+          type: integer
+      - in: query
+        name: request__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: request__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: uploaded
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploaded__day
+        schema:
+          type: number
+      - in: query
+        name: uploaded__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploaded__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploaded__hour
+        schema:
+          type: number
+      - in: query
+        name: uploaded__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: date-time
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: uploaded__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: uploaded__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploaded__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploaded__minute
+        schema:
+          type: number
+      - in: query
+        name: uploaded__month
+        schema:
+          type: number
+      - in: query
+        name: uploaded__second
+        schema:
+          type: number
+      - in: query
+        name: uploaded__week
+        schema:
+          type: number
+      - in: query
+        name: uploaded__week_day
+        schema:
+          type: number
+      - in: query
+        name: uploaded__year
+        schema:
+          type: number
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attachment'
+          description: ''
+    post:
+      operationId: allocations_attachments_create
+      description: Files submitted as attachments to allocation requests
+      tags:
+      - allocations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+          description: ''
+  /allocations/attachments/{id}/:
+    get:
+      operationId: allocations_attachments_retrieve
+      description: Files submitted as attachments to allocation requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this attachment.
+        required: true
+      tags:
+      - allocations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+          description: ''
+    put:
+      operationId: allocations_attachments_update
+      description: Files submitted as attachments to allocation requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this attachment.
+        required: true
+      tags:
+      - allocations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+          description: ''
+    patch:
+      operationId: allocations_attachments_partial_update
+      description: Files submitted as attachments to allocation requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this attachment.
+        required: true
+      tags:
+      - allocations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAttachment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAttachment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAttachment'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+          description: ''
+    delete:
+      operationId: allocations_attachments_destroy
+      description: Files submitted as attachments to allocation requests
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this attachment.
         required: true
       tags:
       - allocations
@@ -1355,24 +1673,24 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AllocationRequestReview'
+                  $ref: '#/components/schemas/AllocationReview'
           description: ''
     post:
       operationId: allocations_reviews_create
-      description: Create a new `AllocationRequestReview` object.
+      description: Create a new `AllocationReview` object.
       tags:
       - allocations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
         required: true
       security:
       - cookieAuth: []
@@ -1382,7 +1700,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
   /allocations/reviews/{id}/:
     get:
@@ -1393,7 +1711,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1405,7 +1723,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     put:
       operationId: allocations_reviews_update
@@ -1415,7 +1733,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1423,13 +1741,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AllocationRequestReview'
+              $ref: '#/components/schemas/AllocationReview'
         required: true
       security:
       - cookieAuth: []
@@ -1439,7 +1757,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     patch:
       operationId: allocations_reviews_partial_update
@@ -1449,7 +1767,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -1457,13 +1775,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedAllocationRequestReview'
+              $ref: '#/components/schemas/PatchedAllocationReview'
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -1472,7 +1790,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationRequestReview'
+                $ref: '#/components/schemas/AllocationReview'
           description: ''
     delete:
       operationId: allocations_reviews_destroy
@@ -1482,7 +1800,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this allocation request review.
+        description: A unique integer value identifying this allocation review.
         required: true
       tags:
       - allocations
@@ -4037,6 +4355,24 @@ paths:
       responses:
         '204':
           description: No response body
+  /users/team-membership/role-choices/:
+    get:
+      operationId: users_team_membership_role_choices_retrieve
+      description: Return valid values for the team membership `role` field.
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                OW: Owner
+                AD: Admin
+                MB: Member
+          description: ''
   /users/teams/:
     get:
       operationId: users_teams_list
@@ -4959,15 +5295,27 @@ components:
       - submitted
       - team
       - title
-    AllocationRequestReview:
+    AllocationRequestStatusEnum:
+      enum:
+      - PD
+      - AP
+      - DC
+      - CR
+      type: string
+      description: |-
+        * `PD` - Pending
+        * `AP` - Approved
+        * `DC` - Declined
+        * `CR` - Changes Requested
+    AllocationReview:
       type: object
-      description: Object serializer for the `AllocationRequestReview` class.
+      description: Object serializer for the `AllocationReview` class.
       properties:
         id:
           type: integer
           readOnly: true
         status:
-          $ref: '#/components/schemas/AllocationRequestReviewStatusEnum'
+          $ref: '#/components/schemas/AllocationReviewStatusEnum'
         public_comments:
           type: string
           nullable: true
@@ -4990,25 +5338,13 @@ components:
       - last_modified
       - request
       - status
-    AllocationRequestReviewStatusEnum:
+    AllocationReviewStatusEnum:
       enum:
       - AP
       - DC
       - CR
       type: string
       description: |-
-        * `AP` - Approved
-        * `DC` - Declined
-        * `CR` - Changes Requested
-    AllocationRequestStatusEnum:
-      enum:
-      - PD
-      - AP
-      - DC
-      - CR
-      type: string
-      description: |-
-        * `PD` - Pending
         * `AP` - Approved
         * `DC` - Declined
         * `CR` - Changes Requested
@@ -5054,6 +5390,27 @@ components:
       - name
       - pathname
       - time
+    Attachment:
+      type: object
+      description: Object serializer for the `Attachment` class.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        path:
+          type: string
+          readOnly: true
+        uploaded:
+          type: string
+          format: date-time
+          readOnly: true
+        request:
+          type: integer
+      required:
+      - id
+      - path
+      - request
+      - uploaded
     Cluster:
       type: object
       description: Object serializer for the `Cluster` class.
@@ -5204,15 +5561,15 @@ components:
           type: array
           items:
             type: integer
-    PatchedAllocationRequestReview:
+    PatchedAllocationReview:
       type: object
-      description: Object serializer for the `AllocationRequestReview` class.
+      description: Object serializer for the `AllocationReview` class.
       properties:
         id:
           type: integer
           readOnly: true
         status:
-          $ref: '#/components/schemas/AllocationRequestReviewStatusEnum'
+          $ref: '#/components/schemas/AllocationReviewStatusEnum'
         public_comments:
           type: string
           nullable: true
@@ -5230,6 +5587,22 @@ components:
         reviewer:
           type: integer
           nullable: true
+    PatchedAttachment:
+      type: object
+      description: Object serializer for the `Attachment` class.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        path:
+          type: string
+          readOnly: true
+        uploaded:
+          type: string
+          format: date-time
+          readOnly: true
+        request:
+          type: integer
     PatchedCluster:
       type: object
       description: Object serializer for the `Cluster` class.

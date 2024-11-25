@@ -4,14 +4,22 @@ View objects handle the processing of incoming HTTP requests and return the
 appropriately rendered HTML template or other HTTP response.
 """
 
-from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework.views import APIView
 
 from .models import *
 from .permissions import *
 from .serializers import *
 
-__all__ = ['TeamViewSet', 'TeamMembershipViewSet', 'UserViewSet']
+__all__ = [
+    'TeamViewSet',
+    'TeamMembershipRoleChoicesView',
+    'TeamMembershipViewSet',
+    'UserViewSet',
+]
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -20,6 +28,18 @@ class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     permission_classes = [TeamPermissions]
     serializer_class = TeamSerializer
+
+
+class TeamMembershipRoleChoicesView(APIView):
+    """Exposes valid values for the team membership `role` field."""
+
+    _resp_body = dict(TeamMembership.Role.choices)
+
+    @extend_schema(responses={'200': _resp_body})
+    def get(self, request) -> Response:
+        """Return valid values for the team membership `role` field."""
+
+        return Response(self._resp_body, status=status.HTTP_200_OK)
 
 
 class TeamMembershipViewSet(viewsets.ModelViewSet):

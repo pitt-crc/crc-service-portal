@@ -5,8 +5,9 @@ It provides management utilities for:
 
 - The allocation of HPC compute resources across one or more clusters
 - The tracking of user research products, including grants and publications
-- The management of user accounts, teams, and RBAC permissions
-- Administrative activities, including health check monitoring and application logging
+- The management of user accounts and teams via RBAC permissions
+- Automated user notification for system changes and events
+- Operational activities, including application monitoring and logging
 
 For more information, see the resources below.
 
@@ -26,7 +27,7 @@ For more information, see the resources below.
 
     Learn how Keystone integrates with Slurm to manage HPC resources. 
 
-    [:octicons-arrow-right-24: Slurm Documentation](install/slurm.md)
+    [:octicons-arrow-right-24: Configuring Slurm](install/slurm.md)
 
 -   :material-code-json: **Completely RESTful**
 
@@ -34,14 +35,14 @@ For more information, see the resources below.
 
     Get started with the REST API, designed and built using modern best practices.
 
-    [:octicons-arrow-right-24: Getting Started](api/)
+    [:octicons-arrow-right-24: API Specification](api/)
 
--   :simple-git: **Contributing**
+-   :simple-git: **Robust Query Support**
 
     ---
 
-    Reference the developer documentation for common development tasks. 
+    Learn how the API supports data retrieval via search and filters. 
 
-    [:octicons-arrow-right-24: Developer Notes](developer/common.md)
+    [:octicons-arrow-right-24: Structuring Queries](api/filtering.md)
 
 </div>
