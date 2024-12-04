@@ -46,6 +46,12 @@ paths:
       operationId: allocations_allocations_list
       description: Manage HPC resource allocations.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -168,12 +174,6 @@ paths:
         name: id__lte
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: request
         schema:
@@ -378,6 +378,12 @@ paths:
       operationId: allocations_attachments_list
       description: Files submitted as attachments to allocation requests
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -417,12 +423,6 @@ paths:
         name: id__lte
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: request
         schema:
@@ -665,6 +665,12 @@ paths:
       operationId: allocations_clusters_list
       description: Configuration settings for managed Slurm clusters.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -777,12 +783,6 @@ paths:
           type: boolean
       - in: query
         name: name__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       tags:
@@ -939,6 +939,12 @@ paths:
       operationId: allocations_requests_list
       description: Manage allocation requests.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -1125,12 +1131,6 @@ paths:
         name: id__lte
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: status
         schema:
@@ -1446,6 +1446,12 @@ paths:
       operationId: allocations_reviews_list
       description: Manage administrator reviews of allocation requests.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -1556,12 +1562,6 @@ paths:
         name: last_modified__year
         schema:
           type: number
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: private_comments
         schema:
@@ -1964,6 +1964,12 @@ paths:
       operationId: logs_apps_list
       description: Returns application log data.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -2152,12 +2158,6 @@ paths:
         name: name__startswith
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: pathname
         schema:
@@ -2329,6 +2329,12 @@ paths:
       operationId: logs_requests_list
       description: Returns HTTP request log data.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -2482,12 +2488,6 @@ paths:
           type: boolean
       - in: query
         name: method__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
@@ -2682,6 +2682,12 @@ paths:
       operationId: logs_tasks_list
       description: Returns results from scheduled background tasks.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -2948,12 +2954,6 @@ paths:
           type: boolean
       - in: query
         name: meta__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
@@ -3278,6 +3278,12 @@ paths:
       operationId: research_grants_list
       description: Track funding awards and grant information.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -3500,12 +3506,6 @@ paths:
         name: id__lte
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: start_date
         schema:
@@ -3765,6 +3765,12 @@ paths:
       operationId: research_publications_list
       description: Manage metadata for research publications.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -3948,12 +3954,6 @@ paths:
           type: boolean
       - in: query
         name: journal__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
@@ -4156,6 +4156,12 @@ paths:
       operationId: users_membership_list
       description: Manage team membership.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -4195,12 +4201,6 @@ paths:
         name: id__lte
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - in: query
         name: role
         schema:
@@ -4444,6 +4444,12 @@ paths:
       operationId: users_teams_list
       description: Manage user teams.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -4527,12 +4533,6 @@ paths:
           type: boolean
       - in: query
         name: name__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       tags:
@@ -4689,6 +4689,12 @@ paths:
       operationId: users_users_list
       description: Manage user account data.
       parameters:
+      - name: _order
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
       - name: _search
         required: false
         in: query
@@ -5052,12 +5058,6 @@ paths:
           type: boolean
       - in: query
         name: last_name__startswith
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
         schema:
           type: string
       - in: query
