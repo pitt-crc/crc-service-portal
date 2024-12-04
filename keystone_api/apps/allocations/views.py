@@ -42,6 +42,7 @@ class AllocationRequestViewSet(viewsets.ModelViewSet):
 
     queryset = AllocationRequest.objects.all()
     serializer_class = AllocationRequestSerializer
+    search_fields = ['title', 'description', 'team__name']
     permission_classes = [permissions.IsAuthenticated, TeamAdminCreateMemberRead]
 
     def get_queryset(self) -> list[AllocationRequest]:
@@ -71,6 +72,7 @@ class AllocationReviewViewSet(viewsets.ModelViewSet):
 
     queryset = AllocationReview.objects.all()
     serializer_class = AllocationReviewSerializer
+    search_fields = ['public_comments', 'private_comments', 'request__team__name', 'request__title']
     permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
 
     def get_queryset(self) -> list[Allocation]:
@@ -101,6 +103,7 @@ class AllocationViewSet(viewsets.ModelViewSet):
 
     queryset = Allocation.objects.all()
     serializer_class = AllocationSerializer
+    search_fields = ['request__team__name', 'request__title', 'cluster__name']
     permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
 
     def get_queryset(self) -> list[Allocation]:
@@ -118,6 +121,7 @@ class AttachmentViewSet(viewsets.ModelViewSet):
 
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
+    search_fields = ['path', 'request__title', 'request__submitter']
     permission_classes = [permissions.IsAuthenticated, StaffWriteMemberRead]
 
     def get_queryset(self) -> list[Allocation]:
@@ -135,4 +139,5 @@ class ClusterViewSet(viewsets.ModelViewSet):
 
     queryset = Cluster.objects.all()
     serializer_class = ClusterSerializer
+    search_fields = ['name', 'description']
     permission_classes = [permissions.IsAuthenticated, StaffWriteAuthenticatedRead]
