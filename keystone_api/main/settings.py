@@ -162,6 +162,8 @@ JAZZMIN_SETTINGS = {
 # REST API settings
 
 REST_FRAMEWORK = {
+    'SEARCH_PARAM': '_search',
+    'ORDERING_PARAM': '_order',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
@@ -181,7 +183,6 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
         'rest_framework.filters.SearchFilter'
     ),
-    'SEARCH_PARAM': '_search',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
