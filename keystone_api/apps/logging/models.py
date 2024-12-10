@@ -33,8 +33,6 @@ class RequestLog(models.Model):
     method = models.CharField(max_length=10)
     endpoint = models.CharField(max_length=2048)  # Maximum URL length for most browsers
     response_code = models.PositiveSmallIntegerField()
-    body_request = models.TextField()
-    body_response = models.TextField()
     remote_address = models.CharField(max_length=40, null=True)
     time = models.DateTimeField(auto_now_add=True)
 
