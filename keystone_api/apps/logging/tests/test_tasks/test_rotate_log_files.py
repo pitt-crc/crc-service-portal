@@ -32,8 +32,6 @@ class LogFileDeletion(TestCase):
         RequestLog.objects.create(
             endpoint='/api',
             response_code=200,
-            body_request='',
-            body_response='',
             time=timestamp
         )
 
