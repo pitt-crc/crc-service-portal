@@ -2342,64 +2342,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: body_request
-        schema:
-          type: string
-      - in: query
-        name: body_request__contains
-        schema:
-          type: string
-      - in: query
-        name: body_request__endswith
-        schema:
-          type: string
-      - in: query
-        name: body_request__in
-        schema:
-          type: array
-          items:
-            type: string
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: body_request__isnull
-        schema:
-          type: boolean
-      - in: query
-        name: body_request__startswith
-        schema:
-          type: string
-      - in: query
-        name: body_response
-        schema:
-          type: string
-      - in: query
-        name: body_response__contains
-        schema:
-          type: string
-      - in: query
-        name: body_response__endswith
-        schema:
-          type: string
-      - in: query
-        name: body_response__in
-        schema:
-          type: array
-          items:
-            type: string
-        description: Multiple values may be separated by commas.
-        explode: false
-        style: form
-      - in: query
-        name: body_response__isnull
-        schema:
-          type: boolean
-      - in: query
-        name: body_response__startswith
-        schema:
-          type: string
-      - in: query
         name: endpoint
         schema:
           type: string
@@ -5913,10 +5855,6 @@ components:
           maximum: 9223372036854775807
           minimum: 0
           format: int64
-        body_request:
-          type: string
-        body_response:
-          type: string
         remote_address:
           type: string
           nullable: true
@@ -5929,8 +5867,6 @@ components:
           type: integer
           nullable: true
       required:
-      - body_request
-      - body_response
       - endpoint
       - id
       - method
