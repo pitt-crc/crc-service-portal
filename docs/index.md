@@ -1,15 +1,8 @@
 # Keystone-API
 
-Keystone-API is a Python based REST API designed to support the Keystone web interface.
-It provides management utilities for:
-
-- The allocation of HPC compute resources across one or more clusters
-- The tracking of user research products, including grants and publications
-- The management of user accounts and teams via RBAC permissions
-- Automated user notification for system changes and events
-- Operational activities, including application monitoring and logging
-
-For more information, see the resources below.
+Keystone-API is the official RESTful API designed to support the Keystone web interface. 
+The application is developed in Python leveraging the Django web framework, and extends the resource management 
+capabilities provided by the Slurm workload manager.
 
 <div class="grid cards" markdown>
 

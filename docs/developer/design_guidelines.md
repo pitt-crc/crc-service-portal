@@ -16,10 +16,10 @@ The appropriate failure response is determined by the first validation step to f
 2. **Support for the requested method:** 
    Requests containing an unsupported HTTP method (e.g., `TRACE`) are returned a `405 - Method Not Allowed` error.
 3. **Role Based Access Controls (RBAC):** 
-   Requests that are prohibited by RBAC or other buisiness permissions logic are returned a `403 - Forbidden` error.
+   Requests that are prohibited by RBAC or other business permissions logic are returned a `403 - Forbidden` error.
 4. **Additional request verification:**
    Any request verification not included in the previous checks are evaluated last.
-   Response codes in this step are generated according to standard practices.
+   Response codes in this step are generated according to common best practices.
 
 ## Serializing Relational Data
 
