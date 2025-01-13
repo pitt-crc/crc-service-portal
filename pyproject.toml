@@ -32,7 +32,6 @@ keystone-api = "keystone_api.manage:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-coverage = "*"
 dj-rest-auth = ">=6,<8"
 django = "5.1.4"
 django-celery-beat = "2.7.0"
@@ -56,14 +55,20 @@ tqdm = "4.67.1"
 uritemplate = "4.1.1"
 whitenoise = "6.8.2"
 
-# Optional dependencies installed via extras
+[tool.poetry.group.tests.dependencies]
+coverage = { version = "*", optional = true }
+
+[tool.poetry.group.ldap.dependencies]
 django-auth-ldap = { version = "5.1.0", optional = true }
+
+[tool.poetry.group.smtp.dependencies]
 aiosmtpd = { version = "1.4.6", optional = true }
 
 [tool.poetry.extras]
 ldap = ["django-auth-ldap"]
 smtp = ["aiosmtpd"]
-all = ["django-auth-ldap", "aiosmtpd"]
+tests = ["coverage"]
+all = ["django-auth-ldap", "aiosmtpd", "coverage"]
 
 [tool.coverage.run]
 branch = true
