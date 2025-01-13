@@ -62,22 +62,43 @@ To enable debug mode, specify the `DEBUG=true` setting.
 DEBUG=True keystone-api runserver
 ```
 
-## Tests and System Checks
+## Running Application Tests
 
-Application tests are executed using the `test` command:
+Application tests are organized based on the testing methodology.
+Function tests are packaged in the top level `keystone_api/tests/` directory.
+Unit tests are contained within the application/plugin being tested under `keystone_api/<app_path>/tests/`.
+
+Before executing the test suite, ensure the necessary dependencies are installed:
+
+```bash
+poetry install --with tests
+```
+
+Use the `test` command to execute all available tests:
 
 ```bash
 keystone-api test
 ```
 
-Subsets of tests are run by specifying the desired application module(s) relative to the package root.
+Subsets of tests are run by specifying the desired test path(s) relative to the package root.
 For example, tests under the `apps/users` and `apps/allocations` directories are executed as:
 
 ```bash
 keystone-api test apps.users apps.allocations
 ```
 
-Higher level system checks are available using the standard Django commands:
+Test coverage is measured using the standard `coverage` command.
+The command will automatically load settings relevant to coverage measurement from the Keystone's `pyproject.toml` file.
+
+```bash
+coverage run keystone_api/manage.py test
+coverage report
+```
+
+## Running System Checks
+
+System checks are used to identify configuration problems, such as missing database migrations or invalid application settings.
+These checks are executed using the standard Django commands:
 
 ```bash
 keystone-api check #(1)! 
